@@ -1,6 +1,6 @@
 ---
 author: Ivaylo Bahtchevanov
-pubDatetime: 2026-05-15T18:00:00Z
+pubDatetime: 2026-03-125T18:00:00Z
 title: A PostHog event export, fed into a diagnostic tool
 slug: posthog-event-export-into-diagnostic-tool
 featured: false
