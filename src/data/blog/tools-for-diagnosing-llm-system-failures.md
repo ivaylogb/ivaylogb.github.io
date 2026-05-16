@@ -5,9 +5,7 @@ title: Tools I built for diagnosing LLM-mediated system failures
 slug: tools-for-diagnosing-llm-system-failures
 featured: true
 draft: false
-tags:
-  - agent-engineering
-  - llm-tooling
+tags: []
 description: A few months of work on tools for figuring out why an LLM-mediated system failed, what each does, how they ended up sharing a structure, and what happened when I ran them against a real product surface.
 ---
 
