@@ -95,6 +95,13 @@ However, in the first run, Pluma's loader didn't ingested top-level files in the
 
 But when Pluma ran the triage step, it identified the limitation. The diagnostic tool cross-references each finding against external signal to validate the claims on real-world sources. It passed the pattern claim but flagged the proposed fix claim, marking the finding as BORDERLINE (pattern correct, fix moot). It flagged the issue in the loader, and proposed an update there.
 
+
+One borderline finding came out of the original run worth mentioning. integration-watcher reported a pattern around developers re-POSTing rejected verification documents without the information needed to fix them. The friction was real and grounded in the public signal. But the finding's claim that "there is no error catalog in the artifacts" was false. `errors.md` is part of the product surface — 201 lines, 91 entries, including the exact row in question. The product loader hadn't ingested the top-level `errors.md`.
+
+The triage step is what surfaced this. Each finding gets cross-checked against external signal — does the claim match what we know from real-world sources? The pattern claim matched. The proposed fix didn't, because `errors.md` clearly existed. Investigating why the tool would say something demonstrably false traced the problem to the loader, not the diagnostic methodology itself.
+
+When re-running with the fixed loader code, the F3 reformulated correctly citing `errors.md:173`. Pluma identified the genuine residual gap (the row tells developers to "re-collect a color document" but doesn't link them to the test-mode fix token), and proposes a surgical one-line catalog edit. BORDERLINE → REAL. 
+
 Full worked example, including the synthesized inputs, the run outputs, and the triage notes, is at [pluma/examples/stripe](https://github.com/ivaylogb/pluma/tree/main/examples/stripe).
 
 
