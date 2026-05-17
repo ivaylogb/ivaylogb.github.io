@@ -285,16 +285,23 @@ const nextPost =
 </script>
 
 
-<script>
-  import mediumZoom from "medium-zoom";
-
+<script is:inline src="https://cdn.jsdelivr.net/npm/medium-zoom@1.1.0/dist/medium-zoom.min.js"></script>
+<script is:inline>
   function initZoom() {
-    mediumZoom("article img, main img", {
-      background: "rgba(0, 0, 0, 0.9)",
-      margin: 40,
-    });
+    if (typeof mediumZoom !== 'undefined') {
+      mediumZoom('article img, main img, .prose img, img', {
+        background: 'rgba(0, 0, 0, 0.9)',
+        margin: 40,
+      });
+    }
   }
-
-  initZoom();
-  document.addEventListener("astro:after-swap", initZoom);
+  
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initZoom);
+  } else {
+    initZoom();
+  }
+  
+  document.addEventListener('astro:after-swap', initZoom);
+  document.addEventListener('astro:page-load', initZoom);
 </script>
