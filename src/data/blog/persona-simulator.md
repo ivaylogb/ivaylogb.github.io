@@ -40,9 +40,6 @@ You paste two Figma links (current design vs proposed change), select a user seg
 
 
 
-
-
-
 The results include the following:
 - A **verdict** with risk level and headline finding
 - **Predictions by question** — each question answered with directional impact, confidence level, and a grounding label (data-backed vs heuristic)
@@ -74,7 +71,6 @@ The simulator fetches the Figma design(s) and turns them into multimoda inputs t
 The simulator thinks at all three layers but communicates at the screenshot layer. Predictions read like a human user-research finding rather than a structured data dump.
 
 ![Control versus treatment Figma designs side-by-side as the simulator sees them](/assets/persona-simulator/Figmas2.png)
-
 
 
 ### 2. Combined signals
@@ -198,17 +194,15 @@ One person, one weekend, Claude Code as the orchestrator. The same pattern works
 
 ---
 
-## Where this goes next
+## Where else this is used
 
 ### Upstream context for agent simulations
 
-I lead agent platform work, and there's a gap in every agent-testing tool I've evaluated. SnowGlobe, ArkSim, Simile — they simulate customers interacting with AI support agents, but none of them know what the customer just experienced in the app.
-
-The Persona Simulator outputs a context bundle: behavioral parameters, emotional state, journey history, trust level, patience remaining. A user who spent 28 seconds confused on the homepage interacts with a support agent fundamentally differently from someone who found everything in 3 seconds. The simulator becomes the upstream context layer that makes agent simulations realistic.
+The Persona Simulator outputs a context bundle: behavioral parameters, emotional state, journey history, trust level, patience remaining. A user who spent 28 seconds confused on the homepage interacts with a support agent fundamentally differently from someone who found everything in 3 seconds. The simulator becomes an upstream context layer that plugs into agent simulations for testing.
 
 ### Automated iteration at scale
 
-The predict → generate → verify loop, run across segments in parallel. Generate multiple variant frames, simulate each across different profiles, compare predictions in a matrix. Ship the design that works for every segment, with pre-identified guardrails and rollback triggers — instead of the design that works on average and surprises you on rollout.
+The predict → generate → verify loop, run across segments in parallel. Generate multiple variant frames, simulate each across different profiles, compare predictions in a matrix. Ship the design that works for every segment, with pre-identified guardrails and rollback triggers, instead of the design that works on average and surprises you on rollout.
 
 ---
 
