@@ -200,6 +200,12 @@ The next iteration of the analysis was a broader view of impact. Imagine running
 ![Overall Impact By Segment](/assets/persona-simulator/lr_impact_segment.png)
 ![Heatmap](/assets/persona-simulator/heat.png)
 ![Recommendations and Guardrails](/assets/persona-simulator/total_recs.png)
+
+You get a single view that shows you what works universally (parts of change that lift conversion regardless of impact), what works for some (ie segment specific wins, with breakdown risks), and what breaks (segment-specific harm).
+
+This is the view that allows the team to iterate on a roll-out plan.
+
+
 ---
 
 ## Other important use cases
