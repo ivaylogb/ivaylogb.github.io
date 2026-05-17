@@ -49,13 +49,14 @@ The results include the following:
 - **Recommendations** — ranked by priority and effort, each citing the evidence
 - A **design system audit** — every component checked against the org's component libraries
 
-![Results Dashboard](/assets/persona-simulator/xs_results.png)
-![Predictions by Question](/assets/persona-simulator/xs_predictions_questions.png)
-![Impact to Conversion](/assets/persona-simulator/xs_conversion_impact.png)
-![Simulated Behavior Walk](/assets/persona-simulator/xs_behavior_walk.png)
-![Recommendations](/assets/persona-simulator/recs.png)
-![Risks and Guardrails](/assets/persona-simulator/xs_risks.png)
-![Design Audit](/assets/persona-simulator/design_audit_full.png)
+<img src="/assets/persona-simulator/xs_results.png" alt="Results Dashboard" class="zoomable"/>
+<img src="/assets/persona-simulator/xs_predictions_questions.png" alt="Predictions By Question" class="zoomable"/>
+<img src="/assets/persona-simulator/xs_behavior_walk.png" alt="Simulated Behavior Walk" class="zoomable"/>
+<img src="/assets/persona-simulator/xs_conversion_impact.png" alt="Impact to Conversion" class="zoomable"/>
+<img src="/assets/persona-simulator/recs.png" alt="Recommendations" class="zoomable"/>
+<img src="/assets/persona-simulator/xs_risks.png" alt="Risks and Guardrails" class="zoomable"/>
+<img src="/assets/persona-simulator/design_audit_full.png" alt="Design Audit" class="zoomable"/>
+
 
 ---
 
@@ -98,7 +99,8 @@ If you toggle off the past-experiments source, the confidence drops and the grou
 
 Why this matters: it means a reviewer can tell at a glance which predictions are anchored in real measurements and which are extrapolated reasoning, allowing the reviewer to decide how much to weigh in the launch decision.
 
-![Data sources panel showing 10 of 11 sources active with 93% confidence score and weighted source cards](/assets/persona-simulator/data_sources.png)
+<img src="/assets/persona-simulator/data_sources.png" alt="Data sources panel showing 10 of 11 sources active with 93% confidence score and weighted source cards" class="zoomable"/>
+
 
 ---
 
@@ -136,7 +138,8 @@ The simulator automatically audits every component in the treatment against the 
 
 For the test design: 11 approved components, 3 custom, 2 deprecated, 4 missing state variants. The critical finding — the credit card widget exists with 7 variants, but the delinquent/overdue state variant isn't being used. A design system gap directly causing a user experience failure for the exact segment most affected.
 
-![Design system audit showing approved, custom, deprecated, and missing variant component classifications](/assets/persona-simulator/design_audit_full.png)
+<img src="/assets/persona-simulator/design_audit_full.png" alt="Design Audit" class="zoomable"/>
+
 
 ### Generate the fix in Figma
 
@@ -172,7 +175,7 @@ A two-column layout showing what pushes conversion up (the "Pagar" inline action
 
 **Guardrail metrics to instrument.** Specific metrics with thresholds: barcode payment funnel entries from home, credit card delinquent widget impressions and click rate, time-to-first-tap on CC content for the late-debt segment, lending revenue, contact rate and NPS for the affected cohort.
 
-![Conversion impact panel with predicted rate change, causal chain, and helping versus hindering elements](/assets/persona-simulator/conversion_impact.png)
+![Conversion impact panel with predicted rate change, causal chain, and helping versus hindering elements](/assets/persona-simulator/xs_conversion_impact.png)
 
 
 This is what turns a design review into a pre-experiment planning artifact. You know what to monitor, what thresholds to set, and what rollback triggers to define — before a single user enters the test.
@@ -202,14 +205,13 @@ One person, one weekend, Claude Code as the orchestrator. The same pattern works
 
 The next iteration of the analysis was a broader view of impact. Imagine running a full launch simulation across a larger set of users. The tool offers the option to expand simulation across segments and compare outcomes across user groups for broader coverage.
 
+
 ![Overall Impact By Segment](/assets/persona-simulator/lr_impact_segment.png)
-![Heatmap](/assets/persona-simulator/heat.png)
-![Recommendations and Guardrails](/assets/persona-simulator/total_recs.png)
 
-You get a single view that shows you what works universally (parts of change that lift conversion regardless of impact), what works for some (ie segment specific wins, with breakdown risks), and what breaks (segment-specific harm).
+<img src="/assets/persona-simulator/heat.png" alt="Segment View" class="zoomable"/>
+<img src="/assets/persona-simulator/total_recs.png" alt="Recommendations and Guardrails" class="zoomable"/>
 
-This is the view that allows the team to iterate on a roll-out plan.
-
+You get a single view that shows you what works universally (parts of change that lift conversion regardless of impact), what works for some (ie segment specific wins, with breakdown risks), and what breaks (segment-specific harm). This is the view that allows the team to iterate on a roll-out plan.
 
 ---
 

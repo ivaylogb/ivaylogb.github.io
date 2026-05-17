@@ -283,3 +283,18 @@ const nextPost =
     window.scrollTo({ left: 0, top: 0, behavior: "instant" })
   );
 </script>
+
+
+<script>
+  import mediumZoom from "medium-zoom";
+
+  function initZoom() {
+    mediumZoom("img.zoomable", {
+      background: "rgba(0, 0, 0, 0.9)",
+      margin: 40,
+    });
+  }
+
+  initZoom();
+  document.addEventListener("astro:after-swap", initZoom);
+</script>
