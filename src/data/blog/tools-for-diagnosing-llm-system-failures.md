@@ -63,9 +63,7 @@ The shared format allows the findings to be correlated against each other. Each 
 A single applier can mechanically apply edits from any tool. A finding from one tool can be ablated, falsified, or extended 
 by another. None of that works if each tool defines its own shape.
 
-The format is documented at [agent-diagnosis-spec](https://github.com/ivaylogb/agent-diagnosis-spec): 
-JSON Schema, prose definitions, and a conformance suite that runs 
-against each tool's output.
+The format is documented at [agent-diagnosis-spec](https://github.com/ivaylogb/agent-diagnosis-spec): JSON Schema, prose definitions, and a conformance suite to run against each output. Input/output contracts are defined such that anyone writing a new adapter can target a documented contract rather than reverse engineer a Python loader.
 
 
 ## Pluma
@@ -107,4 +105,19 @@ Full worked example, including the synthesized inputs, the run outputs, and the 
 
 ## Plugging it into your existing stack
 
-The tools don't make assumptions about where their inputs come from. Adapters bridge platform-specific data formats into the shapes the tools consume. There's a [separate post about the first two adapters](/posts/plugging-diagnostic-stack-into-braintrust-and-posthog/) — one for Braintrust experiments, one for PostHog event exports. Both adapters live in [pluma](https://github.com/ivaylogb/pluma) under `src/pluma/integrations/`. More are coming as the data shapes of common platforms (LangSmith, OpenTelemetry, Amplitude) get mapped in.
+The tools provide adapters for platfrom-specific data formats.
+
+The tools don't make assumptions about where their inputs come from. Adapters bridge platform-specific data formats into the shapes the tools consume. Three are in place: 
+Braintrust experiments → `agent-researcher`
+PostHog event exports → `integration-watcher`
+OpenTelemetry trace exports → `integration-watcher`
+
+The OTel adapter handles OTLP/JSON, Jaeger, and bare span arrays, anyone exporting OTel from Datadog, Honeycomb, Tempo, Grafana Cloud, X-Ray, Lightstep, or Splunk can use.  There's a [separate post](https://ivaylogb.github.io/posts/plugging-diagnostic-stack-into-braintrust-and-posthog/) with the details on what each adapter does and how to install it. 
+
+All adapters live in [pluma](https://github.com/ivaylogb/pluma) under `src/pluma/integrations/`.
+
+For Braintrust, the adapter is also wired directly into Pluma's CLI: `pluma diagnose-agent --braintrust-experiment-id <id>` pulls the experiment live via the API, converts it, and runs `agent-researcher` in one command. Or `--braintrust-project <name> --latest` for the most recent experiment in a project.
+
+For running Pluma in CI, there's a [GitHub Action template](https://github.com/ivaylogb/pluma/tree/main/templates/github-action) that triggers on a Braintrust experiment completion webhook (or manual dispatch), runs the diagnosis, and posts findings to the PR as a comment or opens an issue. Ships against existing CI infrastructure.
+
+For Claude Code users, there's a standalone skill repo, [skill-diagnose-agent-failure](https://github.com/ivaylogb/skill-diagnose-agent-failure). Clone it into `.claude/skills/` (project- or user-scoped); Claude Code auto-invokes it when the conversation mentions a failing eval or a regression.
