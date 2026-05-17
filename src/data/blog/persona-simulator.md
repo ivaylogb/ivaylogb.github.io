@@ -1,19 +1,12 @@
 ---
 author: Ivaylo Bahtchevanov
-pubDatetime: 2026-03-14T10:00:00Z
-title: Persona Simulator: Predicting How Users Will React Before You Ship
+pubDatetime: 2026-05-17T10:00:00Z
+title: Persona Simulator — Predicting How Users Will React Before You Ship
 slug: persona-simulator
 featured: true
 draft: false
 tags: []
-description: A tool that leverages the Claude Platform and ecosystem, our entire analytics warehouse, experiment library, design system, product and strategy docs, to understand how users will behave and interact with new experiences. 
- uses our our analytics warehouse, experiment history, design system, and strategy guidelines
----
-
-# Persona Simulator: Predicting How Users Will React to Before You Ship
-
-*We redesigned our app's homepage. Before launching the A/B test, I connected Claude to our analytics warehouse, experiment history, design system, strategy guidelines, and more, and asked it to predict how a specific user segment would engage with the product*
-
+description: A tool that leverages the Claude Platform and ecosystem, the analytics warehouse, experiment library, design system, and product strategy docs to understand how users will behave with new experiences.
 ---
 
 ## Catching what you don't expect
@@ -22,7 +15,11 @@ The most valuable experiments are always the ones that help you uncover somethin
 
 The problem is, you only discover these surprises after weeks of running a real experiment with real users. By then, the damage to trust, conversion, and revenue has already happened. I wanted to surface these unexpected user perspectives before committing a single user to the test. 
 
-The Personal Simulator is a tool I built to solve this problem. This would not replace traditional AB testing, user research, and other forms of analysis. The goal is to use existing data to build realistic representations on users, and then run simulations that would show how these users would engage with the experience. The simulation needs to be strongly grounded in the users, capturing their expected behavior, goals/motivations, context on how they fell into the product surface area in the first place, and where that user is trying to get to.
+When we redesigned our app experience, I built the Persona Simulator to help us navigate some of the critical changes to major products. We used the tool across 12 teams.
+
+While this doesn't replace traditional A/B testing, user research, and other forms of analysis, it helped us catch many critical issues before any users ever saw it. It helped us understand how to personalize specific experiences either by user segment, use case, or some other context about why a given user was arriving on a particular flow. And it helped provide new perspectives on how experiences were actually landing, which can have significant variance across users.
+
+The biggest value add was in the effort in grounding the simulator in realistic representations of users, capturing expected behavior. The rest of this blog details the inner workings of the tool.
 
 ---
 
@@ -195,6 +192,14 @@ The frontend is React + Vite + TypeScript. The prediction engine calls Claude Op
 
 One person, one weekend, Claude Code as the orchestrator. The same pattern works for any domain where institutional knowledge is scattered across systems and never gets synthesized against a specific decision.
 
+---
+## From single user to portfolio impact view
+
+The next iteration of the analysis was a broader view of impact. Imagine running a full launch simulation across a larger set of users. The tool offers the option to expand simulation across segments and compare outcomes across user groups for broader coverage.
+
+![Overall Impact By Segment](/assets/persona-simulator/lr_impact_segment.png)
+![Heatmap](/assets/persona-simulator/heat.png)
+![Recommendations and Guardrails](/assets/persona-simulator/total_recs.png)
 ---
 
 ## Other important use cases
