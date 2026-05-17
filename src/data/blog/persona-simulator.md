@@ -6,7 +6,8 @@ slug: persona-simulator
 featured: false
 draft: false
 tags: []
-description: I connected Claude to our analytics warehouse, experiment history, design system, and strategy guidelines, and asked it to predict how different users would react to a homepage redesign. The most useful predictions weren't the ones we expected.
+description: A tool that leverages the Claude Platform and ecosystem, our entire analytics warehouse, experiment library, design system, product and strategy docs, to understand how users will behave and interact with new experiences. 
+ uses our our analytics warehouse, experiment history, design system, and strategy guidelines
 ---
 
 # Persona Simulator: Predicting How Users Will React to Before You Ship
@@ -17,8 +18,7 @@ description: I connected Claude to our analytics warehouse, experiment history, 
 
 ## Catching what you don't expect
 
-The most valuable experiments are always the ones that help you uncover something unexpected, not the ones that confirm your hypothesis. When your user base covers a broad set of segments with different goals, an improvement for one user could be 
-detrimental to another. For example, cross-sell offers for savings products can feel predatory for a stressed out user trying to make ends meet, but could be helpful for another when trying to improve their finances.
+The most valuable experiments are always the ones that help you uncover something unexpected, not the ones that confirm your hypothesis. When your user base covers a broad set of segments with different goals, an improvement for one user could be detrimental to another. For example, cross-sell offers for savings products can feel predatory for a stressed out user trying to make ends meet, but could be helpful for another when trying to improve their finances.
 
 The problem is, you only discover these surprises after weeks of running a real experiment with real users. By then, the damage to trust, conversion, and revenue has already happened. I wanted to surface these unexpected user perspectives before committing a single user to the test. 
 
@@ -30,14 +30,13 @@ The Personal Simulator is a tool I built to solve this problem. This would not r
 
 There are two possibilities: 
 
-(1) a net new experience that you'd like to explore - how will this land with different users, how will they engage, what will they think, etc
-(2) a change in an existing experience - a redesign, feature update, etc, with some specific goal in mind on either changing a target behavior or outcome, perception, or overall usability
+(1) a net new experience that you'd like to explore. You want to understand how will this land with different users, how will they engage, what will they think of various components, whether it makes sense to them, etc.
+(2) a change in an existing experience - a redesign, feature update, etc, with some specific goal in mind around either changing a target behavior or outcome, or changing something fundamental like perception or overall usability
 
-The simulator allows for both. You can add a single scenario or two. 
-You paste two Figma links (current design vs proposed change), select a user segment profile, type the questions you want answered, and optionally set a conversion target. Two minutes later, you get a structured analysis grounded in your company's own data.
+The simulator allows for both. You can add a single scenario (net new) or two (control vs treatment).
+Add the Figma flows directly (or use text to describe if you don't already have a prototype), select a user segment profile, type the questions you want answered, and optionally set a conversion target. Two minutes later, you get a structured analysis grounded in your company's own data.
 
 ![Defining scenarios and target user, with focus areas for feedback](/assets/persona-simulator/basic_input2.png)
-
 
 
 The results include the following:
@@ -52,15 +51,18 @@ The results include the following:
 ![Predictions by Question](/assets/persona-simulator/xs_predictions_questions.png)
 ![Impact to Conversion](/assets/persona-simulator/xs_conversion_impact.png)
 ![Simulated Behavior Walk](/assets/persona-simulator/behavior_walk.png)
+![Recommendations](/assets/persona-simulator/recs.png)
+![Risks and Guardrails](/assets/persona-simulator/xs_risks.png)
 ![Design Audit](/assets/persona-simulator/design_audit_full.png)
 
 ---
 
 ## Why the predictions aren't generic AI output
 
-Three design decisions are what separate this from a generic "have AI review my design" tool. Each one is a craft choice with a concrete payoff.
+Just to be clear, this is not a "have AI review my design" tool. 
 
-### 1. Figma Scenario as multimodal input
+
+### 1. Multimodal input
 
 The simulator fetches the Figma design(s) and turns them into multimoda inputs to Claude. It captures the prototype as images, connects the widgets to the design, reads the visible text, assesses visual hierarchy, identifies which elements are prominent vs subtle, and notices things like a partially cut-off icon or a label change that the underlying component metadata doesn't capture (important because Figma layer names can lie).
 
@@ -92,13 +94,13 @@ Each prediction carries a confidence level (HIGH/MEDIUM/LOW) with a score, and a
 
 If you toggle off the past-experiments source, the confidence drops and the grounding labels shift. If you enable all eleven sources, the dashboard reads "10/11 sources active · 93% confidence" — and you can audit which sources fired for which claim by expanding the citations panel.
 
-Why this matters: it means a reviewer can tell at a glance which predictions are anchored in real measurements and which are extrapolated reasoning — and decide which ones to weight in the launch decision.
+Why this matters: it means a reviewer can tell at a glance which predictions are anchored in real measurements and which are extrapolated reasoning, allowing the reviewer to decide how much to weigh in the launch decision.
 
 ![Data sources panel showing 10 of 11 sources active with 93% confidence score and weighted source cards](/assets/persona-simulator/data_sources.png)
 
 ---
 
-## The data sources — what's actually connected
+## Connecting user context, behavior, and data to create realistic behavior
 
 Every prediction traces to a specific source. Here's what's wired in and why each one earns its place.
 
@@ -138,7 +140,6 @@ For the test design: 11 approved components, 3 custom, 2 deprecated, 4 missing s
 
 Claude Design was a great add-on here. Using its write capabilities, simulator can clone the treatment frame and create variants implementing the recommendations. It imports the design system components, applies the correct tokens and positions variants with the original.
 
-
 For the top recommendation ("add an explicit overdue label to the CC widget"), Claude Design generated Variant B: "Cartão de crédito" becomes "Cartão de crédito · Fatura em atraso" in red, "Fecha 29 MAR" becomes "Vencida · 8 dias em atraso," the overdue state is visually emphasized. For the second recommendation, Variant C: same changes plus the cross-sell section replaced with contextual debt-resolution messaging.
 
 The designer gets Figma frames to refine, not text descriptions to interpret.
@@ -155,13 +156,15 @@ The prediction improved. Risk dropped from HIGH to MEDIUM. Conversion impact mov
 
 ---
 
-## Conversion impact: from "interesting feedback" to "launch plan"
+## Conversion impact
 
-The simulator's most useful output for an experiment owner isn't the prediction — it's everything that comes with it.
+The simulator's most useful output for an experiment owner is the analysis the simulator provides about the experience itslef.
 
-**A predicted rate change with a causal chain.** Not just "down 20%" but a numbered chain: (1) explicit label removal → (2) late-debt user can't pattern-match the CC widget → (3) first-tap on CC content drops → (4) users with low scroll patience who fail first-tap don't recover → (5) session abandonment before payment initiation increases.
+**A predicted rate change with a causal chain.** 
+Offers net inpact, ie "down 20%", as well as a direct chain of events: (1) explicit label removal → (2) late-debt user can't pattern-match the CC widget → (3) first-tap on CC content drops → (4) users with low scroll patience who fail first-tap don't recover → (5) session abandonment before payment initiation increases.
 
-**Helping and hindering elements.** A two-column layout showing what pushes conversion up (the "Pagar" inline action sits prominently above the fold; the CC card appears higher in treatment than control) versus what pushes it down (label removal, cross-sell competition, unfamiliar header chrome).
+**Helping and hindering elements.** 
+A two-column layout showing what pushes conversion up (the "Pagar" inline action sits prominently above the fold; the CC card appears higher in treatment than control) versus what pushes it down (label removal, cross-sell competition, unfamiliar header chrome).
 
 **Affected entrypoints.** A table predicting changes per conversion path: CC widget → CC dashboard → Pay Area; Pagar inline → barcode payment; alternative routes that absorb displaced traffic at lower conversion rates.
 
@@ -179,12 +182,12 @@ This is what turns a design review into a pre-experiment planning artifact. You 
 This was built over a weekend using Claude Code, orchestrating across seven internal systems via MCP:
 
 - **Databricks SQL MCP** — widget metrics, section engagement, conversion funnels
-- **Slack MCP** — experiment outcomes from the decisions channel, structured into a searchable library
-- **Figma MCP (Claude Design)** — bidirectional: reads screenshots, component trees, design tokens; writes cloned frames implementing variant recommendations
+- **Slack MCP** — experiment outcomes from decisions channel, structured into a searchable library
+- **Figma MCP + Claude Design** — bidirectional: reads screenshots, component trees, design tokens; writes cloned frames implementing variant recommendations
 - **Glean MCP** — discovered and ingested strategy RFCs, RACI guidelines, research docs
-- **Confluence MCP** — design documentation, experiment tracking
+- **Confluence and Notion MCP** — design documentation, experiment tracking
 - **Google Drive MCP** — strategy and planning documents
-- **LiteLLM proxy** — Claude API gateway with SSO authentication
+- **Anthropic API** — Claude API for synthesizing past user behavior from data and predicting future behavior 
 
 Custom slash commands keep the data fresh. `/project:refresh-data` re-queries all warehouse tables and pulls new experiments from Slack. The UI shows staleness badges — data older than 7 days is flagged.
 
@@ -194,11 +197,11 @@ One person, one weekend, Claude Code as the orchestrator. The same pattern works
 
 ---
 
-## Where else this is used
+## Other important use cases
 
 ### Upstream context for agent simulations
 
-The Persona Simulator outputs a context bundle: behavioral parameters, emotional state, journey history, trust level, patience remaining. A user who spent 28 seconds confused on the homepage interacts with a support agent fundamentally differently from someone who found everything in 3 seconds. The simulator becomes an upstream context layer that plugs into agent simulations for testing.
+The Persona Simulator outputs a context bundle: behavioral parameters, emotional state, journey history, trust level, patience remaining. A user who spent 28 seconds confused on the homepage interacts with a support agent fundamentally differently from someone who found everything in 3 seconds. The simulator becomes an upstream context layer that plugs into agent simulations for testing to create realistic conversations by user group.
 
 ### Automated iteration at scale
 
