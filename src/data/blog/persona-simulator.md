@@ -3,7 +3,7 @@ author: Ivaylo Bahtchevanov
 pubDatetime: 2026-03-14T10:00:00Z
 title: Persona Simulator: Predicting How Users Will React Before You Ship
 slug: persona-simulator
-featured: false
+featured: true
 draft: false
 tags: []
 description: A tool that leverages the Claude Platform and ecosystem, our entire analytics warehouse, experiment library, design system, product and strategy docs, to understand how users will behave and interact with new experiences. 
