@@ -27,8 +27,13 @@ The biggest value add was in the effort in grounding the simulator in realistic 
 
 There are two possibilities: 
 
-(1) a net new experience that you'd like to explore. You want to understand how will this land with different users, how will they engage, what will they think of various components, whether it makes sense to them, etc.
-(2) a change in an existing experience - a redesign, feature update, etc, with some specific goal in mind around either changing a target behavior or outcome, or changing something fundamental like perception or overall usability
+### (1) a net new experience that you'd like to explore. 
+
+You want to understand how will this land with different users, how will they engage, what will they think of various components, whether it makes sense to them, etc.
+
+### (2) a change in an existing experience 
+
+i.e. a redesign, feature update, etc, with some specific goal in mind around either changing a target behavior or outcome, or changing something fundamental like perception or overall usability
 
 The simulator allows for both. You can add a single scenario (net new) or two (control vs treatment).
 Add the Figma flows directly (or use text to describe if you don't already have a prototype), select a user segment profile, type the questions you want answered, and optionally set a conversion target. Two minutes later, you get a structured analysis grounded in your company's own data.
@@ -47,7 +52,7 @@ The results include the following:
 ![Results Dashboard](/assets/persona-simulator/xs_results.png)
 ![Predictions by Question](/assets/persona-simulator/xs_predictions_questions.png)
 ![Impact to Conversion](/assets/persona-simulator/xs_conversion_impact.png)
-![Simulated Behavior Walk](/assets/persona-simulator/behavior_walk.png)
+![Simulated Behavior Walk](/assets/persona-simulator/xs_behavior_walk.png)
 ![Recommendations](/assets/persona-simulator/recs.png)
 ![Risks and Guardrails](/assets/persona-simulator/xs_risks.png)
 ![Design Audit](/assets/persona-simulator/design_audit_full.png)
