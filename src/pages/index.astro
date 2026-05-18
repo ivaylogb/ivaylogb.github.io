@@ -3,110 +3,34 @@ import { getCollection } from "astro:content";
 import Layout from "@/layouts/Layout.astro";
 import Header from "@/components/Header.astro";
 import Footer from "@/components/Footer.astro";
-import LinkButton from "@/components/LinkButton.astro";
 import Card from "@/components/Card.astro";
 import getSortedPosts from "@/utils/getSortedPosts";
-import IconRss from "@/assets/icons/IconRss.svg";
-import IconArrowRight from "@/assets/icons/IconArrowRight.svg";
 import { SITE } from "@/config";
 
 const posts = await getCollection("blog");
 const sortedPosts = getSortedPosts(posts);
-
-const projects = [
-  {
-    name: "pluma",
-    href: "https://github.com/ivaylogb/pluma",
-    description: "Orchestrator for the diagnostic tools — agent-researcher, funnel-researcher, integration-watcher. One CLI, cross-tool reports, adapters for Braintrust / PostHog / OpenTelemetry.",
-  },
-  {
-    name: "agent-engineering",
-    href: "https://github.com/ivaylogb/agent-engineering",
-    description: "Front-door narrative for what shipping production-grade agents looks like. Points at the four kits below and how they fit together.",
-  },
-  {
-    name: "agent-tool-kit",
-    href: "https://github.com/ivaylogb/agent-tool-kit",
-    description: "Tool design patterns for agents — the agent-computer interface, capability registry, structured errors, observability hooks.",
-  },
-  {
-    name: "agent-context-kit",
-    href: "https://github.com/ivaylogb/agent-context-kit",
-    description: "Runtime context management — dynamic module loading, compression, sub-agent isolation, budget allocation.",
-  },
-  {
-    name: "agent-eval-loop",
-    href: "https://github.com/ivaylogb/agent-eval-loop",
-    description: "The simulate → evaluate → improve loop. Scenario authoring, deterministic replay, scorer composition, delta reporting.",
-  },
-  {
-    name: "agent-skill-kit",
-    href: "https://github.com/ivaylogb/agent-skill-kit",
-    description: "Reference agents, audit checklist for SKILL.md files, meta-agent scaffolder for new agents.",
-  },
-];
 ---
 
 <Layout>
   <Header />
   <main id="main-content" data-layout="index" class="app-layout">
-    <section id="hero" class="pt-8 pb-6 border-b border-border">
-      <h1 class="my-4 inline-block text-4xl font-bold sm:my-8 sm:text-5xl">
-        Notes
-      </h1>
-      
-        target="_blank"
-        href="/rss.xml"
-        class="inline-block"
-        aria-label="rss feed"
-        title="RSS Feed"
-      >
-        <IconRss
-          width={20}
-          height={20}
-          class="scale-125 stroke-accent stroke-3 rtl:-rotate-90"
-        />
-        <span class="sr-only">RSS Feed</span>
-      </a>
-      <p>
-        Sharing writing to add color to some of the tools I'm building, enjoy.
-      </p>
-    </section>
 
     <section id="about" class="pt-12 pb-6 border-b border-border">
-      <h2 class="text-2xl font-semibold tracking-wide">About me</h2>
-      <div class="mt-4">
-        <p>Edit this section in src/pages/index.astro. Replace this paragraph with a short bio.</p>
-      </div>
-    </section>
-
-    <section id="projects" class="pt-12 pb-6 border-b border-border">
-      <h2 class="text-2xl font-semibold tracking-wide">Projects</h2>
-      <ul class="mt-4 space-y-4">
-        {projects.map(p => (
-          <li>
-            <a href={p.href} target="_blank" rel="noopener" class="font-semibold text-accent hover:underline">{p.name}</a>
-            <p class="mt-1">{p.description}</p>
-          </li>
-        ))}
-      </ul>
+      <h2 class="text-2xl font-semibold tracking-wide">About</h2>
+      <p class="mt-4">
+        I'm a lover of all things ocean (surfing, sailing, spearfishing), philosophical ideas, and building things. Space for sharing writing on personal projects. Enjoy.
+      </p>
     </section>
 
     {sortedPosts.length > 0 && (
       <section id="posts" class="pt-12 pb-6">
-        <h2 class="text-2xl font-semibold tracking-wide">Posts</h2>
-        <ul>
-          {sortedPosts.map((data, index) => index < SITE.postPerIndex && <Card variant="h3" {...data} />)}
+        <h2 class="text-3xl font-bold tracking-wide">Posts</h2>
+        <ul class="mt-6">
+          {sortedPosts.map((data) => <Card variant="h3" {...data} />)}
         </ul>
       </section>
     )}
 
-    <div class="my-8 text-center">
-      <LinkButton href="/posts/">
-        All Posts
-        <IconArrowRight class="inline-block rtl:-rotate-180" />
-      </LinkButton>
-    </div>
   </main>
   <Footer />
 </Layout>
