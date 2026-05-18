@@ -1,6 +1,6 @@
 ---
 author: Ivaylo Bahtchevanov
-pubDatetime: 2026-04-16T10:00:00Z
+pubDatetime: 2026-04-15T10:00:00Z
 title: Adapters for Braintrust and PostHog
 slug: plugging-diagnostic-stack-into-braintrust-and-posthog
 featured: true
