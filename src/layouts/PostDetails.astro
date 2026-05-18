@@ -157,6 +157,51 @@ const nextPost =
   <Footer />
 </Layout>
 
+<style is:global>
+  #article details {
+    margin: 1.5rem 0;
+    border: 1px solid var(--color-border, rgba(128, 128, 128, 0.3));
+    border-radius: 0.5rem;
+    overflow: hidden;
+  }
+  #article details summary {
+    cursor: pointer;
+    padding: 0.75rem 1rem;
+    font-weight: 500;
+    background: rgba(128, 128, 128, 0.08);
+    user-select: none;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  #article details summary::-webkit-details-marker {
+    display: none;
+  }
+  #article details summary::before {
+    content: "▶";
+    font-size: 0.75rem;
+    transition: transform 0.2s;
+    display: inline-block;
+  }
+  #article details[open] summary::before {
+    transform: rotate(90deg);
+  }
+  #article details summary:hover {
+    background: rgba(128, 128, 128, 0.15);
+  }
+  #article details > p {
+    padding: 1rem;
+    margin: 0;
+  }
+  #article details img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    margin: 0 auto;
+  }
+</style>
+
 <script is:inline data-astro-rerun>
   function createProgressBar() {
     const progressContainer = document.createElement("div");
@@ -258,30 +303,4 @@ const nextPost =
   document.addEventListener("astro:after-swap", () =>
     window.scrollTo({ left: 0, top: 0, behavior: "instant" })
   );
-</script>
-
-<script is:inline src="https://cdn.jsdelivr.net/npm/medium-zoom@1.1.0/dist/medium-zoom.min.js"></script>
-<script is:inline>
-  function initZoom() {
-    if (typeof mediumZoom === 'undefined') {
-      setTimeout(initZoom, 200);
-      return;
-    }
-    var imgs = document.querySelectorAll('#article img');
-    imgs.forEach(function(img) {
-      img.style.cursor = 'zoom-in';
-    });
-    mediumZoom('#article img', {
-      background: 'rgba(0, 0, 0, 0.95)',
-      margin: 40,
-    });
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initZoom);
-  } else {
-    initZoom();
-  }
-  document.addEventListener('astro:after-swap', initZoom);
-  document.addEventListener('astro:page-load', initZoom);
 </script>
