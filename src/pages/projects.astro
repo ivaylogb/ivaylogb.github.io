@@ -1,0 +1,56 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+
+const agentProjects = [
+  { name: "pluma", href: "https://github.com/ivaylogb/pluma", description: "Orchestrator for the diagnostic tools — agent-researcher, funnel-researcher, integration-watcher. One CLI, cross-tool reports, adapters for Braintrust / PostHog / OpenTelemetry." },
+  { name: "agent-engineering", href: "https://github.com/ivaylogb/agent-engineering", description: "Front-door narrative for what shipping production-grade agents looks like. Points at the four kits below and how they fit together." },
+  { name: "agent-tool-kit", href: "https://github.com/ivaylogb/agent-tool-kit", description: "Tool design patterns for agents — the agent-computer interface, capability registry, structured errors, observability hooks." },
+  { name: "agent-context-kit", href: "https://github.com/ivaylogb/agent-context-kit", description: "Runtime context management — dynamic module loading, compression, sub-agent isolation, budget allocation." },
+  { name: "agent-eval-loop", href: "https://github.com/ivaylogb/agent-eval-loop", description: "The simulate → evaluate → improve loop. Scenario authoring, deterministic replay, scorer composition, delta reporting." },
+  { name: "agent-skill-kit", href: "https://github.com/ivaylogb/agent-skill-kit", description: "Reference agents, audit checklist for SKILL.md files, meta-agent scaffolder for new agents." },
+];
+
+const personalProjects = [
+  { emoji: "🏠", name: "Costseg", href: "https://costsegnow.vercel.app/", description: "A cost-segregation tool for real estate investors, built end-to-end on Vite, React, and Vercel. Started as an excuse to dabble more in real estate, now used by a handful of active investors." },
+  { emoji: "📈", name: "Portfolio Manager and Researcher", href: "https://github.com/ivaylogb/personal-portfolio-manager-and-researcher", description: "Personal portfolio monitoring + AI-assisted equity research framework. Daily briefs, SEC alerts, user-defined rules engine, methodology skills for thesis exploration. Not financial advice." },
+  { emoji: "🕊️", name: "Selah", href: "https://sela-blond.vercel.app/", description: "Philosophical and spiritual meditative partner." },
+];
+---
+
+<Layout title="Projects | Ivaylo Bahtchevanov">
+  <Header />
+  <main id="main-content" class="app-layout">
+    <section class="pt-12 pb-6 border-b border-border">
+      <h1 class="text-3xl font-bold tracking-wide">Projects</h1>
+      <p class="mt-4">Things I'm building. Public repos and live demos.</p>
+    </section>
+
+    <section class="pt-12 pb-6 border-b border-border">
+      <h2 class="text-2xl font-semibold tracking-wide">Agents & Diagnostic Tools</h2>
+      <ul class="mt-4 space-y-4">
+        {agentProjects.map(p => (
+          <li>
+            <a href={p.href} target="_blank" rel="noopener" class="font-semibold text-accent hover:underline">{p.name}</a>
+            <p class="mt-1">{p.description}</p>
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    <section class="pt-12 pb-6">
+      <h2 class="text-2xl font-semibold tracking-wide">Building Fun Ideas</h2>
+      <ul class="mt-4 space-y-4">
+        {personalProjects.map(p => (
+          <li>
+            <span class="mr-2">{p.emoji}</span>
+            <a href={p.href} target="_blank" rel="noopener" class="font-semibold text-accent hover:underline">{p.name}</a>
+            <p class="mt-1">{p.description}</p>
+          </li>
+        ))}
+      </ul>
+    </section>
+  </main>
+  <Footer />
+</Layout>
