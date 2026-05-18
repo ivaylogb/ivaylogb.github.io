@@ -64,7 +64,13 @@ const layoutProps = {
   scrollSmooth: true,
 };
 
-const allPosts = posts.map(({ data: { title }, id, filePath }) => ({
+type AdjacentPost = {
+  id: string;
+  title: string;
+  filePath: string | undefined;
+};
+
+const allPosts: AdjacentPost[] = posts.map(({ data: { title }, id, filePath }) => ({
   id,
   title,
   filePath,
@@ -72,9 +78,12 @@ const allPosts = posts.map(({ data: { title }, id, filePath }) => ({
 
 const currentPostIndex = allPosts.findIndex(a => a.id === post.id);
 
-const prevPost = currentPostIndex !== 0 ? allPosts[currentPostIndex - 1] : null;
-const nextPost =
-  currentPostIndex !== allPosts.length ? allPosts[currentPostIndex + 1] : null;
+const prevPost: AdjacentPost | null =
+  currentPostIndex > 0 ? allPosts[currentPostIndex - 1] : null;
+const nextPost: AdjacentPost | null =
+  currentPostIndex !== -1 && currentPostIndex < allPosts.length - 1
+    ? allPosts[currentPostIndex + 1]
+    : null;
 ---
 
 <Layout {...layoutProps}>
