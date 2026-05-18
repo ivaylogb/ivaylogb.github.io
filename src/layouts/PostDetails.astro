@@ -11,8 +11,6 @@ import BackButton from "@/components/BackButton.astro";
 import BackToTopButton from "@/components/BackToTopButton.astro";
 import { getPath } from "@/utils/getPath";
 import { slugifyStr } from "@/utils/slugify";
-import IconChevronLeft from "@/assets/icons/IconChevronLeft.svg";
-import IconChevronRight from "@/assets/icons/IconChevronRight.svg";
 import { SITE } from "@/config";
 
 type Props = {
@@ -20,7 +18,7 @@ type Props = {
   posts: CollectionEntry<"blog">[];
 };
 
-const { post, posts } = Astro.props;
+const { post } = Astro.props;
 
 const {
   title,
@@ -63,27 +61,6 @@ const layoutProps = {
   ogImage,
   scrollSmooth: true,
 };
-
-type AdjacentPost = {
-  id: string;
-  title: string;
-  filePath: string | undefined;
-};
-
-const allPosts: AdjacentPost[] = posts.map(({ data: { title }, id, filePath }) => ({
-  id,
-  title,
-  filePath,
-}));
-
-const currentPostIndex = allPosts.findIndex(a => a.id === post.id);
-
-const prevPost: AdjacentPost | null =
-  currentPostIndex > 0 ? allPosts[currentPostIndex - 1] : null;
-const nextPost: AdjacentPost | null =
-  currentPostIndex !== -1 && currentPostIndex < allPosts.length - 1
-    ? allPosts[currentPostIndex + 1]
-    : null;
 ---
 
 <Layout {...layoutProps}>
@@ -129,39 +106,6 @@ const nextPost: AdjacentPost | null =
     <BackToTopButton />
 
     <ShareLinks />
-
-    <hr class="my-6 border-dashed" />
-
-    <div data-pagefind-ignore class="grid grid-cols-1 gap-6 sm:grid-cols-2">
-      {
-        prevPost && (
-          
-            href={getPath(prevPost.id, prevPost.filePath)}
-            class="flex w-full gap-1 hover:opacity-75"
-          >
-            <IconChevronLeft class="inline-block flex-none rtl:rotate-180" />
-            <div>
-              <span>Previous Post</span>
-              <div class="text-sm text-accent/85">{prevPost.title}</div>
-            </div>
-          </a>
-        )
-      }
-      {
-        nextPost && (
-          
-            href={getPath(nextPost.id, nextPost.filePath)}
-            class="flex w-full justify-end gap-1 text-end hover:opacity-75 sm:col-start-2"
-          >
-            <div>
-              <span>Next Post</span>
-              <div class="text-sm text-accent/85">{nextPost.title}</div>
-            </div>
-            <IconChevronRight class="inline-block flex-none rtl:rotate-180" />
-          </a>
-        )
-      }
-    </div>
   </main>
   <Footer />
 </Layout>
@@ -169,7 +113,7 @@ const nextPost: AdjacentPost | null =
 <style is:global>
   #article details {
     margin: 1.5rem 0;
-    border: 1px solid var(--color-border, rgba(128, 128, 128, 0.3));
+    border: 1px solid rgba(128, 128, 128, 0.3);
     border-radius: 0.5rem;
     overflow: hidden;
   }
