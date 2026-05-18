@@ -112,30 +112,40 @@ const layoutProps = {
 
 <style is:global>
   #article details {
-    margin: 1.5rem 0;
-    border: 1px solid rgba(128, 128, 128, 0.3);
-    border-radius: 0.5rem;
+    display: block !important;
+    width: 100% !important;
+    margin: 1.5rem 0 !important;
+    border: 1px solid rgba(128, 128, 128, 0.3) !important;
+    border-radius: 0.5rem !important;
+    background: transparent !important;
     overflow: hidden;
+    clear: both;
   }
   #article details summary {
+    display: flex !important;
+    align-items: center;
+    gap: 0.5rem;
     cursor: pointer;
-    padding: 0.75rem 1rem;
+    padding: 0.75rem 1rem !important;
     font-weight: 500;
     background: rgba(128, 128, 128, 0.08);
     user-select: none;
     list-style: none;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
+    width: 100%;
   }
   #article details summary::-webkit-details-marker {
     display: none;
+  }
+  #article details summary::marker {
+    display: none;
+    content: "";
   }
   #article details summary::before {
     content: "▶";
     font-size: 0.75rem;
     transition: transform 0.2s;
     display: inline-block;
+    flex-shrink: 0;
   }
   #article details[open] summary::before {
     transform: rotate(90deg);
@@ -146,20 +156,18 @@ const layoutProps = {
   #article details[open] {
     padding-bottom: 1rem;
   }
-  #article details > * {
-    padding: 0 1rem;
-  }
-  #article details > summary {
-    padding: 0.75rem 1rem;
+  #article details > p,
+  #article details > div {
+    padding: 1rem !important;
+    margin: 0 !important;
+    display: block !important;
   }
   #article details img {
-    display: block;
-    max-width: 100%;
-    height: auto;
-    margin: 1rem auto 0;
-  }
-  #article details p {
-    margin: 1rem 0;
+    display: block !important;
+    max-width: 100% !important;
+    height: auto !important;
+    margin: 1rem auto !important;
+    padding: 0 1rem;
   }
 </style>
 
