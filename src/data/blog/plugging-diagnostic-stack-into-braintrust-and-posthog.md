@@ -1,113 +1,162 @@
 ---
 author: Ivaylo Bahtchevanov
 pubDatetime: 2026-04-15T10:00:00Z
-title: Adapters for Braintrust and PostHog
+title: Adapters for the diagnostic stack - Braintrust, LangSmith, OpenTelemetry, PostHog
 slug: plugging-diagnostic-stack-into-braintrust-and-posthog
-featured: true
+featured: false
 draft: false
 tags: []
-description: Two small converters that connect Braintrust experiments and PostHog event exports to the diagnostic tools I wrote earlier this week.
+description: Connecting the diagnostic stack to Braintrust, LangSmith, OpenTelemetry, and PostHog. Combine inputs across platforms, point the diagnostic agent at the result.
 ---
 
-The diagnostic tools I [wrote about earlier this week](https://ivaylogb.github.io/posts/tools-for-diagnosing-llm-system-failures/) consume any of the following types of input: a failing eval scenario, a developer-API funnel with dropoff numbers, or a stream of API call traces from a cohort of integrations. Most teams running production LLM systems already produce that data across Braintrust/LangSmith for evals, in PostHog/Amplitude for funnels, in API gateway logs or OpenTelemetry exporters for traces.
 
-This post covers existing converters: one for Braintrust experiments, one for PostHog event exports, one for OpenTelemetry trace exports. All live in `pluma/src/pluma/integrations/`.
+## Why this exists
 
-## Braintrust → agent-researcher
+When an LLM-mediated system fails, eval and observability platforms tell you that it failed — a score, an error, a thumbs-down — but understanding *why* still means manually walking traces and event streams.
 
-[agent-researcher](https://github.com/ivaylogb/agent-researcher) reads a failing eval scenario and outputs hypotheses for why the agent failed. The input it expects is a JSON object listing the scenario, expected output, actual output, score, and scorer name.
+Eval datasets catch the failures you already know about. The emerging patterns — the ones that matter most — only surface in production traces and user signal, scattered across whichever platforms recorded them.
 
-Braintrust experiments contain that data. An experiment is a set of scored evaluations where each row has `input`, `expected`, `output`, a `scores` object (scorer name to numeric score), `metadata`, and a timestamp.
+The [diagnostic stack](https://ivaylogb.github.io/posts/tools-for-diagnosing-llm-system-failures/) — [pluma](https://github.com/ivaylogb/pluma), [agent-researcher](https://github.com/ivaylogb/agent-researcher), and [integration-watcher](https://github.com/ivaylogb/integration-watcher) — reads from those scattered systems and produces structured findings. Each finding carries a claim, a `file:line` citation, an applyable edit with a pre-image guard, and an explicit `applyable: false` exit when no clean single-edit fix exists. Findings are tagged into one of four categories — measurement instrument, interface, context available at decision time, or call sequence — so they group cleanly across runs and tools.
 
-The converter takes a Braintrust experiment export and writes the failing rows in agent-researcher's expected shape. The original Braintrust row stays attached to each record, so the diagnostic agent has access to the full scorer breakdown and metadata when it reasons about the failure.
+[pluma](https://github.com/ivaylogb/pluma) normalizes those findings against the [shared spec](https://github.com/ivaylogb/agent-diagnosis-spec) and triages them by cross-checking each claim against external signal, which is how the methodology catches its own bugs before a developer does.
 
-Four things the converter preserves beyond the basic field mapping:
+The result is faster root-cause analysis, cross-platform synthesis the dashboards can't do on their own, and findings you can ship a fix against.
 
-**Spans.** Braintrust experiments carry the trace of what the agent did, prompt sent, model response, tool calls, and intermediate reasoning. The converter keeps these on each failing record (capped at 50 spans per row by default, with an explicit truncation marker if exceeded). agent-researcher reads the spans alongside the source code, so its hypotheses can localize the failure to a specific step of the agent's execution rather than just a file:line in source.
 
-**Per-scorer signature.** Real Braintrust experiments have multiple scorers per row — exact_match, factuality, calibrated_confidence, custom LLM-judges. Which scorers a row fails is itself diagnostic signal (a row that fails factuality but passes exact_match is a different bug than one that fails exact_match but passes factuality). The converter emits a `scorer_signature` dict with per-scorer pass/fail booleans, so the diagnostic agent can reason over the pattern.
+Four adapters connect this stack to the platforms teams already use: **Braintrust, LangSmith, OpenTelemetry, PostHog**. Each one reads from its platform and produces the same `FailingEvalContainer` shape (v0.2 spec). A single `pluma diagnose-agent` run can pull failing rows from a Braintrust experiment, a LangSmith project, and an OTel trace bundle into one diagnostic agent run. The adapters live at [`src/pluma/integrations/`](https://github.com/ivaylogb/pluma/tree/main/src/pluma/integrations).
 
-**agent_revision.** If the Braintrust experiment metadata includes a git SHA tagging which version of the agent was scored, the converter resolves it and attaches it to the failing-eval container. agent-researcher then cites the right revision when proposing file:line edits — no drift between "experiment ran on commit X" and "diagnostic agent reads commit HEAD."
+---
 
-**Optional pre-clustering.** Most Braintrust experiments have either one systemic failure (one mechanism, many rows manifesting it) or scattershot noise (many independent mechanisms, one row each). Running agent-researcher independently on 30 rows that share a root cause wastes 29 model calls. The converter has an optional `--cluster` pre-pass that collapses equivalent failures (by scorer signature and expected/predicted pair) and feeds one row per cluster downstream, with cluster size attached.
+## Adapter Shape 
 
-The default invocation:
+- **Pass/fail is decided after fetch, client-side.** Server-side has failing feedback filtering is not durable across the four platforms; the CLI lets you narrow server-side for performance, but the failure decision happens locally against a configurable threshold.
+- **The primary scorer is specified explicitly via `--primary-feedback-key` (or `--scorer` for Braintrust).** No auto-detection from a list of likely names. If omitted, the fallback rule is "any feedback key below threshold means the row is failing."
+- **Output validates against [`failing-eval-container.schema.json`](https://github.com/ivaylogb/agent-diagnosis-spec/blob/main/spec/v0.2/failing-eval-container.schema.json) before the diagnostic agent sees it.** Every adapter ships a golden fixture validated against the schema as part of the test suite.
+- **Source flags are mutually exclusive within a family.** You can combine sources across platforms in one run, but only one experiment per platform.
 
-\`\`\`
-python -m pluma.integrations.braintrust.cli \\
-  --input  experiment.json \\
-  --output failing_evals.json
+## Braintrust
 
-pluma diagnose-agent \\
-  --target-agent your_agent_dir \\
-  --eval-result  failing_evals.json
-\`\`\`
+Reads a Braintrust experiment by ID or name. Pulls runs, feedback, scorers, metadata. Emits `FailingEvalContainer` with `expected` populated from the dataset row and `agent_revision` auto-resolved from experiment metadata if a git SHA is present.
 
-That's two commands. The adapter is also wired directly into Pluma's main CLI, so the same flow collapses to one:
-
-\`\`\`
-pluma diagnose-agent \\
-  --target-agent your_agent_dir \\
-  --braintrust-experiment-id <experiment-id> \\
+```bash
+pluma diagnose-agent \
+  --target-agent ./my-agent \
+  --braintrust-experiment-id <exp-id> \
+  --scorer correctness \
+  --threshold 1.0 \
   --output-file hypotheses.md
-\`\`\`
+```
 
-This pulls the experiment live from Braintrust's API, converts it, and runs agent-researcher in one step. Or `--braintrust-project <name> --latest` for the most recent experiment in a project. The two-step file-mode path stays available for CI environments where the experiment JSON is already on disk.
+Adapter source: [`src/pluma/integrations/braintrust/`](https://github.com/ivaylogb/pluma/tree/main/src/pluma/integrations/braintrust)
 
-## PostHog → integration-watcher
-
-[integration-watcher](https://github.com/ivaylogb/integration-watcher) reads a stream of API call traces and finds patterns in how developer integrations get stuck. It expects JSONL with fields for the timestamp, integration identifier, endpoint, request body summary, response status, error code, and latency.
-
-PostHog captures events as JSON objects with `id`, `event`, `timestamp`, `distinct_id`, and a `properties` bag for everything else. A team instrumenting their API gateway to send events to PostHog typically captures method, path, status, error code, and latency in `properties`.
-
-The converter walks PostHog events and writes integration-watcher's JSONL. `distinct_id` becomes `developer_id`, `properties.method` and `properties.path` get joined into `endpoint`, and so on. A real PostHog export mixes API-call events with autocaptured events like `$pageview` and `$identify`; those convert to traces with empty endpoints and status 0 rather than getting filtered out. Cohort scope downstream in integration-watcher decides what to keep.
-
-\`\`\`
-python -m pluma.integrations.posthog.cli \\
-  --input  posthog_events.json \\
-  --output traces.jsonl
-
-pluma watch \\
-  --traces  traces.jsonl \\
-  --cohort  your_cohort.yaml \\
-  --product your_product_dir
-\`\`\`
-
-## OpenTelemetry → integration-watcher
-
-Anyone exporting OTel-shaped traces from their observability stack (Datadog, Honeycomb, Tempo, Jaeger, Grafana Cloud, AWS X-Ray, Lightstep, Splunk, etc) can feed integration-watcher directly without a designated adapter.
-
-The converter handles three input shapes: OTLP/JSON (the OTLP HTTP/JSON export spec), Jaeger trace exports (the `data` + `spans` structure), and bare OTel span arrays (the minimal "trace data only" export). The format is auto-detected from the file's top-level shape; an explicit format flag is also available.
-
-It also handles both pre-1.21 and post-1.21 HTTP semantic conventions. OTel renamed `http.method` → `http.request.method`, `http.status_code` → `http.response.status_code`, and `http.url` → `http.url.full` in the 1.21 spec. Both variants produce equivalent output records, so an integration-watcher run doesn't have to know what version of OTel produced the source data.
-
-\`\`\`
-python -m pluma.integrations.otel.cli \\
-  --input  otel_traces.json \\
-  --output traces.jsonl
-
-pluma watch \\
-  --traces  traces.jsonl \\
-  --cohort  your_cohort.yaml \\
-  --product your_product_dir
-\`\`\`
-
-In the worked verification in the repo, the test fixture deliberately encodes a "developer stuck in a 401 loop" pattern across 8 consecutive HTTP calls. Running the converter on it and then `integration_watcher.analyze_cohort` on the output reconstructs the pattern as `longest_consecutive_same_error == ("401", 8)`. The diagnostic signal survives the conversion end-to-end.
+| Behavior | What it does |
+|---|---|
+| `--scorer` | Names the primary scorer. If omitted, falls back to "any sub-threshold key fails the row." |
+| `--threshold` | Failure threshold for the primary scorer. Default 1.0 (anything less than perfect counts as failing). |
+| `score_band` | LOW/MEDIUM/HIGH band computed from the raw score using configurable thresholds. Both raw `score` and `score_band` are emitted. |
+| `scorer_signature` | Short hash of scorer metadata (name + version + evaluator model). Distinguishes "same name, different implementation" when grouping across experiments. |
+| `agent_revision` | Auto-resolved from `experiment.metadata.git_sha` or `run.extra.git_sha`. Overridable via `--agent-revision`. |
 
 ## LangSmith
 
-LangSmith runs are shaped similarly to Braintrust experiments — the same input/expected/output/feedback primitives, plus richer run-tree structure for multi-step agents. That adaptor will be added here soon with the latest updates.
+Two workflows supported through two CLI entry points sharing internals.
 
-## A public input contract
+**Workflow A — Dataset-Experiment.** Reads from `client.evaluate(...)` experiments. Each run aligns to an Example with reference outputs; `expected` populates from `read_example(reference_example_id).outputs`.
 
-The diagnostic tools each consume a specific input shape: failing-eval scenarios for agent-researcher, funnel + dropoff data for funnel-researcher, trace cohorts for integration-watcher. Until recently those shapes were implicit in the tools' loader code — anyone writing a new adapter had to read the Python source to figure out what to emit. v0.2 of [agent-diagnosis-spec](https://github.com/ivaylogb/agent-diagnosis-spec) lifts the first of those input contracts (the failing-eval scenario shape) into a public JSON Schema. `FailingEval` and `FailingEvalContainer` are now documented; adapters can target a documented contract rather than reverse-engineer the loader. The other two input contracts (FunnelDropoff for funnel-researcher, TraceCohort for integration-watcher) are named in the spec's roadmap and lifted in a future release when there are multiple adapter implementations to validate the shape against.
+```bash
+pluma diagnose-agent \
+  --target-agent ./my-agent \
+  --langsmith-experiment-id <tracing-session-id> \
+  --primary-feedback-key correctness \
+  --threshold 1.0 \
+  --output-file hypotheses.md
+```
 
-## In CI and in Claude Code
+**Workflow B — Project-traced production.** Reads from a Project with no experiment boundary. Filters via LangSmith's `and(...)`/`or(...)`-wrapped filter DSL. Reference outputs not present unless surfaced via a feedback key.
 
-A [GitHub Action template](https://github.com/ivaylogb/pluma/tree/main/templates/github-action) for teams running Pluma diagnosis in CI. 
+```bash
+pluma diagnose-agent \
+  --target-agent ./my-agent \
+  --langsmith-project <project-name> \
+  --filter 'and(gt(start_time, "2026-04-01T00:00:00Z"), eq(feedback_key, "correctness"))' \
+  --primary-feedback-key correctness \
+  --reference-feedback-key reference_answer \
+  --output-file hypotheses.md
+```
 
-Triggers on Braintrust experiment completion (via webhook), manual workflow dispatch, or a reusable workflow call from a CI job. Posts findings to the PR as a comment or opens an issue.
+Adapter source: [`src/pluma/integrations/langsmith/`](https://github.com/ivaylogb/pluma/tree/main/src/pluma/integrations/langsmith)
 
-A [Claude Code skill](https://github.com/ivaylogb/skill-diagnose-agent-failure), `diagnose-agent-failure`. Clone it into a project's `.claude/skills/` directory or your user-scoped `~/.claude/skills/`, and Claude Code auto-invokes it when the conversation mentions a failing eval. The skill resolves the failure shape, runs `pluma diagnose-agent`, and surfaces findings inline without applying edits or re-running the eval silently.
+| Behavior | What it does |
+|---|---|
+| `--primary-feedback-key` | Names the primary scorer. LangSmith does not standardize feedback key names — evaluator implementations choose their own. If omitted, fallback rule applies. |
+| `--reference-feedback-key` | Workflow B only. Treats a named feedback key's value as the expected output for the row. |
+| `--filter` | LangSmith filter DSL, passed through verbatim. Optional narrowing; never the failure decision. |
+| `--max-tree-depth` | Maximum depth the run-tree walker descends per failing run. Default 4. |
+| `--max-total-nodes` | Global node budget across the subtree. When exceeded, error-bearing paths are prioritized; sibling leaves drop before ancestor paths. Default 50. |
+| `--agent-revision` | Required to populate the field. No auto-resolution (LangSmith has no equivalent convention). |
 
-All adapters live at [pluma](https://github.com/ivaylogb/pluma) under `src/pluma/integrations/`
+The run-tree walker is the load-bearing piece for LangGraph agents producing deep call graphs. Without the global budget, ten failing runs with twenty child calls per turn produces ~1000 nodes in the diagnostic prompt.
+
+## OpenTelemetry
+
+Reads OTLP-encoded trace bundles. OTel has no native pass/fail or score concept; the adapter applies a configurable convention.
+
+```bash
+pluma diagnose-agent \
+  --target-agent ./my-agent \
+  --otel-trace-bundle ./traces.otlp \
+  --service-filter my-agent-service \
+  --output-file hypotheses.md
+```
+
+Adapter source: [`src/pluma/integrations/otel/`](https://github.com/ivaylogb/pluma/tree/main/src/pluma/integrations/otel)
+
+| Behavior | What it does |
+|---|---|
+| Default failure rule | `span.status.code = ERROR` counts as failing. Span attribute `gen_ai.evaluation.score` below threshold counts as failing. Both rules configurable per-deployment. |
+| `--service-filter` | Scopes which service's spans count as the agent. Prevents multi-service traces from producing noisy diagnostics. |
+| proto3-strict patch | The official Python OTel SDK omits zero-valued integer fields on serialization, which proto3-strict parsers reject. The adapter handles this transparently. Documented at the top of the parser. |
+
+## PostHog
+
+Reads PostHog's event export. Groups events by conversation/run ID. Applies a YAML mapping that translates events to `FailingEval` rows.
+
+```bash
+pluma diagnose-agent \
+  --target-agent ./my-agent \
+  --posthog-event-export ./events.jsonl \
+  --posthog-mapping ./posthog-mapping.yaml \
+  --output-file hypotheses.md
+```
+
+Adapter source: [`src/pluma/integrations/posthog/`](https://github.com/ivaylogb/pluma/tree/main/src/pluma/integrations/posthog)
+
+| Behavior | What it does |
+|---|---|
+| Event mapping | YAML file. Names which events count as feedback (positive/negative/correction), how they translate to `passed: bool`, what the score is. Different teams instrument PostHog differently — the mapping is the integration surface. |
+| Reference mapping shipped | `posthog-mapping.example.yaml` in the repo documents the conventions. Copy, edit, point at it. |
+| Conversation grouping | Events with the same `conversation_id` collapse to one `FailingEval` row. The final feedback event in the conversation determines `passed`. |
+
+## Combining sources
+
+A single diagnostic run can pull from multiple platforms. The diagnostic agent receives the union and reasons across them.
+
+```bash
+pluma diagnose-agent \
+  --target-agent ./my-agent \
+  --braintrust-experiment-id <exp-id> \
+  --langsmith-project <project-name> \
+  --otel-trace-bundle ./traces.otlp \
+  --output-file hypotheses.md
+```
+
+This is the case where the adapter pattern earns its keep: a team has Braintrust experiments for offline eval, LangSmith for online traces, and OTel from their own instrumentation. The diagnostic agent reads all three, groups by `agent_revision` and `scenario_id` where possible, and produces a single set of hypotheses.
+
+## Related repos
+
+- [pluma](https://github.com/ivaylogb/pluma) — the orchestrator and CLI. All four adapters live here.
+- [agent-diagnosis-spec](https://github.com/ivaylogb/agent-diagnosis-spec) — the v0.2 schema every adapter targets.
+- [agent-researcher](https://github.com/ivaylogb/agent-researcher) — the diagnostic agent that consumes the unified output.
+- [integration-watcher](https://github.com/ivaylogb/integration-watcher) — separate agent for cohort-level integration patterns, reads the same `FailingEvalContainer`.
+
+If you're connecting your own platform, the [adapter directory](https://github.com/ivaylogb/pluma/tree/main/src/pluma/integrations) has four worked examples and the schema spec is short.

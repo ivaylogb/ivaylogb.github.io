@@ -105,12 +105,8 @@ Full worked example, including the synthesized inputs, the run outputs, and the 
 
 ## Plugging it into your existing stack
 
-The tools provide adapters for platfrom-specific data formats.
 
-The tools don't make assumptions about where their inputs come from. Adapters bridge platform-specific data formats into the shapes the tools consume. Three are in place: 
-Braintrust experiments → `agent-researcher`
-PostHog event exports → `integration-watcher`
-OpenTelemetry trace exports → `integration-watcher`
+The tools don't make assumptions about where their inputs come from. Adapters bridge platform-specific data formats into the shapes the tools consume. There's a [separate post on the adapters](https://ivaylogb.github.io/posts/plugging-diagnostic-stack-into-braintrust-and-posthog/) covering Braintrust, LangSmith, OpenTelemetry, and PostHog. All four live in [pluma](https://github.com/ivaylogb/pluma) under `src/pluma/integrations/`. A single `pluma diagnose-agent` run can pull from any combination of them.
 
 The OTel adapter handles OTLP/JSON, Jaeger, and bare span arrays, anyone exporting OTel from Datadog, Honeycomb, Tempo, Grafana Cloud, X-Ray, Lightstep, or Splunk can use.  There's a [separate post](https://ivaylogb.github.io/posts/plugging-diagnostic-stack-into-braintrust-and-posthog/) with the details on what each adapter does and how to install it. 
 
