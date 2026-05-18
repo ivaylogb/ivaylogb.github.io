@@ -13,7 +13,7 @@ description: A tool that leverages the Claude Platform and ecosystem, the analyt
 
 The most valuable experiments are always the ones that help you uncover something unexpected, not the ones that confirm your hypothesis. When your user base covers a broad set of segments with different goals, an improvement for one user could be detrimental to another. For example, cross-sell offers for savings products can feel predatory for a stressed out user trying to make ends meet, but could be helpful for another when trying to improve their finances.
 
-The problem is, you only discover these surprises after weeks of running a real experiment with real users. By then, the damage to trust, conversion, and revenue has already happened. I wanted to surface these unexpected user perspectives before committing a single user to the test. 
+The problem is, you only discover these surprises after weeks of running a real experiment with real users. By then, the damage to trust, conversion, and revenue has already happened. I wanted to surface these unexpected user perspectives before committing a single user to the test.
 
 When we redesigned our app experience, I built the Persona Simulator to help us navigate some of the critical changes to major products. We used the tool across 12 teams.
 
@@ -23,23 +23,27 @@ The biggest value add was in the effort in grounding the simulator in realistic 
 
 ---
 
-## How it works 
+## How it works
 
-There are two possibilities: 
+There are two possibilities:
 
-### (1) a net new experience that you'd like to explore. 
+### (1) a net new experience that you'd like to explore.
 
 You want to understand how will this land with different users, how will they engage, what will they think of various components, whether it makes sense to them, etc.
 
-### (2) a change in an existing experience 
+### (2) a change in an existing experience
 
 i.e. a redesign, feature update, etc, with some specific goal in mind around either changing a target behavior or outcome, or changing something fundamental like perception or overall usability
 
 The simulator allows for both. You can add a single scenario (net new) or two (control vs treatment).
 Add the Figma flows directly (or use text to describe if you don't already have a prototype), select a user segment profile, type the questions you want answered, and optionally set a conversion target. Two minutes later, you get a structured analysis grounded in your company's own data.
 
+<details>
+<summary>View: Defining scenarios and target user, with focus areas for feedback</summary>
+
 ![Defining scenarios and target user, with focus areas for feedback](/assets/persona-simulator/basic_input2.png)
 
+</details>
 
 The results include the following:
 - A **verdict** with risk level and headline finding
@@ -49,25 +53,64 @@ The results include the following:
 - **Recommendations** — ranked by priority and effort, each citing the evidence
 - A **design system audit** — every component checked against the org's component libraries
 
-<img src="/assets/persona-simulator/xs_results.png" alt="Results Dashboard" class="zoomable"/>
-<img src="/assets/persona-simulator/xs_predictions_questions.png" alt="Predictions By Question" class="zoomable"/>
-<img src="/assets/persona-simulator/xs_behavior_walk.png" alt="Simulated Behavior Walk" class="zoomable"/>
-<img src="/assets/persona-simulator/xs_conversion_impact.png" alt="Impact to Conversion" class="zoomable"/>
-<img src="/assets/persona-simulator/recs.png" alt="Recommendations" class="zoomable"/>
-<img src="/assets/persona-simulator/xs_risks.png" alt="Risks and Guardrails" class="zoomable"/>
-<img src="/assets/persona-simulator/design_audit_full.png" alt="Design Audit" class="zoomable"/>
+<details>
+<summary>View: Results Dashboard</summary>
 
+![Results Dashboard](/assets/persona-simulator/xs_results.png)
+
+</details>
+
+<details>
+<summary>View: Predictions By Question</summary>
+
+![Predictions By Question](/assets/persona-simulator/xs_predictions_questions.png)
+
+</details>
+
+<details>
+<summary>View: Simulated Behavior Walk</summary>
+
+![Simulated Behavior Walk](/assets/persona-simulator/xs_behavior_walk.png)
+
+</details>
+
+<details>
+<summary>View: Impact to Conversion</summary>
+
+![Impact to Conversion](/assets/persona-simulator/xs_conversion_impact.png)
+
+</details>
+
+<details>
+<summary>View: Recommendations</summary>
+
+![Recommendations](/assets/persona-simulator/recs.png)
+
+</details>
+
+<details>
+<summary>View: Risks and Guardrails</summary>
+
+![Risks and Guardrails](/assets/persona-simulator/xs_risks.png)
+
+</details>
+
+<details>
+<summary>View: Design Audit</summary>
+
+![Design Audit](/assets/persona-simulator/design_audit_full.png)
+
+</details>
 
 ---
 
 ## Why the predictions aren't generic AI output
 
-Just to be clear, this is not a "have AI review my design" tool. 
-
+Just to be clear, this is not a "have AI review my design" tool.
 
 ### 1. Multimodal input
 
-The simulator fetches the Figma design(s) and turns them into multimoda inputs to Claude. It captures the prototype as images, connects the widgets to the design, reads the visible text, assesses visual hierarchy, identifies which elements are prominent vs subtle, and notices things like a partially cut-off icon or a label change that the underlying component metadata doesn't capture (important because Figma layer names can lie).
+The simulator fetches the Figma design(s) and turns them into multimodal inputs to Claude. It captures the prototype as images, connects the widgets to the design, reads the visible text, assesses visual hierarchy, identifies which elements are prominent vs subtle, and notices things like a partially cut-off icon or a label change that the underlying component metadata doesn't capture (important because Figma layer names can lie).
 
 - The **screenshot** is what the customer sees (primary)
 - The **widget metadata** is the engineer's map for connecting visual elements to analytics data (secondary)
@@ -75,20 +118,24 @@ The simulator fetches the Figma design(s) and turns them into multimoda inputs t
 
 The simulator thinks at all three layers but communicates at the screenshot layer. Predictions read like a human user-research finding rather than a structured data dump.
 
+<details>
+<summary>View: Control versus treatment Figma designs side-by-side as the simulator sees them</summary>
+
 ![Control versus treatment Figma designs side-by-side as the simulator sees them](/assets/persona-simulator/Figmas2.png)
 
+</details>
 
 ### 2. Combined signals
 
-Important grounding of behavior comes from the qualitiative and quantiative inputs available
+Important grounding of behavior comes from the qualitative and quantitative inputs available
 
-**Click data + research patterns + visual analysis.** 
+**Click data + research patterns + visual analysis.**
 The balance widget has the highest tap rate on the homepage. Research shows 62.3% of late-debt users tap the credit card block first by label recognition. The screenshot shows the treatment replaced the explicit "Cartão de crédito" header with a compact modular card that contains the amount but removes the navigation affordances. Combining these three produces a recognition-failure prediction that none of them generates alone.
 
-**Past experiment outcomes + current design + strategy rules.** 
+**Past experiment outcomes + current design + strategy rules.**
 A prior cross-sell visibility experiment had to be rolled back because +72% visibility produced 0% conversion lift and negative downstream impact. A separate experiment showed that *reducing* cross-sell dominance increased click-through by ~50%. The current treatment adds existing cross-sell surfaces to a screen designed for a user whose only goal is to pay their bill, directly contradicting both historical learnings and the official homepage placement guidelines.
 
-**Emotional state modeling + conversion funnels.** 
+**Emotional state modeling + conversion funnels.**
 The behavioral walkthrough tracks the user's emotional progression: comfortable → hesitant → confused → frustrated. At each step it estimates time spent against the user's scroll-patience parameter. When patience exhausts, the user either abandons or falls back to a secondary path. The primary path converts at ~72%; the secondary at ~23%. The simulator goes beyond "the user will be frustrated" and predicts "frustration at step 6 will redirect ~35% of users from a 72% path to a 23% path, resulting in a -20-35% net impact on bill payment initiation from home."
 
 ### 3. Calibrated confidence: every prediction tells you how grounded it is
@@ -99,8 +146,12 @@ If you toggle off the past-experiments source, the confidence drops and the grou
 
 Why this matters: it means a reviewer can tell at a glance which predictions are anchored in real measurements and which are extrapolated reasoning, allowing the reviewer to decide how much to weigh in the launch decision.
 
-<img src="/assets/persona-simulator/data_sources.png" alt="Data sources panel showing 10 of 11 sources active with 93% confidence score and weighted source cards" class="zoomable"/>
+<details>
+<summary>View: Data sources panel showing 10 of 11 sources active with 93% confidence score</summary>
 
+![Data sources panel showing 10 of 11 sources active with 93% confidence score and weighted source cards](/assets/persona-simulator/data_sources.png)
+
+</details>
 
 ---
 
@@ -108,22 +159,22 @@ Why this matters: it means a reviewer can tell at a glance which predictions are
 
 Every prediction traces to a specific source. Here's what's wired in and why each one earns its place.
 
-**past experiment outcomes from Slack.** 
-Via the Slack MCP, the simulator pulls experiment decision threads from a channel where every shipped experiment is reviewed. Each one is a structured with hypothesis, treatment description, outcome metrics with statistical significance flags, organizational reactions (including the contentious debates), and synthesized learnings. This is the strongest signal: if someone tried something similar before, the outcome is the best predictor of what will happen again.
+**Past experiment outcomes from Slack.**
+Via the Slack MCP, the simulator pulls experiment decision threads from a channel where every shipped experiment is reviewed. Each one is structured with hypothesis, treatment description, outcome metrics with statistical significance flags, organizational reactions (including the contentious debates), and synthesized learnings. This is the strongest signal: if someone tried something similar before, the outcome is the best predictor of what will happen again.
 
-**Behavioral analytics from the warehouse.** 
+**Behavioral analytics from the warehouse.**
 Via the Databricks SQL MCP, the simulator queries widget interaction metrics aggregated across millions of users, ie tap rates by widget and segment, section engagement curves, homepage request volumes by income segment, cross-sell impression data. These baselines calibrate prediction magnitude. When the simulator says "-20 to -35% on first-tap CC rate," it derives this from measured baselines combined with position-displacement data from prior experiments.
 
-**User research patterns.** 
+**User research patterns.**
 Synthesized rules from Maze testing rounds and qualitative research, each with a confidence level and a source citation. *"Late-debt users prioritize CC content with <10% attention to cross-sell." "Position determines discovery." "Low-digital-sophistication users rely on label-matching rather than spatial memory."*
 
-**strategy rules from the official placement RFC.** 
+**Strategy rules from the official placement RFC.**
 Via the Glean MCP, fully engrain possible configurations, rules, constraints for product surface areas. Every recommendation is validated against these. The simulator won't suggest impossible configurations.
 
-**Post-click conversion funnel data.** 
+**Post-click conversion funnel data.**
 When connected, this transforms perception predictions into quantified conversion impact, which shows exactly which paths lose traffic and which paths absorb it.
 
-**Figma design system via Claude Design.** 
+**Figma design system via Claude Design.**
 Via the Figma MCP, the simulator queries the design system *during each run*: checking component libraries, design tokens, variant availability, and deprecated components. Claude decides what to look up based on the user profile and the visual analysis. The tool calls aren't hardcoded.
 
 ---
@@ -138,8 +189,12 @@ The simulator automatically audits every component in the treatment against the 
 
 For the test design: 11 approved components, 3 custom, 2 deprecated, 4 missing state variants. The critical finding — the credit card widget exists with 7 variants, but the delinquent/overdue state variant isn't being used. A design system gap directly causing a user experience failure for the exact segment most affected.
 
-<img src="/assets/persona-simulator/design_audit_full.png" alt="Design Audit" class="zoomable"/>
+<details>
+<summary>View: Design Audit (full)</summary>
 
+![Design Audit](/assets/persona-simulator/design_audit_full.png)
+
+</details>
 
 ### Generate the fix in Figma
 
@@ -149,7 +204,12 @@ For the top recommendation ("add an explicit overdue label to the CC widget"), C
 
 The designer gets Figma frames to refine, not text descriptions to interpret.
 
-![Generated variant frames in Figma implementing the simulator's recommendations alongside the original treatment](/assets/persona-simulator/variants.png) 
+<details>
+<summary>View: Generated variant frames in Figma</summary>
+
+![Generated variant frames in Figma implementing the simulator's recommendations alongside the original treatment](/assets/persona-simulator/variants.png)
+
+</details>
 
 ### Re-simulate to verify
 
@@ -163,20 +223,24 @@ The prediction improved. Risk dropped from HIGH to MEDIUM. Conversion impact mov
 
 ## Conversion impact
 
-The simulator's most useful output for an experiment owner is the analysis the simulator provides about the experience itslef.
+The simulator's most useful output for an experiment owner is the analysis the simulator provides about the experience itself.
 
-**A predicted rate change with a causal chain.** 
-Offers net inpact, ie "down 20%", as well as a direct chain of events: (1) explicit label removal → (2) late-debt user can't pattern-match the CC widget → (3) first-tap on CC content drops → (4) users with low scroll patience who fail first-tap don't recover → (5) session abandonment before payment initiation increases.
+**A predicted rate change with a causal chain.**
+Offers net impact, ie "down 20%", as well as a direct chain of events: (1) explicit label removal → (2) late-debt user can't pattern-match the CC widget → (3) first-tap on CC content drops → (4) users with low scroll patience who fail first-tap don't recover → (5) session abandonment before payment initiation increases.
 
-**Helping and hindering elements.** 
+**Helping and hindering elements.**
 A two-column layout showing what pushes conversion up (the "Pagar" inline action sits prominently above the fold; the CC card appears higher in treatment than control) versus what pushes it down (label removal, cross-sell competition, unfamiliar header chrome).
 
 **Affected entrypoints.** A table predicting changes per conversion path: CC widget → CC dashboard → Pay Area; Pagar inline → barcode payment; alternative routes that absorb displaced traffic at lower conversion rates.
 
 **Guardrail metrics to instrument.** Specific metrics with thresholds: barcode payment funnel entries from home, credit card delinquent widget impressions and click rate, time-to-first-tap on CC content for the late-debt segment, lending revenue, contact rate and NPS for the affected cohort.
 
+<details>
+<summary>View: Conversion impact panel</summary>
+
 ![Conversion impact panel with predicted rate change, causal chain, and helping versus hindering elements](/assets/persona-simulator/xs_conversion_impact.png)
 
+</details>
 
 This is what turns a design review into a pre-experiment planning artifact. You know what to monitor, what thresholds to set, and what rollback triggers to define — before a single user enters the test.
 
@@ -192,7 +256,7 @@ This was built over a weekend using Claude Code, orchestrating across seven inte
 - **Glean MCP** — discovered and ingested strategy RFCs, RACI guidelines, research docs
 - **Confluence and Notion MCP** — design documentation, experiment tracking
 - **Google Drive MCP** — strategy and planning documents
-- **Anthropic API** — Claude API for synthesizing past user behavior from data and predicting future behavior 
+- **Anthropic API** — Claude API for synthesizing past user behavior from data and predicting future behavior
 
 Custom slash commands keep the data fresh. `/project:refresh-data` re-queries all warehouse tables and pulls new experiments from Slack. The UI shows staleness badges — data older than 7 days is flagged.
 
@@ -201,15 +265,31 @@ The frontend is React + Vite + TypeScript. The prediction engine calls Claude Op
 One person, one weekend, Claude Code as the orchestrator. The same pattern works for any domain where institutional knowledge is scattered across systems and never gets synthesized against a specific decision.
 
 ---
+
 ## From single user to portfolio impact view
 
 The next iteration of the analysis was a broader view of impact. Imagine running a full launch simulation across a larger set of users. The tool offers the option to expand simulation across segments and compare outcomes across user groups for broader coverage.
 
+<details>
+<summary>View: Overall Impact By Segment</summary>
 
 ![Overall Impact By Segment](/assets/persona-simulator/lr_impact_segment.png)
 
-<img src="/assets/persona-simulator/heat.png" alt="Segment View" class="zoomable"/>
-<img src="/assets/persona-simulator/total_recs.png" alt="Recommendations and Guardrails" class="zoomable"/>
+</details>
+
+<details>
+<summary>View: Segment View (heatmap)</summary>
+
+![Segment View](/assets/persona-simulator/heat.png)
+
+</details>
+
+<details>
+<summary>View: Recommendations and Guardrails</summary>
+
+![Recommendations and Guardrails](/assets/persona-simulator/total_recs.png)
+
+</details>
 
 You get a single view that shows you what works universally (parts of change that lift conversion regardless of impact), what works for some (ie segment specific wins, with breakdown risks), and what breaks (segment-specific harm). This is the view that allows the team to iterate on a roll-out plan.
 
@@ -240,6 +320,3 @@ The predict → generate → verify loop, run across segments in parallel. Gener
 **Bound your recommendations.** Ingest your strategy guidelines and organizational constraints. Unbounded AI advice is noise. Bounded recommendations that cite evidence and respect structural rules are actionable.
 
 **Close the loop.** Analysis is a report. Analysis → fix → verification is a workflow. The moment your tool can create the solution it recommends *and* verify that the solution works, it changes how teams make decisions.
-
----
-
