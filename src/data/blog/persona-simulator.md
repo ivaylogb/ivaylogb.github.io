@@ -19,7 +19,8 @@ When we redesigned our app experience, I built the Persona Simulator to help us 
 
 While this doesn't replace traditional A/B testing, user research, and other forms of analysis, it helped us catch many critical issues before any users ever saw it. It helped us understand how to personalize specific experiences either by user segment, use case, or some other context about why a given user was arriving on a particular flow. And it helped provide new perspectives on how experiences were actually landing, which can have significant variance across users.
 
-The biggest value add was in the effort in grounding the simulator in realistic representations of users, capturing expected behavior. The rest of this blog details the inner workings of the tool.
+The rest of this blog details the inner workings of the tool.
+
 
 ---
 
@@ -104,9 +105,9 @@ The results include the following:
 
 ---
 
-## Why the predictions aren't generic AI output
+## Grounding the system
 
-Just to be clear, this is not a "have AI review my design" tool.
+The biggest value-add here is grounding the simulation to a realistic representation of a particular user profile, and having it behave as the user would. 
 
 ### 1. Multimodal input
 
