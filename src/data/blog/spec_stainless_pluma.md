@@ -1,15 +1,16 @@
 ---
 author: Ivaylo Bahtchevanov
 pubDatetime: 2026-05-16T10:00:00Z
-title: Spec design to automate shipiing: from OpenAPI to SDK to MC
+title: "Spec design to automate shipping: from OpenAPI to SDK to MCP"
 slug: spec-stainless
 featured: true
 draft: false
 tags: []
+description: "Used pluma's OpenAPI spec to generate a Python SDK, TypeScript SDK, Go SDK, MCP server, and docs site via Stainless. The description fields in the spec become docstrings, JSDoc, Go comments, and the tool descriptions agents read at runtime."
 ---
 I built [pluma](https://github.com/ivaylogb/pluma) and used its OpenAPI spec to generate five things with Stainless: a Python SDK, a TypeScript SDK, a Go SDK, an MCP server, and a docs site. 
 
-The `description` fields in the spec were the key drivers in Stainless's generation pipeline and became the Python docstrings, TypeScript JSDoc, Go comments, and the tool descriptions agents read through the MCP server. Each text translated into workflows in four places, which changed the disciplione of I needed to write. Stainless made it possible for a spec with clean SDKs and text that directly translates to runtime.
+The `description` fields in the spec were the key drivers in Stainless's generation pipeline and became the Python docstrings, TypeScript JSDoc, Go comments, and the tool descriptions agents read through the MCP server. Each text translated into workflows in four places, which changed the discipline of what I needed to write. Stainless made it possible for a spec with clean SDKs and text that directly translates to runtime.
 
 ## What the spec describes
 
@@ -167,8 +168,8 @@ When the tools ship v0.2, every consumer (IDEs, agents, docs) gets the upgrade a
 ## Where else is this typically useful? 
 
 - Versioned APIs with partial roll-outs: any team shipping v1 -> v2 where some endpoints/fields land before others
-- Feature flags exposed at APi layer: when a field's behavior depends on the user's plan tier or flag
-- Depcrecation paths: "deprecated in v3, removed in v4, use new_field instead"
+- Feature flags exposed at API layer: when a field's behavior depends on the user's plan tier or flag
+- Deprecation paths: "deprecated in v3, removed in v4, use new_field instead"
 - Multi-team APIs where one team owns spec and another consumes: platform teams ship the spec, while mobile/web/user-facing/internal agents generate from it
-- Agent-facing tool docs: as more APIs get MCP servers, the spec's description field becomes the agent context. Inacurrate or partial descriptions impact agent performance.
--Compliance-sensitive APIs: GDPR-impaced fields, SOC2-attested, live in schema 
+- Agent-facing tool docs: as more APIs get MCP servers, the spec's description field becomes the agent context. Inaccurate or partial descriptions impact agent performance.
+- Compliance-sensitive APIs: GDPR-impacted fields, SOC2-attested, live in schema 
