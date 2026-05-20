@@ -57,42 +57,49 @@ The results include the following:
 <details>
 <summary>View: Results Dashboard</summary>
 
-![Results Dashboard](/assets/persona-simulator/xs_results.png)
+![Results Dashboard](/assets/persona-simulator/new_res.png)
+
+</details>
+
+<details>
+<summary>View: Exec Summary </summary>
+
+![Results Dashboard](/assets/persona-simulator/new_exec.png)
 
 </details>
 
 <details>
 <summary>View: Predictions By Question</summary>
 
-![Predictions By Question](/assets/persona-simulator/xs_predictions_questions.png)
+![Predictions By Question](/assets/persona-simulator/new_predictions.png)
 
 </details>
 
 <details>
 <summary>View: Simulated Behavior Walk</summary>
 
-![Simulated Behavior Walk](/assets/persona-simulator/xs_behavior_walk.png)
+![Simulated Behavior Walk](/assets/persona-simulator/new_behavior_walk.png)
 
 </details>
 
 <details>
 <summary>View: Impact to Conversion</summary>
 
-![Impact to Conversion](/assets/persona-simulator/xs_conversion_impact.png)
+![Impact to Conversion](/assets/persona-simulator/new_conversion.png)
 
 </details>
 
 <details>
 <summary>View: Recommendations</summary>
 
-![Recommendations](/assets/persona-simulator/recs.png)
+![Recommendations](/assets/persona-simulator/new_recommend.png)
 
 </details>
 
 <details>
 <summary>View: Risks and Guardrails</summary>
 
-![Risks and Guardrails](/assets/persona-simulator/xs_risks.png)
+![Risks and Guardrails](/assets/persona-simulator/new_risks.png)
 
 </details>
 
@@ -239,7 +246,7 @@ A two-column layout showing what pushes conversion up (the "Pagar" inline action
 <details>
 <summary>View: Conversion impact panel</summary>
 
-![Conversion impact panel with predicted rate change, causal chain, and helping versus hindering elements](/assets/persona-simulator/xs_conversion_impact.png)
+![Conversion impact panel with predicted rate change, causal chain, and helping versus hindering elements](/assets/persona-simulator/new_conversion.png)
 
 </details>
 
