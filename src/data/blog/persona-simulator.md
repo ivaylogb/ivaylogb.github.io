@@ -58,62 +58,6 @@ The results include the following:
 ![Overview Flow](/assets/persona-simulator/newflow.png)
 
 
-<details>
-<summary>View: Results Dashboard</summary>
-
-![Results Dashboard](/assets/persona-simulator/new_res.png)
-
-</details>
-
-<details>
-<summary>View: Exec Summary </summary>
-
-![Results Dashboard](/assets/persona-simulator/new_exec.png)
-
-</details>
-
-<details>
-<summary>View: Predictions By Question</summary>
-
-![Predictions By Question](/assets/persona-simulator/new_predictions.png)
-
-</details>
-
-<details>
-<summary>View: Simulated Behavior Walk</summary>
-
-![Simulated Behavior Walk](/assets/persona-simulator/new_behavior_walk.png)
-
-</details>
-
-<details>
-<summary>View: Impact to Conversion</summary>
-
-![Impact to Conversion](/assets/persona-simulator/new_conversion.png)
-
-</details>
-
-<details>
-<summary>View: Recommendations</summary>
-
-![Recommendations](/assets/persona-simulator/new_recommend.png)
-
-</details>
-
-<details>
-<summary>View: Risks and Guardrails</summary>
-
-![Risks and Guardrails](/assets/persona-simulator/new_risks.png)
-
-</details>
-
-<details>
-<summary>View: Design Audit</summary>
-
-![Design Audit](/assets/persona-simulator/design_audit_full.png)
-
-</details>
-
 ---
 
 ## Grounding the system
@@ -256,6 +200,67 @@ A two-column layout showing what pushes conversion up (the "Pagar" inline action
 
 This is what turns a design review into a pre-experiment planning artifact. You know what to monitor, what thresholds to set, and what rollback triggers to define — before a single user enters the test.
 
+--- 
+
+## Results Overview
+
+The following are the simulations results:
+
+<details>
+<summary>View: Results Dashboard</summary>
+
+![Results Dashboard](/assets/persona-simulator/new_res.png)
+
+</details>
+
+<details>
+<summary>View: Exec Summary </summary>
+
+![Results Dashboard](/assets/persona-simulator/new_exec.png)
+
+</details>
+
+<details>
+<summary>View: Predictions By Question</summary>
+
+![Predictions By Question](/assets/persona-simulator/new_predictions.png)
+
+</details>
+
+<details>
+<summary>View: Simulated Behavior Walk</summary>
+
+![Simulated Behavior Walk](/assets/persona-simulator/new_behavior_walk.png)
+
+</details>
+
+<details>
+<summary>View: Impact to Conversion</summary>
+
+![Impact to Conversion](/assets/persona-simulator/new_conversion.png)
+
+</details>
+
+<details>
+<summary>View: Recommendations</summary>
+
+![Recommendations](/assets/persona-simulator/new_recommend.png)
+
+</details>
+
+<details>
+<summary>View: Risks and Guardrails</summary>
+
+![Risks and Guardrails](/assets/persona-simulator/new_risks.png)
+
+</details>
+
+<details>
+<summary>View: Design Audit</summary>
+
+![Design Audit](/assets/persona-simulator/design_audit_full.png)
+
+</details>
 ---
 
 ## How it was built
