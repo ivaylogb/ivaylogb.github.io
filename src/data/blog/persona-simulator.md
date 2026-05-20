@@ -54,6 +54,10 @@ The results include the following:
 - **Recommendations** — ranked by priority and effort, each citing the evidence
 - A **design system audit** — every component checked against the org's component libraries
 
+
+![Overview Flow](/assets/persona-simulator/newflow.png)
+
+
 <details>
 <summary>View: Results Dashboard</summary>
 
