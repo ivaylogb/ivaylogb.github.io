@@ -1,6 +1,6 @@
 ---
 author: Ivaylo Bahtchevanov
-pubDatetime: 2026-04-20T10:00:00Z
+pubDatetime: 2026-02-20T10:00:00Z
 title: The shape of your reward function matters more than you think
 slug: reward-shape-matters-alphapo
 featured: true
