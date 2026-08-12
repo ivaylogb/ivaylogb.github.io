@@ -3,6 +3,10 @@ import Layout from "@/layouts/Layout.astro";
 import Header from "@/components/Header.astro";
 import Footer from "@/components/Footer.astro";
 
+const caseStudies = [
+  { name: "Running an AI SRE on the Claude platform", href: "/assets/docs/ada-ai-sre-case-study.pdf", description: "How I led the architecture and phased rollout of Ada: model routing, safety controls, evals, and adoption of an internal AI SRE across 240 tier-one services." },
+];
+
 const agentProjects = [
   { name: "pluma", href: "https://github.com/ivaylogb/pluma", description: "Orchestrator for the diagnostic tools — agent-researcher, funnel-researcher, integration-watcher. One CLI, cross-tool reports, adapters for Braintrust / PostHog / OpenTelemetry." },
   { name: "agent-engineering", href: "https://github.com/ivaylogb/agent-engineering", description: "Front-door narrative for what shipping production-grade agents looks like. Points at the four kits below and how they fit together." },
@@ -25,6 +29,18 @@ const personalProjects = [
     <section class="pt-12 pb-6 border-b border-border">
       <h1 class="text-3xl font-bold tracking-wide">Projects</h1>
       <p class="mt-4">Things I'm building. Public repos and live demos.</p>
+    </section>
+
+    <section class="pt-12 pb-6 border-b border-border">
+      <h2 class="text-2xl font-semibold tracking-wide">Case Studies</h2>
+      <ul class="mt-4 space-y-4">
+        {caseStudies.map(p => (
+          <li>
+            <a href={p.href} target="_blank" rel="noopener" class="font-semibold text-accent hover:underline">{p.name} (PDF)</a>
+            <p class="mt-1">{p.description}</p>
+          </li>
+        ))}
+      </ul>
     </section>
 
     <section class="pt-12 pb-6 border-b border-border">
