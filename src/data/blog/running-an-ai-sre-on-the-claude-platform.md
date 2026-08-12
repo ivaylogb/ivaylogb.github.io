@@ -53,6 +53,7 @@ description: How we built Ada, the agent that investigates production incidents 
     border: 1px solid var(--border);
     border-radius: 0.75rem;
     background: var(--background);
+    color: var(--foreground);
     font-family: ui-sans-serif, system-ui, sans-serif;
   }
 
@@ -83,6 +84,7 @@ description: How we built Ada, the agent that investigates production incidents 
 
   #article .sre-article .a-eng {
     background: #d97757;
+    color: #1a1a17;
   }
 
   #article .sre-article .tbody {
@@ -179,7 +181,7 @@ description: How we built Ada, the agent that investigates production incidents 
   <text x="372" y="120" text-anchor="middle" font-family="Georgia,serif" font-size="25" font-weight="600" fill="#1a1a17">Triage</text>
   <text x="372" y="146" text-anchor="middle" font-family="-apple-system,'Segoe UI',sans-serif" font-size="13" fill="#6b6b66">Messages API &#8594; typed envelope</text>
   <line x1="278" y1="164" x2="466" y2="164" stroke="#e4e0d6" stroke-width="1"/>
-  <text x="372" y="190" text-anchor="middle" font-family="ui-monospace,Menlo,monospace" font-size="11" letter-spacing="1" fill="#8a857a">runs once · seconds</text>
+  <text x="372" y="190" text-anchor="middle" font-family="ui-monospace,Menlo,monospace" font-size="11" letter-spacing="1" fill="#6b6b66">runs once · seconds</text>
 
   <line x1="498" y1="140" x2="552" y2="140" stroke="#1a1a17" stroke-width="1.5" marker-end="url(#d1k)"/>
   <text x="525" y="128" text-anchor="middle" font-family="ui-monospace,Menlo,monospace" font-size="12" fill="#6b6b66">envelope</text>
@@ -193,13 +195,13 @@ description: How we built Ada, the agent that investigates production incidents 
   <line x1="826" y1="118" x2="880" y2="118" stroke="#1a1a17" stroke-width="1.5" marker-end="url(#d1k)"/>
   <text x="856" y="92" text-anchor="middle" font-family="ui-monospace,Menlo,monospace" font-size="11" fill="#6b6b66"><tspan x="856">rca +</tspan><tspan x="856" dy="14">proposal</tspan></text>
   <line x1="880" y1="170" x2="830" y2="170" stroke="#D97757" stroke-width="1.5" marker-end="url(#d1c)"/>
-  <text x="856" y="188" text-anchor="middle" font-family="ui-monospace,Menlo,monospace" font-size="11" fill="#b45f3f"><tspan x="856">recovery</tspan><tspan x="856" dy="14">signals</tspan></text>
+  <text x="856" y="188" text-anchor="middle" font-family="ui-monospace,Menlo,monospace" font-size="11" fill="#a14e2f"><tspan x="856">recovery</tspan><tspan x="856" dy="14">signals</tspan></text>
 
   <rect x="888" y="70" width="264" height="148" rx="18" fill="#D97757"/>
   <text x="1020" y="120" text-anchor="middle" font-family="Georgia,serif" font-size="25" font-weight="600" fill="#1a1a17">Action plane</text>
   <text x="1020" y="146" text-anchor="middle" font-family="-apple-system,'Segoe UI',sans-serif" font-size="13" fill="#3d2417">dry&#8209;run &#8594; approve &#8594; execute</text>
   <line x1="918" y1="164" x2="1122" y2="164" stroke="#c06342" stroke-width="1"/>
-  <text x="1020" y="190" text-anchor="middle" font-family="ui-monospace,Menlo,monospace" font-size="11" letter-spacing="1" fill="#5a3423">R0&#8211;R2 only · audited</text>
+  <text x="1020" y="190" text-anchor="middle" font-family="ui-monospace,Menlo,monospace" font-size="11" letter-spacing="1" fill="#3d2417">R0&#8211;R2 only · audited</text>
 
   <line x1="372" y1="222" x2="372" y2="316" stroke="#b9b4a9" stroke-width="1.2" stroke-dasharray="3 5"/>
   <line x1="692" y1="222" x2="692" y2="316" stroke="#b9b4a9" stroke-width="1.2" stroke-dasharray="3 5"/>
@@ -298,7 +300,7 @@ envelope = client.messages.create(
   </defs>
 
   <rect x="32" y="64" width="756" height="372" rx="20" fill="#ffffff" stroke="#1a1a17" stroke-width="1.5"/>
-  <text x="60" y="100" font-family="ui-monospace,Menlo,monospace" font-size="12" letter-spacing="1.5" fill="#8a857a">INSIDE THE BANK</text>
+  <text x="60" y="100" font-family="ui-monospace,Menlo,monospace" font-size="12" letter-spacing="1.5" fill="#6b6b66">INSIDE THE BANK</text>
 
   <rect x="60" y="122" width="300" height="84" rx="14" fill="#141412"/>
   <text x="210" y="158" text-anchor="middle" font-family="Georgia,serif" font-size="20" font-weight="600" fill="#ffffff">Agent SDK harness</text>
@@ -325,7 +327,7 @@ envelope = client.messages.create(
   <text x="606" y="306" text-anchor="middle" font-family="-apple-system,'Segoe UI',sans-serif" font-size="12" fill="#3d2417">the only write path</text>
 
   <line x1="846" y1="64" x2="846" y2="436" stroke="#b9b4a9" stroke-width="1.2" stroke-dasharray="4 6"/>
-  <text x="862" y="350" font-family="ui-monospace,Menlo,monospace" font-size="11" letter-spacing="2" fill="#8a857a" text-anchor="middle" transform="rotate(-90 862 350)">RETENTION BOUNDARY</text>
+  <text x="862" y="350" font-family="ui-monospace,Menlo,monospace" font-size="11" letter-spacing="2" fill="#6b6b66" text-anchor="middle" transform="rotate(-90 862 350)">RETENTION BOUNDARY</text>
 
   <rect x="920" y="140" width="288" height="112" rx="18" fill="#141412"/>
   <text x="1064" y="190" text-anchor="middle" font-family="Georgia,serif" font-size="24" font-weight="600" fill="#ffffff">Anthropic</text>
@@ -338,7 +340,7 @@ envelope = client.messages.create(
 
   <line x1="1064" y1="252" x2="1064" y2="314" stroke="#b9b4a9" stroke-width="1.2" stroke-dasharray="3 5"/>
   <rect x="920" y="318" width="288" height="112" rx="18" fill="none" stroke="#b9b4a9" stroke-width="1.5" stroke-dasharray="5 5"/>
-  <text x="944" y="350" font-family="ui-monospace,Menlo,monospace" font-size="11" letter-spacing="1.5" fill="#8a857a">CONDITIONAL</text>
+  <text x="944" y="350" font-family="ui-monospace,Menlo,monospace" font-size="11" letter-spacing="1.5" fill="#6b6b66">CONDITIONAL</text>
   <text x="944" y="378" font-family="Georgia,serif" font-size="18" font-weight="600" fill="#1a1a17">Managed Agents</text>
   <text x="944" y="400" font-family="-apple-system,'Segoe UI',sans-serif" font-size="12" fill="#6b6b66">+ self&#8209;hosted sandbox · when terms fit</text>
 
@@ -347,7 +349,7 @@ envelope = client.messages.create(
 <svg class="m" viewBox="0 0 620 600" role="img" aria-label="Mobile view: everything except inference stays inside the bank">
   <defs><marker id="m2k" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#1a1a17"/></marker></defs>
   <rect x="32" y="14" width="556" height="250" rx="20" fill="#ffffff" stroke="#1a1a17" stroke-width="1.6"/>
-  <text x="58" y="50" font-family="ui-monospace,Menlo,monospace" font-size="14" letter-spacing="1.5" fill="#8a857a">INSIDE THE BANK</text>
+  <text x="58" y="50" font-family="ui-monospace,Menlo,monospace" font-size="14" letter-spacing="1.5" fill="#6b6b66">INSIDE THE BANK</text>
   <text x="58" y="92" font-family="-apple-system,'Segoe UI',sans-serif" font-size="17" fill="#26251f">Agent SDK harness &#183; loop, hooks, permissions</text>
   <text x="58" y="126" font-family="-apple-system,'Segoe UI',sans-serif" font-size="17" fill="#26251f">MCP tools &#183; session files we hold</text>
   <text x="58" y="160" font-family="-apple-system,'Segoe UI',sans-serif" font-size="17" fill="#26251f">incident index &#183; secrets, never in prompts</text>
@@ -360,7 +362,7 @@ envelope = client.messages.create(
   <text x="310" y="374" text-anchor="middle" font-family="Georgia,serif" font-size="26" font-weight="600" fill="#ffffff">Anthropic</text>
   <text x="310" y="404" text-anchor="middle" font-family="-apple-system,'Segoe UI',sans-serif" font-size="17" fill="#c9c4b8">inference only</text>
   <rect x="32" y="452" width="556" height="120" rx="18" fill="none" stroke="#b9b4a9" stroke-width="1.6" stroke-dasharray="5 5"/>
-  <text x="58" y="486" font-family="ui-monospace,Menlo,monospace" font-size="13" letter-spacing="1.5" fill="#8a857a">CONDITIONAL</text>
+  <text x="58" y="486" font-family="ui-monospace,Menlo,monospace" font-size="13" letter-spacing="1.5" fill="#6b6b66">CONDITIONAL</text>
   <text x="58" y="518" font-family="Georgia,serif" font-size="21" font-weight="600" fill="#1a1a17">Managed Agents (beta)</text>
   <text x="58" y="548" font-family="-apple-system,'Segoe UI',sans-serif" font-size="16" fill="#6b6b66">self&#8209;hosted sandbox; when retention terms fit</text>
 </svg>
@@ -406,7 +408,7 @@ async for message in query(prompt=envelope_json, options=options):
 
 <p>Steering needs no extra machinery, because sessions are resumable. The first message carries a <code>session_id</code>, and a follow&#8209;up from the incident thread resumes it with <code>ClaudeAgentOptions(resume=session_id)</code>. The engineer redirects the investigation instead of restarting it, and the session keeps everything it has already read and concluded. It is also why the investigation is one session rather than a fan&#8209;out of subagents: a single accountable hypothesis thread, steerable in one place, with parallelism pushed down into the analysis code. In the thread, that looks like this:</p>
 
-<div class="thread">
+<div class="thread" id="steering-loop-example">
   <div class="msg"><div class="avatar a-bot">SRE</div><div class="tbody"><div class="name">SRE agent <span>14:11</span></div>
   Hypothesis, draft 1: the 14:02 deploy lowered checkout&#8209;svc's memory limit to 2.5Gi while adding a larger in&#8209;process cache. 340 OOMKilled events begin 90 seconds after rollout, heap sits at 94% of the limit, the config diff shows the change, and two prior incidents look similar (INC&#8209;3121, INC&#8209;2984). Full evidence linked.
   <div class="pills"><span class="pill sel">Partially accurate</span><span class="pill">Accurate</span><span class="pill">Incorrect</span><span class="pill">Still investigating</span></div></div></div>
@@ -529,14 +531,14 @@ description: Investigate checkout-svc incidents. Use when an alert names
   <text x="725" y="340" text-anchor="middle" font-family="-apple-system,'Segoe UI',sans-serif" font-size="12.5" fill="#3d2417">new eval case + drafted Skill update</text>
 
   <polyline points="556,320 195,320 195,204" fill="none" stroke="#D97757" stroke-width="1.5" marker-end="url(#d3c)"/>
-  <text x="372" y="306" text-anchor="middle" font-family="ui-monospace,Menlo,monospace" font-size="12" fill="#b45f3f">the next investigation starts smarter</text>
+  <text x="372" y="306" text-anchor="middle" font-family="ui-monospace,Menlo,monospace" font-size="12" fill="#a14e2f">the next investigation starts smarter</text>
 
   <text x="620" y="428" text-anchor="middle" font-family="-apple-system,'Segoe UI',sans-serif" font-size="15" fill="#55534d">No accuracy headline without a verified denominator.</text>
 </svg>
 <svg class="m" viewBox="0 0 620 530" role="img" aria-label="Mobile view: the two-label loop from Slack verdict to verified postmortem to eval case">
   <defs>
     <marker id="m3k" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#1a1a17"/></marker>
-    <marker id="m3c" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#b45f3f"/></marker>
+    <marker id="m3c" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#a14e2f"/></marker>
   </defs>
   <rect x="40" y="14" width="540" height="82" rx="18" fill="#ffffff" stroke="#1a1a17" stroke-width="1.6"/>
   <text x="310" y="48" text-anchor="middle" font-family="Georgia,serif" font-size="24" font-weight="600" fill="#1a1a17">RCA in Slack</text>
@@ -553,7 +555,7 @@ description: Investigate checkout-svc incidents. Use when an alert names
   <rect x="40" y="374" width="540" height="82" rx="18" fill="#D97757"/>
   <text x="310" y="408" text-anchor="middle" font-family="Georgia,serif" font-size="24" font-weight="600" fill="#1a1a17">Reconcile</text>
   <text x="310" y="436" text-anchor="middle" font-family="-apple-system,'Segoe UI',sans-serif" font-size="17" fill="#3d2417">new eval case + drafted Skill update</text>
-  <polyline points="38,415 16,415 16,55 32,55" fill="none" stroke="#b45f3f" stroke-width="1.6" marker-end="url(#m3c)"/>
+  <polyline points="38,415 16,415 16,55 32,55" fill="none" stroke="#a14e2f" stroke-width="1.6" marker-end="url(#m3c)"/>
   <text x="310" y="500" text-anchor="middle" font-family="-apple-system,'Segoe UI',sans-serif" font-size="16" fill="#55534d">Each reconciled pair makes the next investigation start smarter.</text>
 </svg>
 <figcaption>Engineers label the diagnosis in the incident thread while it is live. After the review closes, the verified cause is reconciled against that label, and the pair becomes an eval case plus a drafted Skill update for the owning team.</figcaption>
@@ -591,14 +593,14 @@ description: Investigate checkout-svc incidents. Use when an alert names
     <marker id="d4g" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#b9b4a9"/></marker>
   </defs>
 
-  <text x="60" y="48" font-family="ui-monospace,Menlo,monospace" font-size="12" letter-spacing="1.5" fill="#8a857a">AUTONOMY BY ACTION CLASS</text>
+  <text x="60" y="48" font-family="ui-monospace,Menlo,monospace" font-size="12" letter-spacing="1.5" fill="#6b6b66">AUTONOMY BY ACTION CLASS</text>
   <line x1="60" y1="64" x2="1174" y2="64" stroke="#b9b4a9" stroke-width="1.2" marker-end="url(#d4g)"/>
 
   <rect x="60" y="92" width="240" height="138" rx="16" fill="#ffffff" stroke="#1a1a17" stroke-width="1.5"/>
   <text x="180" y="136" text-anchor="middle" font-family="Georgia,serif" font-size="22" font-weight="600" fill="#1a1a17">Read&#8209;only</text>
   <text x="180" y="160" text-anchor="middle" font-family="-apple-system,'Segoe UI',sans-serif" font-size="12.5" fill="#6b6b66">diagnosis · evidence</text>
   <line x1="88" y1="178" x2="272" y2="178" stroke="#e4e0d6"/>
-  <text x="180" y="204" text-anchor="middle" font-family="ui-monospace,Menlo,monospace" font-size="11" letter-spacing="1" fill="#8a857a">autonomous</text>
+  <text x="180" y="204" text-anchor="middle" font-family="ui-monospace,Menlo,monospace" font-size="11" letter-spacing="1" fill="#6b6b66">autonomous</text>
 
   <line x1="302" y1="160" x2="330" y2="160" stroke="#1a1a17" stroke-width="1.5" marker-end="url(#d4k)"/>
 
@@ -606,7 +608,7 @@ description: Investigate checkout-svc incidents. Use when an alert names
   <text x="456" y="136" text-anchor="middle" font-family="Georgia,serif" font-size="22" font-weight="600" fill="#1a1a17">R0 · Paper</text>
   <text x="456" y="160" text-anchor="middle" font-family="-apple-system,'Segoe UI',sans-serif" font-size="12.5" fill="#6b6b66">summary · ticket · draft PR</text>
   <line x1="364" y1="178" x2="548" y2="178" stroke="#e4e0d6"/>
-  <text x="456" y="204" text-anchor="middle" font-family="ui-monospace,Menlo,monospace" font-size="11" letter-spacing="1" fill="#8a857a">auto, audited</text>
+  <text x="456" y="204" text-anchor="middle" font-family="ui-monospace,Menlo,monospace" font-size="11" letter-spacing="1" fill="#6b6b66">auto, audited</text>
 
   <line x1="578" y1="160" x2="606" y2="160" stroke="#1a1a17" stroke-width="1.5" marker-end="url(#d4k)"/>
 
@@ -614,7 +616,7 @@ description: Investigate checkout-svc incidents. Use when an alert names
   <text x="738" y="136" text-anchor="middle" font-family="Georgia,serif" font-size="22" font-weight="600" fill="#1a1a17">R1 · Reversible</text>
   <text x="738" y="160" text-anchor="middle" font-family="-apple-system,'Segoe UI',sans-serif" font-size="12.5" fill="#6b6b66">restart · scale · merge</text>
   <line x1="640" y1="178" x2="836" y2="178" stroke="#e4e0d6"/>
-  <text x="738" y="204" text-anchor="middle" font-family="ui-monospace,Menlo,monospace" font-size="11" letter-spacing="1" fill="#8a857a">approval · dry run · inverse</text>
+  <text x="738" y="204" text-anchor="middle" font-family="ui-monospace,Menlo,monospace" font-size="11" letter-spacing="1" fill="#6b6b66">approval · dry run · inverse</text>
 
   <line x1="866" y1="160" x2="894" y2="160" stroke="#1a1a17" stroke-width="1.5" marker-end="url(#d4k)"/>
 
@@ -622,20 +624,20 @@ description: Investigate checkout-svc incidents. Use when an alert names
   <text x="1040" y="136" text-anchor="middle" font-family="Georgia,serif" font-size="22" font-weight="600" fill="#1a1a17">R2 · Broad</text>
   <text x="1040" y="160" text-anchor="middle" font-family="-apple-system,'Segoe UI',sans-serif" font-size="12.5" fill="#3d2417">rollback · traffic · config</text>
   <line x1="928" y1="178" x2="1152" y2="178" stroke="#c06342"/>
-  <text x="1040" y="204" text-anchor="middle" font-family="ui-monospace,Menlo,monospace" font-size="11" letter-spacing="1" fill="#5a3423">senior approval · blast radius</text>
+  <text x="1040" y="204" text-anchor="middle" font-family="ui-monospace,Menlo,monospace" font-size="11" letter-spacing="1" fill="#3d2417">senior approval · blast radius</text>
 
-  <text x="60" y="316" font-family="ui-monospace,Menlo,monospace" font-size="12" letter-spacing="1.5" fill="#8a857a">R3 · ABSENT AS TOOLS, BY DESIGN</text>
+  <text x="60" y="316" font-family="ui-monospace,Menlo,monospace" font-size="12" letter-spacing="1.5" fill="#6b6b66">R3 · ABSENT AS TOOLS, BY DESIGN</text>
 
   <rect x="60" y="336" width="300" height="64" rx="12" fill="none" stroke="#b9b4a9" stroke-width="1.5" stroke-dasharray="5 5"/>
-  <text x="210" y="374" text-anchor="middle" font-family="Georgia,serif" font-size="17" fill="#8a857a">ledger mutation</text>
+  <text x="210" y="374" text-anchor="middle" font-family="Georgia,serif" font-size="17" fill="#6b6b66">ledger mutation</text>
   <line x1="76" y1="388" x2="344" y2="348" stroke="#b9b4a9" stroke-width="1.5"/>
 
   <rect x="400" y="336" width="320" height="64" rx="12" fill="none" stroke="#b9b4a9" stroke-width="1.5" stroke-dasharray="5 5"/>
-  <text x="560" y="374" text-anchor="middle" font-family="Georgia,serif" font-size="17" fill="#8a857a">payment execution</text>
+  <text x="560" y="374" text-anchor="middle" font-family="Georgia,serif" font-size="17" fill="#6b6b66">payment execution</text>
   <line x1="416" y1="388" x2="704" y2="348" stroke="#b9b4a9" stroke-width="1.5"/>
 
   <rect x="760" y="336" width="420" height="64" rx="12" fill="none" stroke="#b9b4a9" stroke-width="1.5" stroke-dasharray="5 5"/>
-  <text x="970" y="374" text-anchor="middle" font-family="Georgia,serif" font-size="17" fill="#8a857a">irreversible customer&#8209;data change</text>
+  <text x="970" y="374" text-anchor="middle" font-family="Georgia,serif" font-size="17" fill="#6b6b66">irreversible customer&#8209;data change</text>
   <line x1="776" y1="388" x2="1164" y2="348" stroke="#b9b4a9" stroke-width="1.5"/>
 
   <text x="60" y="442" font-family="-apple-system,'Segoe UI',sans-serif" font-size="13.5" fill="#6b6b66">The list does not shrink as models improve; the agent recommends, and a human executes through existing systems.</text>
@@ -659,11 +661,11 @@ description: Investigate checkout-svc incidents. Use when an alert names
   <rect x="40" y="416" width="540" height="96" rx="18" fill="#D97757"/>
   <text x="310" y="456" text-anchor="middle" font-family="Georgia,serif" font-size="24" font-weight="600" fill="#1a1a17">R2 &#183; Broad</text>
   <text x="310" y="488" text-anchor="middle" font-family="-apple-system,'Segoe UI',sans-serif" font-size="15" fill="#3d2417">rollback &#183; traffic &#183; config &#183; senior approval, blast radius</text>
-  <text x="40" y="566" font-family="ui-monospace,Menlo,monospace" font-size="14" letter-spacing="1.5" fill="#8a857a">R3 &#183; NOT BUILT, BY DESIGN</text>
+  <text x="40" y="566" font-family="ui-monospace,Menlo,monospace" font-size="14" letter-spacing="1.5" fill="#6b6b66">R3 &#183; NOT BUILT, BY DESIGN</text>
   <rect x="40" y="582" width="540" height="132" rx="14" fill="none" stroke="#b9b4a9" stroke-width="1.6" stroke-dasharray="5 5"/>
-  <text x="310" y="620" text-anchor="middle" font-family="Georgia,serif" font-size="19" fill="#8a857a">ledger mutation</text>
-  <text x="310" y="652" text-anchor="middle" font-family="Georgia,serif" font-size="19" fill="#8a857a">payment execution</text>
-  <text x="310" y="684" text-anchor="middle" font-family="Georgia,serif" font-size="19" fill="#8a857a">irreversible customer&#8209;data change</text>
+  <text x="310" y="620" text-anchor="middle" font-family="Georgia,serif" font-size="19" fill="#6b6b66">ledger mutation</text>
+  <text x="310" y="652" text-anchor="middle" font-family="Georgia,serif" font-size="19" fill="#6b6b66">payment execution</text>
+  <text x="310" y="684" text-anchor="middle" font-family="Georgia,serif" font-size="19" fill="#6b6b66">irreversible customer&#8209;data change</text>
   <line x1="56" y1="702" x2="564" y2="594" stroke="#b9b4a9" stroke-width="1.6"/>
   <text x="310" y="748" text-anchor="middle" font-family="-apple-system,'Segoe UI',sans-serif" font-size="15" fill="#6b6b66">The agent recommends; a human executes through existing systems.</text>
 </svg>
@@ -786,7 +788,7 @@ description: Investigate checkout-svc incidents. Use when an alert names
   <text x="814" y="242" text-anchor="middle" font-family="Georgia,serif" font-size="24" font-weight="600" fill="#1a1a17">Judge</text>
   <text x="814" y="268" text-anchor="middle" font-family="-apple-system,'Segoe UI',sans-serif" font-size="13" fill="#6b6b66">scored against the verified cause</text>
   <line x1="718" y1="286" x2="910" y2="286" stroke="#e4e0d6" stroke-width="1"/>
-  <text x="814" y="312" text-anchor="middle" font-family="ui-monospace,Menlo,monospace" font-size="11" letter-spacing="1" fill="#8a857a">blind to attempt identity</text>
+  <text x="814" y="312" text-anchor="middle" font-family="ui-monospace,Menlo,monospace" font-size="11" letter-spacing="1" fill="#6b6b66">blind to attempt identity</text>
 
   <line x1="150" y1="410" x2="150" y2="480" stroke="#1a1a17" stroke-width="1.5"/>
   <line x1="150" y1="480" x2="814" y2="480" stroke="#1a1a17" stroke-width="1.5"/>
@@ -824,7 +826,7 @@ description: Investigate checkout-svc incidents. Use when an alert names
   <text x="310" y="412" text-anchor="middle" font-family="-apple-system,'Segoe UI',sans-serif" font-size="17" fill="#6b6b66">blind scoring against the verified cause</text>
   <line x1="310" y1="452" x2="310" y2="486" stroke="#1a1a17" stroke-width="1.6" marker-end="url(#m5k)"/>
   <rect x="24" y="490" width="572" height="150" rx="16" fill="none" stroke="#b9b4a9" stroke-width="1.6" stroke-dasharray="5 5"/>
-  <text x="52" y="524" font-family="ui-monospace,Menlo,monospace" font-size="13" letter-spacing="1.5" fill="#8a857a">PRE&#8209;REGISTERED RULE</text>
+  <text x="52" y="524" font-family="ui-monospace,Menlo,monospace" font-size="13" letter-spacing="1.5" fill="#6b6b66">PRE&#8209;REGISTERED RULE</text>
   <text x="52" y="558" font-family="-apple-system,'Segoe UI',sans-serif" font-size="17" fill="#26251f">wins &#8594; sev1 runs N threads + selection</text>
   <text x="52" y="588" font-family="-apple-system,'Segoe UI',sans-serif" font-size="17" fill="#26251f">no lift &#8594; single thread stays;</text>
   <text x="52" y="614" font-family="-apple-system,'Segoe UI',sans-serif" font-size="17" fill="#26251f">the claim is falsified on this task</text>
