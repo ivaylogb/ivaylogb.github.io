@@ -1,7 +1,7 @@
 ---
 author: Ivaylo Bahtchevanov
 pubDatetime: 2026-02-17T10:00:00Z
-modDatetime: 2026-08-19T10:31:06-07:00
+modDatetime: 2026-08-19T10:57:52-07:00
 title: "Persona Simulator: Predicting How Users Will React Before You Ship"
 slug: persona-simulator
 featured: true
@@ -14,8 +14,8 @@ description: A grounded simulation system for testing product experiences and ag
   #article .persona-figure {
     position: relative;
     left: 50%;
-    width: min(1120px, calc(100vw - 2rem));
-    margin: 2.75rem 0;
+    width: min(800px, calc(100vw - 2rem));
+    margin: 2.25rem 0;
     transform: translateX(-50%);
   }
 
@@ -30,6 +30,7 @@ description: A grounded simulation system for testing product experiences and ag
   #article .persona-image-link {
     display: block;
     width: 100%;
+    cursor: pointer;
     text-decoration: none;
   }
 
@@ -50,11 +51,7 @@ description: A grounded simulation system for testing product experiences and ag
   }
 
   #article .persona-figure figcaption {
-    display: flex;
-    max-width: 56rem;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 1.25rem;
+    max-width: 44rem;
     margin: 0.9rem auto 0;
     color: var(--subtle);
     font-family: ui-sans-serif, system-ui, sans-serif;
@@ -62,26 +59,8 @@ description: A grounded simulation system for testing product experiences and ag
     line-height: 1.6;
   }
 
-  #article .persona-caption-copy {
-    flex: 1 1 auto;
-  }
-
-  #article .persona-caption-copy strong {
+  #article .persona-figure figcaption strong {
     color: var(--foreground);
-  }
-
-  #article .persona-full-size {
-    flex: 0 0 auto;
-    color: var(--accent);
-    font-size: 0.82rem;
-    font-weight: 600;
-    text-decoration: none;
-    white-space: nowrap;
-  }
-
-  #article .persona-full-size:hover {
-    text-decoration: underline;
-    text-underline-offset: 0.2rem;
   }
 
   #article .persona-callout {
@@ -186,42 +165,16 @@ description: A grounded simulation system for testing product experiences and ag
     #article .persona-process li::after {
       display: none;
     }
-
-    #article .persona-figure--dense .persona-shot {
-      overflow-x: auto;
-      overscroll-behavior-inline: contain;
-    }
-
-    #article .persona-figure--dense .persona-image-link {
-      width: max(100%, 56rem);
-    }
-
-    #article .persona-figure figcaption {
-      display: block;
-      padding: 0 0.5rem;
-    }
-
-    #article .persona-figure--dense figcaption::before {
-      content: "Swipe to inspect";
-      display: block;
-      margin-bottom: 0.35rem;
-      color: var(--accent);
-      font-size: 0.7rem;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-    }
-
-    #article .persona-full-size {
-      display: inline-block;
-      margin-top: 0.35rem;
-    }
   }
 
   @media (max-width: 740px) {
     #article .persona-figure {
       width: calc(100vw - 1rem);
-      margin: 2.25rem 0;
+      margin: 2rem 0;
+    }
+
+    #article .persona-figure figcaption {
+      padding: 0 0.5rem;
     }
 
     #article .persona-process {
@@ -265,37 +218,25 @@ The simulator supports both. You can add one scenario for a new concept or compa
 <li><span class="persona-step-number">4</span><strong>Decide and iterate</strong><span>Review risks, make a change, and run the same test again.</span></li>
 </ol>
 
-<figure class="persona-figure persona-figure--dense">
-<div class="persona-shot"><a class="persona-image-link" href="/assets/persona-simulator/basic_input2.png" target="_blank" rel="noopener" aria-label="Open the scenario setup interface at full size"><img src="/assets/persona-simulator/basic_input2.png" alt="Persona Simulator setup showing the Figma input, a late-debt user profile, feedback questions, and a conversion target" width="1362" height="1414" loading="lazy" decoding="async"></a></div>
-<figcaption><span class="persona-caption-copy"><strong>1. Define the run.</strong> The input combines a design, a specific user profile, the questions to answer, and an optional conversion target.</span><a class="persona-full-size" href="/assets/persona-simulator/basic_input2.png" target="_blank" rel="noopener">Open full size ↗</a></figcaption>
+The output includes:
+
+- A verdict with the headline risk
+- Grounded predictions and a behavioral walkthrough
+- Conversion impact and launch guardrails
+- Ranked recommendations and a design system audit
+
+## What the simulator returns
+
+Two views capture the core of the output: a decision summary and the causal explanation behind it.
+
+<figure class="persona-figure">
+<div class="persona-shot"><a class="persona-image-link" href="/assets/persona-simulator/new_res.png" target="_blank" rel="noopener" aria-label="Open the full-size results dashboard in a new tab"><img src="/assets/persona-simulator/new_res.png" alt="Results dashboard with a medium-risk verdict, prioritized recommendations, and 81 percent confidence" width="1306" height="730" loading="lazy" decoding="async"></a></div>
+<figcaption><strong>Decision summary.</strong> A concise read on the likely outcome, highest risks, recommended changes, and confidence.</figcaption>
 </figure>
 
-The results include the following:
-
-- A **verdict** with risk level and headline finding
-- **Predictions by question:** each question answered with directional impact, confidence level, and a grounding label (data-backed vs heuristic)
-- **Conversion impact:** quantified rate change, causal chain, helping/hindering elements, affected entrypoints, and guardrail metrics
-- A **behavioral walkthrough:** a second-by-second journey through the new design with emotional state tracking
-- **Recommendations:** ranked by priority and effort, each citing the evidence
-- A **design system audit:** every component checked against the organization's component libraries
-
-## A guided product walkthrough
-
-The product is easier to understand as a sequence than as a collection of dashboard screenshots. After the run is configured, a reviewer moves through three views.
-
-<figure class="persona-figure persona-figure--dense">
-<div class="persona-shot"><a class="persona-image-link" href="/assets/persona-simulator/new_res.png" target="_blank" rel="noopener" aria-label="Open the results dashboard at full size"><img src="/assets/persona-simulator/new_res.png" alt="Results dashboard with a medium-risk verdict, prioritized recommendations, and 81 percent confidence" width="1306" height="730" loading="lazy" decoding="async"></a></div>
-<figcaption><span class="persona-caption-copy"><strong>2. Read the verdict.</strong> The first screen states the likely outcome, the highest risks, the recommended changes, and how strongly the evidence supports the result.</span><a class="persona-full-size" href="/assets/persona-simulator/new_res.png" target="_blank" rel="noopener">Open full size ↗</a></figcaption>
-</figure>
-
-<figure class="persona-figure persona-figure--dense">
-<div class="persona-shot"><a class="persona-image-link" href="/assets/persona-simulator/new_behavior_walk.png" target="_blank" rel="noopener" aria-label="Open the behavioral walkthrough at full size"><img src="/assets/persona-simulator/new_behavior_walk.png" alt="Six-step behavioral walkthrough ending in the user opening the credit card dashboard" width="1300" height="1114" loading="lazy" decoding="async"></a></div>
-<figcaption><span class="persona-caption-copy"><strong>3. Follow the simulated journey.</strong> The trace shows what the persona notices, ignores, misunderstands, and does at each step, including the emotional state and evidence behind the prediction.</span><a class="persona-full-size" href="/assets/persona-simulator/new_behavior_walk.png" target="_blank" rel="noopener">Open full size ↗</a></figcaption>
-</figure>
-
-<figure class="persona-figure persona-figure--dense">
-<div class="persona-shot"><a class="persona-image-link" href="/assets/persona-simulator/new_conversion.png" target="_blank" rel="noopener" aria-label="Open the conversion analysis at full size"><img src="/assets/persona-simulator/new_conversion.png" alt="Conversion analysis separating the elements that help and hinder bill payment conversion" width="1280" height="664" loading="lazy" decoding="async"></a></div>
-<figcaption><span class="persona-caption-copy"><strong>4. Turn behavior into a launch decision.</strong> The final view connects the behavioral trace to a predicted rate change, affected entry points, and the guardrail metrics to instrument.</span><a class="persona-full-size" href="/assets/persona-simulator/new_conversion.png" target="_blank" rel="noopener">Open full size ↗</a></figcaption>
+<figure class="persona-figure">
+<div class="persona-shot"><a class="persona-image-link" href="/assets/persona-simulator/new_conversion.png" target="_blank" rel="noopener" aria-label="Open the full-size conversion analysis in a new tab"><img src="/assets/persona-simulator/new_conversion.png" alt="Conversion analysis separating the elements that help and hinder bill payment conversion" width="1280" height="664" loading="lazy" decoding="async"></a></div>
+<figcaption><strong>Conversion impact.</strong> Likely behavior translated into impact, contributing factors, and launch guardrails.</figcaption>
 </figure>
 
 ---
@@ -314,10 +255,7 @@ The simulator fetches the Figma design(s) and turns them into multimodal inputs 
 
 The simulator thinks at all three layers but communicates at the screenshot layer. Predictions read like a human user-research finding rather than a structured data dump.
 
-<figure class="persona-figure persona-figure--dense">
-<div class="persona-shot"><a class="persona-image-link" href="/assets/persona-simulator/Figmas2.png" target="_blank" rel="noopener" aria-label="Open the control and treatment comparison at full size"><img src="/assets/persona-simulator/Figmas2.png" alt="Control and treatment mobile designs shown side by side with the evidence sources enabled for the simulation" width="1094" height="1632" loading="lazy" decoding="async"></a></div>
-<figcaption><span class="persona-caption-copy"><strong>What the model sees.</strong> The control and treatment remain visible beside the enabled evidence sources, keeping the analysis tied to the interface a customer would actually encounter.</span><a class="persona-full-size" href="/assets/persona-simulator/Figmas2.png" target="_blank" rel="noopener">Open full size ↗</a></figcaption>
-</figure>
+For comparisons, the control and treatment are evaluated side by side against the same evidence sources.
 
 ### 2. Combined signals
 
@@ -345,11 +283,6 @@ Why this matters: it means a reviewer can tell at a glance which predictions are
 <p><strong>10 of 11 data sources active · 93% confidence</strong></p>
 <p>Every prediction identifies the sources that fired, their weights, and whether the conclusion is grounded in measured data or inferred heuristically.</p>
 </aside>
-
-<figure class="persona-figure persona-figure--dense">
-<div class="persona-shot"><a class="persona-image-link" href="/assets/persona-simulator/new_predictions.png" target="_blank" rel="noopener" aria-label="Open predictions by question at full size"><img src="/assets/persona-simulator/new_predictions.png" alt="Three predictions showing directional impact, confidence, and grounded evidence labels" width="1286" height="484" loading="lazy" decoding="async"></a></div>
-<figcaption><span class="persona-caption-copy"><strong>Confidence stays attached to each claim.</strong> A reviewer can separate data-backed predictions from lower-confidence extrapolation instead of treating the output as equally certain.</span><a class="persona-full-size" href="/assets/persona-simulator/new_predictions.png" target="_blank" rel="noopener">Open full size ↗</a></figcaption>
-</figure>
 
 ---
 
@@ -398,33 +331,17 @@ This is where the simulator stops being an analysis tool and becomes a design wo
 
 ### Design system audit
 
-The simulator automatically audits every component in the treatment against the design system's libraries and classifies each one: approved, custom (not in any library), deprecated (from an old library), or missing variant (the component exists but a required state isn't being used).
-
-For the test design: 11 approved components, 3 custom, 2 deprecated, 4 missing state variants. The critical finding: the credit card widget exists with 7 variants, but the delinquent/overdue state variant isn't being used. A design system gap directly causing a user experience failure for the exact segment most affected.
-
-<figure class="persona-figure persona-figure--dense">
-<div class="persona-shot"><a class="persona-image-link" href="/assets/persona-simulator/design_audit_full.png" target="_blank" rel="noopener" aria-label="Open the design system audit at full size"><img src="/assets/persona-simulator/design_audit_full.png" alt="Design system audit classifying approved, custom, deprecated, and missing component variants" width="1088" height="1092" loading="lazy" decoding="async"></a></div>
-<figcaption><span class="persona-caption-copy"><strong>The audit turns a general warning into a concrete design fix.</strong> Here, the correct overdue state already exists in the component library but is not used in the treatment.</span><a class="persona-full-size" href="/assets/persona-simulator/design_audit_full.png" target="_blank" rel="noopener">Open full size ↗</a></figcaption>
-</figure>
+The simulator checks each component against the design system and flags custom, deprecated, or missing states. In this run, it found that an existing overdue-state variant was not being used, turning a broad risk into a specific design fix.
 
 ### Generate the fix in Figma
 
-Claude Design was a useful addition here. Using its write capabilities, the simulator can clone the treatment frame and create variants that implement its recommendations. It imports the design system components, applies the correct tokens, and positions the variants beside the original.
-
-For the top recommendation ("add an explicit overdue label to the CC widget"), Claude Design generated Variant B: "Cartão de crédito" becomes "Cartão de crédito · Fatura em atraso" in red, "Fecha 29 MAR" becomes "Vencida · 8 dias em atraso," the overdue state is visually emphasized. For the second recommendation, Variant C: same changes plus the cross-sell section replaced with contextual debt-resolution messaging.
-
-The designer gets Figma frames to refine, not text descriptions to interpret.
-
-<figure class="persona-figure persona-figure--dense">
-<div class="persona-shot"><a class="persona-image-link" href="/assets/persona-simulator/variants.png" target="_blank" rel="noopener" aria-label="Open the generated Figma variants at full size"><img src="/assets/persona-simulator/variants.png" alt="Original treatment and two generated Figma variants implementing overdue-state and contextual-message recommendations" width="836" height="1332" loading="lazy" decoding="async"></a></div>
-<figcaption><span class="persona-caption-copy"><strong>The recommendation becomes an editable design.</strong> The original treatment sits beside two generated variants so a designer can refine the change and run the comparison again.</span><a class="persona-full-size" href="/assets/persona-simulator/variants.png" target="_blank" rel="noopener">Open full size ↗</a></figcaption>
-</figure>
+The simulator can clone the treatment in Figma and apply its recommendations as editable variants. Here, one variant restored the explicit overdue state; another replaced unrelated cross-sell content with debt-resolution guidance. The designer gets frames to refine, not text descriptions to interpret.
 
 ### Re-simulate to verify
 
 Swap the treatment link for the generated variant. Same user profile, same question, same conversion target. Re-run.
 
-The prediction improved. Risk dropped from HIGH to MEDIUM. Conversion impact moved from -15 to -25% into the neutral-to-positive range. The simulator could see that the explicit overdue label was now present, and adjusted its predictions accordingly.
+The prediction improved. Risk dropped from HIGH to MEDIUM. Conversion impact moved from a predicted decline of 15% to 25% into the neutral-to-positive range. The simulator could see that the explicit overdue label was now present, and adjusted its predictions accordingly.
 
 **Predict → Fix → Verify.** Closed loop iteration on design concepts.
 
@@ -468,16 +385,9 @@ One person, one weekend, Claude Code as the orchestrator. The same pattern works
 
 ---
 
-## From single user to portfolio impact view
+## From one persona to portfolio impact
 
-The next iteration broadened the unit of analysis. Instead of simulating one profile, the tool can run a launch scenario across a larger set of user segments and compare outcomes side by side.
-
-<figure class="persona-figure persona-figure--dense">
-<div class="persona-shot"><a class="persona-image-link" href="/assets/persona-simulator/lr_impact_segment.png" target="_blank" rel="noopener" aria-label="Open the portfolio impact view at full size"><img src="/assets/persona-simulator/lr_impact_segment.png" alt="Portfolio impact dashboard comparing launch risk and recommendations across user segments" width="1068" height="1030" loading="lazy" decoding="async"></a></div>
-<figcaption><span class="persona-caption-copy"><strong>One launch, several user contexts.</strong> The portfolio view separates changes that work broadly from segment-specific wins and cases where a rollout would cause harm.</span><a class="persona-full-size" href="/assets/persona-simulator/lr_impact_segment.png" target="_blank" rel="noopener">Open full size ↗</a></figcaption>
-</figure>
-
-This view lets the team design a phased rollout around the users who benefit, while setting explicit guardrails for the groups at risk.
+The next iteration runs the same launch scenario across multiple user segments. The comparison separates broad wins from segment-specific gains and potential harm, which supports a phased rollout with explicit guardrails.
 
 ### Automated iteration at scale
 
