@@ -1,7 +1,6 @@
 ---
 author: Ivaylo Bahtchevanov
-pubDatetime: 2026-02-17T10:00:00Z
-modDatetime: 2026-08-19T11:18:18-07:00
+pubDatetime: 2026-03-12T10:00:00Z
 title: "Persona Simulator: Predicting How Users Will React Before You Ship"
 slug: persona-simulator
 featured: true

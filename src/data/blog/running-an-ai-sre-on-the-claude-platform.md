@@ -1,7 +1,6 @@
 ---
 author: Ivaylo Bahtchevanov
-pubDatetime: 2026-07-12T10:00:00Z
-modDatetime: 2026-08-19T10:13:44-07:00
+pubDatetime: 2026-03-17T10:00:00Z
 title: Running an AI SRE on the Claude platform
 featured: true
 draft: false

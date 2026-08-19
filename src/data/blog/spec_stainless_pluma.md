@@ -1,6 +1,6 @@
 ---
 author: Ivaylo Bahtchevanov
-pubDatetime: 2026-03-16T10:00:00Z
+pubDatetime: 2026-03-03T10:00:00Z
 title: "Spec design to automate shipping: from OpenAPI to SDK to MCP"
 slug: spec-stainless
 featured: true
