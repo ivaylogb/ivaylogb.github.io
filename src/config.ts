@@ -2,7 +2,7 @@ export const SITE = {
   website: "https://ivaylogb.github.io/",
   author: "Ivaylo Bahtchevanov",
   profile: "https://github.com/ivaylogb",
-  desc: "Production engineering for LLM-mediated systems.",
+  desc: "This is where I write my reflections on applied AI.",
   title: "Ivaylo Bahtchevanov",
   ogImage: "astropaper-og.jpg",
   lightAndDarkMode: true,
