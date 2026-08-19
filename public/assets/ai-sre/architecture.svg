@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="d" viewBox="0 0 1240 540" role="img" aria-label="End-to-end architecture: alert to triage on the Messages API, to an Agent SDK investigator, to a gated action plane, over shared bank-owned components that persist across sessions">
+  <defs>
+    <marker id="d1k" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#1a1a17"/></marker>
+    <marker id="d1c" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#D97757"/></marker>
+  </defs>
+
+  <rect x="24" y="112" width="156" height="56" rx="28" fill="#ffffff" stroke="#1a1a17" stroke-width="1.5"/>
+  <text x="102" y="146" text-anchor="middle" font-family="Georgia,serif" font-size="17" fill="#1a1a17">Alert / Slack</text>
+
+  <line x1="182" y1="140" x2="240" y2="140" stroke="#1a1a17" stroke-width="1.5" marker-end="url(#d1k)"/>
+  <text x="211" y="128" text-anchor="middle" font-family="ui-monospace,Menlo,monospace" font-size="12" fill="#6b6b66">alert</text>
+
+  <rect x="248" y="70" width="248" height="148" rx="18" fill="#ffffff" stroke="#1a1a17" stroke-width="1.5"/>
+  <text x="372" y="120" text-anchor="middle" font-family="Georgia,serif" font-size="25" font-weight="600" fill="#1a1a17">Triage</text>
+  <text x="372" y="146" text-anchor="middle" font-family="-apple-system,'Segoe UI',sans-serif" font-size="13" fill="#6b6b66">Messages API &#8594; typed envelope</text>
+  <line x1="278" y1="164" x2="466" y2="164" stroke="#e4e0d6" stroke-width="1"/>
+  <text x="372" y="190" text-anchor="middle" font-family="ui-monospace,Menlo,monospace" font-size="11" letter-spacing="1" fill="#6b6b66">runs once · seconds</text>
+
+  <line x1="498" y1="140" x2="552" y2="140" stroke="#1a1a17" stroke-width="1.5" marker-end="url(#d1k)"/>
+  <text x="525" y="128" text-anchor="middle" font-family="ui-monospace,Menlo,monospace" font-size="12" fill="#6b6b66">envelope</text>
+
+  <rect x="560" y="70" width="264" height="148" rx="18" fill="#141412"/>
+  <text x="692" y="120" text-anchor="middle" font-family="Georgia,serif" font-size="25" font-weight="600" fill="#ffffff">Investigator</text>
+  <text x="692" y="146" text-anchor="middle" font-family="-apple-system,'Segoe UI',sans-serif" font-size="13" fill="#c9c4b8">Agent SDK session · steerable</text>
+  <line x1="590" y1="164" x2="794" y2="164" stroke="#3a3a36" stroke-width="1"/>
+  <text x="692" y="190" text-anchor="middle" font-family="ui-monospace,Menlo,monospace" font-size="11" letter-spacing="1" fill="#9b968a">read-only · minutes&#8211;hours</text>
+
+  <line x1="826" y1="118" x2="880" y2="118" stroke="#1a1a17" stroke-width="1.5" marker-end="url(#d1k)"/>
+  <text x="856" y="92" text-anchor="middle" font-family="ui-monospace,Menlo,monospace" font-size="11" fill="#6b6b66"><tspan x="856">rca +</tspan><tspan x="856" dy="14">proposal</tspan></text>
+  <line x1="880" y1="170" x2="830" y2="170" stroke="#D97757" stroke-width="1.5" marker-end="url(#d1c)"/>
+  <text x="856" y="188" text-anchor="middle" font-family="ui-monospace,Menlo,monospace" font-size="11" fill="#a14e2f"><tspan x="856">recovery</tspan><tspan x="856" dy="14">signals</tspan></text>
+
+  <rect x="888" y="70" width="264" height="148" rx="18" fill="#D97757"/>
+  <text x="1020" y="120" text-anchor="middle" font-family="Georgia,serif" font-size="25" font-weight="600" fill="#1a1a17">Action plane</text>
+  <text x="1020" y="146" text-anchor="middle" font-family="-apple-system,'Segoe UI',sans-serif" font-size="13" fill="#3d2417">dry&#8209;run &#8594; approve &#8594; execute</text>
+  <line x1="918" y1="164" x2="1122" y2="164" stroke="#c06342" stroke-width="1"/>
+  <text x="1020" y="190" text-anchor="middle" font-family="ui-monospace,Menlo,monospace" font-size="11" letter-spacing="1" fill="#3d2417">R0&#8211;R2 only · audited</text>
+
+  <line x1="372" y1="222" x2="372" y2="316" stroke="#b9b4a9" stroke-width="1.2" stroke-dasharray="3 5"/>
+  <line x1="692" y1="222" x2="692" y2="316" stroke="#b9b4a9" stroke-width="1.2" stroke-dasharray="3 5"/>
+  <line x1="1020" y1="222" x2="1020" y2="316" stroke="#b9b4a9" stroke-width="1.2" stroke-dasharray="3 5"/>
+
+  <rect x="110" y="320" width="1040" height="92" rx="16" fill="#F1EAE0"/>
+  <text x="140" y="356" font-family="ui-monospace,Menlo,monospace" font-size="12" font-weight="700" letter-spacing="1.5" fill="#1a1a17">PERSISTENCE ACROSS SESSIONS</text>
+  <text x="140" y="378" font-family="-apple-system,'Segoe UI',sans-serif" font-size="12" fill="#6b6b66">bank-owned shared state</text>
+
+  <rect x="392" y="349" width="140" height="34" rx="8" fill="#ffffff" stroke="#ddd6c8"/>
+  <text x="462" y="371" text-anchor="middle" font-family="ui-monospace,Menlo,monospace" font-size="12" fill="#1a1a17">incident index</text>
+  <rect x="548" y="349" width="140" height="34" rx="8" fill="#ffffff" stroke="#ddd6c8"/>
+  <text x="618" y="371" text-anchor="middle" font-family="ui-monospace,Menlo,monospace" font-size="12" fill="#1a1a17">skills registry</text>
+  <rect x="704" y="349" width="110" height="34" rx="8" fill="#ffffff" stroke="#ddd6c8"/>
+  <text x="759" y="371" text-anchor="middle" font-family="ui-monospace,Menlo,monospace" font-size="12" fill="#1a1a17">eval store</text>
+  <rect x="830" y="349" width="150" height="34" rx="8" fill="#ffffff" stroke="#ddd6c8"/>
+  <text x="905" y="371" text-anchor="middle" font-family="ui-monospace,Menlo,monospace" font-size="12" fill="#1a1a17">action gateway</text>
+  <text x="620" y="474" text-anchor="middle" font-family="-apple-system,'Segoe UI',sans-serif" font-size="15" fill="#55534d">Engineers only see and interact with one agent. These four components live across sessions.</text>
+</svg>

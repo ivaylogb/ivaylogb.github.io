@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="m" viewBox="0 0 620 600" role="img" aria-label="Mobile view: everything except inference stays inside the bank">
+  <defs><marker id="m2k" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#1a1a17"/></marker></defs>
+  <rect x="32" y="14" width="556" height="250" rx="20" fill="#ffffff" stroke="#1a1a17" stroke-width="1.6"/>
+  <text x="58" y="50" font-family="ui-monospace,Menlo,monospace" font-size="14" letter-spacing="1.5" fill="#6b6b66">INSIDE THE BANK</text>
+  <text x="58" y="92" font-family="-apple-system,'Segoe UI',sans-serif" font-size="17" fill="#26251f">Agent SDK harness &#183; loop, hooks, permissions</text>
+  <text x="58" y="126" font-family="-apple-system,'Segoe UI',sans-serif" font-size="17" fill="#26251f">MCP tools &#183; session files we hold</text>
+  <text x="58" y="160" font-family="-apple-system,'Segoe UI',sans-serif" font-size="17" fill="#26251f">incident index &#183; secrets, never in prompts</text>
+  <text x="58" y="200" font-family="-apple-system,'Segoe UI',sans-serif" font-size="17" font-weight="600" fill="#a14e2f">action gateway: the only write path</text>
+  <line x1="270" y1="272" x2="270" y2="328" stroke="#1a1a17" stroke-width="1.6" marker-end="url(#m2k)"/>
+  <line x1="350" y1="328" x2="350" y2="272" stroke="#1a1a17" stroke-width="1.6" marker-end="url(#m2k)"/>
+  <text x="132" y="306" text-anchor="middle" font-family="ui-monospace,Menlo,monospace" font-size="14" fill="#6b6b66">prompts &#183; schemas</text>
+  <text x="478" y="306" text-anchor="middle" font-family="ui-monospace,Menlo,monospace" font-size="14" fill="#6b6b66">completions</text>
+  <rect x="32" y="336" width="556" height="88" rx="20" fill="#141412"/>
+  <text x="310" y="374" text-anchor="middle" font-family="Georgia,serif" font-size="26" font-weight="600" fill="#ffffff">Anthropic</text>
+  <text x="310" y="404" text-anchor="middle" font-family="-apple-system,'Segoe UI',sans-serif" font-size="17" fill="#c9c4b8">inference only</text>
+  <rect x="32" y="452" width="556" height="120" rx="18" fill="none" stroke="#b9b4a9" stroke-width="1.6" stroke-dasharray="5 5"/>
+  <text x="58" y="486" font-family="ui-monospace,Menlo,monospace" font-size="13" letter-spacing="1.5" fill="#6b6b66">CONDITIONAL</text>
+  <text x="58" y="518" font-family="Georgia,serif" font-size="21" font-weight="600" fill="#1a1a17">Managed Agents (beta)</text>
+  <text x="58" y="548" font-family="-apple-system,'Segoe UI',sans-serif" font-size="16" fill="#6b6b66">self&#8209;hosted sandbox; when retention terms fit</text>
+</svg>

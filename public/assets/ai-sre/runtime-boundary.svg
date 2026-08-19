@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="d" viewBox="0 0 1240 520" role="img" aria-label="Runtime boundary: harness, tools, sessions, secrets, and the action gateway inside the bank; only inference at Anthropic; Managed Agents with a self-hosted sandbox as the conditional path">
+  <defs>
+    <marker id="d2k" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#1a1a17"/></marker>
+  </defs>
+
+  <rect x="32" y="64" width="756" height="372" rx="20" fill="#ffffff" stroke="#1a1a17" stroke-width="1.5"/>
+  <text x="60" y="100" font-family="ui-monospace,Menlo,monospace" font-size="12" letter-spacing="1.5" fill="#6b6b66">INSIDE THE BANK</text>
+
+  <rect x="60" y="122" width="300" height="84" rx="14" fill="#141412"/>
+  <text x="210" y="158" text-anchor="middle" font-family="Georgia,serif" font-size="20" font-weight="600" fill="#ffffff">Agent SDK harness</text>
+  <text x="210" y="182" text-anchor="middle" font-family="-apple-system,'Segoe UI',sans-serif" font-size="12" fill="#c9c4b8">loop · hooks · permissions</text>
+
+  <rect x="384" y="122" width="180" height="84" rx="14" fill="#ffffff" stroke="#1a1a17" stroke-width="1.5"/>
+  <text x="474" y="158" text-anchor="middle" font-family="Georgia,serif" font-size="19" font-weight="600" fill="#1a1a17">MCP tools</text>
+  <text x="474" y="182" text-anchor="middle" font-family="-apple-system,'Segoe UI',sans-serif" font-size="12" fill="#6b6b66">reads + actions</text>
+
+  <rect x="588" y="122" width="176" height="84" rx="14" fill="#ffffff" stroke="#1a1a17" stroke-width="1.5"/>
+  <text x="676" y="158" text-anchor="middle" font-family="Georgia,serif" font-size="19" font-weight="600" fill="#1a1a17">Session state</text>
+  <text x="676" y="182" text-anchor="middle" font-family="-apple-system,'Segoe UI',sans-serif" font-size="12" fill="#6b6b66">files we hold</text>
+
+  <rect x="60" y="246" width="184" height="84" rx="14" fill="#ffffff" stroke="#1a1a17" stroke-width="1.5"/>
+  <text x="152" y="282" text-anchor="middle" font-family="Georgia,serif" font-size="19" font-weight="600" fill="#1a1a17">Incident index</text>
+  <text x="152" y="306" text-anchor="middle" font-family="-apple-system,'Segoe UI',sans-serif" font-size="12" fill="#6b6b66">retrieval, not memory</text>
+
+  <rect x="268" y="246" width="156" height="84" rx="14" fill="#ffffff" stroke="#1a1a17" stroke-width="1.5"/>
+  <text x="346" y="282" text-anchor="middle" font-family="Georgia,serif" font-size="19" font-weight="600" fill="#1a1a17">Secrets</text>
+  <text x="346" y="306" text-anchor="middle" font-family="-apple-system,'Segoe UI',sans-serif" font-size="12" fill="#6b6b66">never in prompts</text>
+
+  <rect x="448" y="246" width="316" height="84" rx="14" fill="#D97757"/>
+  <text x="606" y="282" text-anchor="middle" font-family="Georgia,serif" font-size="20" font-weight="600" fill="#1a1a17">Action gateway</text>
+  <text x="606" y="306" text-anchor="middle" font-family="-apple-system,'Segoe UI',sans-serif" font-size="12" fill="#3d2417">the only write path</text>
+
+  <line x1="846" y1="64" x2="846" y2="436" stroke="#b9b4a9" stroke-width="1.2" stroke-dasharray="4 6"/>
+  <text x="862" y="350" font-family="ui-monospace,Menlo,monospace" font-size="11" letter-spacing="2" fill="#6b6b66" text-anchor="middle" transform="rotate(-90 862 350)">RETENTION BOUNDARY</text>
+
+  <rect x="920" y="140" width="288" height="112" rx="18" fill="#141412"/>
+  <text x="1064" y="190" text-anchor="middle" font-family="Georgia,serif" font-size="24" font-weight="600" fill="#ffffff">Anthropic</text>
+  <text x="1064" y="216" text-anchor="middle" font-family="-apple-system,'Segoe UI',sans-serif" font-size="13" fill="#c9c4b8">inference only</text>
+
+  <line x1="790" y1="176" x2="914" y2="176" stroke="#1a1a17" stroke-width="1.5" marker-end="url(#d2k)"/>
+  <text x="852" y="164" text-anchor="middle" font-family="ui-monospace,Menlo,monospace" font-size="12" fill="#6b6b66" stroke="#FBFAF7" stroke-width="6" paint-order="stroke">prompts · schemas</text>
+  <line x1="914" y1="218" x2="790" y2="218" stroke="#1a1a17" stroke-width="1.5" marker-end="url(#d2k)"/>
+  <text x="852" y="242" text-anchor="middle" font-family="ui-monospace,Menlo,monospace" font-size="12" fill="#6b6b66" stroke="#FBFAF7" stroke-width="6" paint-order="stroke">completions</text>
+
+  <line x1="1064" y1="252" x2="1064" y2="314" stroke="#b9b4a9" stroke-width="1.2" stroke-dasharray="3 5"/>
+  <rect x="920" y="318" width="288" height="112" rx="18" fill="none" stroke="#b9b4a9" stroke-width="1.5" stroke-dasharray="5 5"/>
+  <text x="944" y="350" font-family="ui-monospace,Menlo,monospace" font-size="11" letter-spacing="1.5" fill="#6b6b66">CONDITIONAL</text>
+  <text x="944" y="378" font-family="Georgia,serif" font-size="18" font-weight="600" fill="#1a1a17">Managed Agents</text>
+  <text x="944" y="400" font-family="-apple-system,'Segoe UI',sans-serif" font-size="12" fill="#6b6b66">+ self&#8209;hosted sandbox · when terms fit</text>
+  <text x="620" y="482" text-anchor="middle" font-family="-apple-system,'Segoe UI',sans-serif" font-size="15" fill="#55534d">Only inference crosses the wire. Harness, tools, sessions, secrets, and authority stay inside.</text>
+</svg>

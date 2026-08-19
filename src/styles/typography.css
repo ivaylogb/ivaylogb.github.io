@@ -3,18 +3,26 @@
 @layer base {
   /* ===== Override default Tailwind Typography styles ===== */
   .app-prose {
-    @apply prose;
+    @apply prose max-w-none;
+    font-size: 1.0625rem;
+    line-height: 1.78;
 
     h1,
     h2,
     h3,
     h4,
     th {
-      @apply mb-3 text-foreground;
+      @apply mb-3 tracking-tight text-foreground;
+    }
+
+    h2 {
+      @apply mt-12 text-2xl font-semibold sm:text-3xl;
+      line-height: 1.25;
     }
 
     h3 {
-      @apply italic;
+      @apply mt-9 text-xl font-semibold not-italic sm:text-2xl;
+      line-height: 1.3;
     }
 
     p,
@@ -27,8 +35,13 @@
       @apply text-foreground;
     }
 
+    p,
+    li {
+      line-height: 1.78;
+    }
+
     a {
-      @apply wrap-break-word text-foreground decoration-dashed underline-offset-4 hover:text-accent focus-visible:no-underline;
+      @apply wrap-break-word text-accent decoration-accent/45 underline-offset-4 hover:decoration-accent focus-visible:no-underline;
     }
 
     ul {
@@ -44,11 +57,13 @@
     }
 
     img {
-      @apply mx-auto border border-border;
+      @apply mx-auto rounded-lg border border-border;
     }
 
     figcaption {
-      @apply opacity-75;
+      @apply text-subtle opacity-100;
+      font-size: 0.925rem;
+      line-height: 1.6;
     }
 
     table {
@@ -68,6 +83,9 @@
 
     code {
       @apply rounded bg-muted/75 p-1 wrap-break-word text-foreground before:content-none after:content-none;
+      font-family:
+        var(--font-google-sans-code), "SFMono-Regular", Consolas, monospace;
+      font-size: 0.9em;
     }
 
     .astro-code code {
@@ -75,7 +93,7 @@
     }
 
     blockquote {
-      @apply border-s-accent/80 wrap-break-word opacity-80;
+      @apply rounded-r-md border-s-accent bg-muted/45 py-1 wrap-break-word text-foreground opacity-100;
     }
 
     details {

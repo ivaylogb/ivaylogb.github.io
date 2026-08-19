@@ -5,7 +5,6 @@ import Header from "@/components/Header.astro";
 import Footer from "@/components/Footer.astro";
 import Card from "@/components/Card.astro";
 import getSortedPosts from "@/utils/getSortedPosts";
-import { SITE } from "@/config";
 
 const posts = await getCollection("blog");
 const sortedPosts = getSortedPosts(posts);
@@ -14,30 +13,43 @@ const sortedPosts = getSortedPosts(posts);
 <Layout>
   <Header />
   <main id="main-content" data-layout="index" class="app-layout">
-
-    <section id="about" class="pt-12 pb-6 border-b border-border">
-      <h2 class="text-2xl font-semibold tracking-wide">About</h2>
-      <p class="mt-4">
-        I'm a lover of all things ocean (surfing, sailing, spearfishing), philosophical ideas, and building things. Space for sharing writing on personal projects. Enjoy.
+    <section id="about" class="border-b border-border pt-12 pb-9">
+      <p class="text-sm font-semibold tracking-widest text-accent uppercase">
+        About
+      </p>
+      <h1
+        class="mt-3 max-w-2xl text-3xl leading-tight font-semibold tracking-tight sm:text-4xl"
+      >
+        Notes on production engineering, AI systems, and building tools people
+        can trust.
+      </h1>
+      <p class="mt-5 max-w-[68ch] text-lg leading-8 text-subtle">
+        I write about the practical work behind reliable software and applied
+        AI. Outside work, I spend as much time as I can surfing, sailing, and
+        spearfishing.
       </p>
     </section>
 
-    {sortedPosts.length > 0 && (
-      <section id="posts" class="pt-12 pb-6">
-        <h2 class="text-3xl font-bold tracking-wide">Posts</h2>
-        <ul class="mt-6">
-          {sortedPosts.map((data) => <Card variant="h3" {...data} />)}
-        </ul>
-      </section>
-    )}
-
+    {
+      sortedPosts.length > 0 && (
+        <section id="posts" class="pt-11 pb-6">
+          <h2 class="text-2xl font-semibold tracking-tight">Latest writing</h2>
+          <ul class="mt-5">
+            {sortedPosts.map(data => (
+              <Card variant="h3" {...data} />
+            ))}
+          </ul>
+        </section>
+      )
+    }
   </main>
   <Footer />
 </Layout>
 
 <script>
   document.addEventListener("astro:page-load", () => {
-    const indexLayout = (document.querySelector("#main-content") as HTMLElement)?.dataset?.layout;
+    const indexLayout = (document.querySelector("#main-content") as HTMLElement)
+      ?.dataset?.layout;
     if (indexLayout) {
       sessionStorage.setItem("backUrl", "/");
     }

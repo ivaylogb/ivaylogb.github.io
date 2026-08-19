@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="d" viewBox="0 0 1240 560" role="img" aria-label="Best-of-N experiment: the eval store's envelope and fixtures feed three independent investigator replays; a judge scores each final hypothesis against the verified cause, blind to attempt identity, and a pre-registered rule decides between adoption for sev1 and falsification">
+  <defs>
+    <marker id="d5k" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#1a1a17"/></marker>
+  </defs>
+
+  <rect x="24" y="100" width="252" height="336" rx="16" fill="#F1EAE0"/>
+  <text x="48" y="136" font-family="ui-monospace,Menlo,monospace" font-size="12" font-weight="700" letter-spacing="1.5" fill="#1a1a17">EVAL STORE</text>
+  <text x="48" y="158" font-family="-apple-system,'Segoe UI',sans-serif" font-size="12" fill="#6b6b66">5,200 reconciled incidents</text>
+
+  <rect x="48" y="186" width="204" height="64" rx="10" fill="#ffffff" stroke="#ddd6c8"/>
+  <text x="150" y="213" text-anchor="middle" font-family="Georgia,serif" font-size="16" fill="#1a1a17">Envelope + fixtures</text>
+  <text x="150" y="233" text-anchor="middle" font-family="-apple-system,'Segoe UI',sans-serif" font-size="11.5" fill="#6b6b66">every read, recorded</text>
+
+  <rect x="48" y="346" width="204" height="64" rx="10" fill="#ffffff" stroke="#ddd6c8"/>
+  <text x="150" y="373" text-anchor="middle" font-family="Georgia,serif" font-size="16" fill="#1a1a17">Verified cause</text>
+  <text x="150" y="393" text-anchor="middle" font-family="-apple-system,'Segoe UI',sans-serif" font-size="11.5" fill="#6b6b66">from the closed review</text>
+
+  <line x1="256" y1="218" x2="368" y2="142" stroke="#1a1a17" stroke-width="1.5" marker-end="url(#d5k)"/>
+  <line x1="256" y1="218" x2="368" y2="262" stroke="#1a1a17" stroke-width="1.5" marker-end="url(#d5k)"/>
+  <line x1="256" y1="218" x2="368" y2="382" stroke="#1a1a17" stroke-width="1.5" marker-end="url(#d5k)"/>
+  <text x="296" y="146" text-anchor="middle" font-family="ui-monospace,Menlo,monospace" font-size="12" fill="#6b6b66">same inputs, &#215;3</text>
+
+  <rect x="372" y="104" width="228" height="76" rx="14" fill="#141412"/>
+  <text x="486" y="137" text-anchor="middle" font-family="Georgia,serif" font-size="19" font-weight="600" fill="#ffffff">Attempt 1</text>
+  <text x="486" y="160" text-anchor="middle" font-family="-apple-system,'Segoe UI',sans-serif" font-size="12" fill="#c9c4b8">investigator replay</text>
+
+  <rect x="372" y="224" width="228" height="76" rx="14" fill="#141412"/>
+  <text x="486" y="257" text-anchor="middle" font-family="Georgia,serif" font-size="19" font-weight="600" fill="#ffffff">Attempt 2</text>
+  <text x="486" y="280" text-anchor="middle" font-family="-apple-system,'Segoe UI',sans-serif" font-size="12" fill="#c9c4b8">investigator replay</text>
+
+  <rect x="372" y="344" width="228" height="76" rx="14" fill="#141412"/>
+  <text x="486" y="377" text-anchor="middle" font-family="Georgia,serif" font-size="19" font-weight="600" fill="#ffffff">Attempt 3</text>
+  <text x="486" y="400" text-anchor="middle" font-family="-apple-system,'Segoe UI',sans-serif" font-size="12" fill="#c9c4b8">investigator replay</text>
+
+  <line x1="604" y1="142" x2="684" y2="238" stroke="#1a1a17" stroke-width="1.5" marker-end="url(#d5k)"/>
+  <line x1="604" y1="262" x2="684" y2="270" stroke="#1a1a17" stroke-width="1.5" marker-end="url(#d5k)"/>
+  <line x1="604" y1="382" x2="684" y2="302" stroke="#1a1a17" stroke-width="1.5" marker-end="url(#d5k)"/>
+  <text x="644" y="252" text-anchor="middle" font-family="ui-monospace,Menlo,monospace" font-size="12" fill="#6b6b66">hypotheses</text>
+
+  <rect x="688" y="192" width="252" height="156" rx="18" fill="#ffffff" stroke="#1a1a17" stroke-width="1.5"/>
+  <text x="814" y="242" text-anchor="middle" font-family="Georgia,serif" font-size="24" font-weight="600" fill="#1a1a17">Judge</text>
+  <text x="814" y="268" text-anchor="middle" font-family="-apple-system,'Segoe UI',sans-serif" font-size="13" fill="#6b6b66">scored against the verified cause</text>
+  <line x1="718" y1="286" x2="910" y2="286" stroke="#e4e0d6" stroke-width="1"/>
+  <text x="814" y="312" text-anchor="middle" font-family="ui-monospace,Menlo,monospace" font-size="11" letter-spacing="1" fill="#6b6b66">blind to attempt identity</text>
+
+  <line x1="150" y1="410" x2="150" y2="480" stroke="#1a1a17" stroke-width="1.5"/>
+  <line x1="150" y1="480" x2="814" y2="480" stroke="#1a1a17" stroke-width="1.5"/>
+  <line x1="814" y1="480" x2="814" y2="354" stroke="#1a1a17" stroke-width="1.5" marker-end="url(#d5k)"/>
+  <text x="482" y="468" text-anchor="middle" font-family="ui-monospace,Menlo,monospace" font-size="12" fill="#6b6b66">judge only &#183; attempts never see it</text>
+
+  <line x1="944" y1="250" x2="1008" y2="216" stroke="#1a1a17" stroke-width="1.5" marker-end="url(#d5k)"/>
+  <line x1="944" y1="290" x2="1008" y2="324" stroke="#1a1a17" stroke-width="1.5" marker-end="url(#d5k)"/>
+
+  <rect x="1012" y="170" width="204" height="92" rx="14" fill="#ffffff" stroke="#1a1a17" stroke-width="1.5"/>
+  <text x="1114" y="203" text-anchor="middle" font-family="Georgia,serif" font-size="16" font-weight="600" fill="#1a1a17">Best&#8209;of&#8209;3 wins</text>
+  <text x="1114" y="224" text-anchor="middle" font-family="-apple-system,'Segoe UI',sans-serif" font-size="11.5" fill="#6b6b66">sev1 runs N threads</text>
+  <text x="1114" y="241" text-anchor="middle" font-family="-apple-system,'Segoe UI',sans-serif" font-size="11.5" fill="#6b6b66">with a selection pass</text>
+
+  <rect x="1012" y="298" width="204" height="92" rx="14" fill="#ffffff" stroke="#1a1a17" stroke-width="1.5"/>
+  <text x="1114" y="331" text-anchor="middle" font-family="Georgia,serif" font-size="16" font-weight="600" fill="#1a1a17">No lift</text>
+  <text x="1114" y="352" text-anchor="middle" font-family="-apple-system,'Segoe UI',sans-serif" font-size="11.5" fill="#6b6b66">single thread stays;</text>
+  <text x="1114" y="369" text-anchor="middle" font-family="-apple-system,'Segoe UI',sans-serif" font-size="11.5" fill="#6b6b66">claim falsified here</text>
+  <text x="620" y="532" text-anchor="middle" font-family="-apple-system,'Segoe UI',sans-serif" font-size="15" fill="#55534d">Fixtures turn the experiment into replays, and the protocol publishes with the result.</text>
+</svg>
