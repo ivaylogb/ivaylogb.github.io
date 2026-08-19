@@ -228,28 +228,44 @@ const layoutProps = {
 
   function attachCopyButtons() {
     const copyButtonLabel = "Copy";
-    const codeBlocks = Array.from(document.querySelectorAll("pre"));
+    const languageLabels = new Map([
+      ["bash", "Shell"],
+      ["json", "JSON"],
+      ["markdown", "Markdown"],
+      ["plaintext", "Text"],
+      ["python", "Python"],
+      ["text", "Text"],
+      ["typescript", "TypeScript"],
+      ["yaml", "YAML"],
+    ]);
+    const codeBlocks = Array.from(document.querySelectorAll("#article pre"));
 
     for (const codeBlock of codeBlocks) {
+      if (codeBlock.closest(".code-block")) continue;
+
       const wrapper = document.createElement("div");
-      wrapper.style.position = "relative";
+      wrapper.className = "code-block";
 
-      const computedStyle = getComputedStyle(codeBlock);
-      const hasFileNameOffset =
-        computedStyle.getPropertyValue("--file-name-offset").trim() !== "";
+      const toolbar = document.createElement("div");
+      toolbar.className = "code-toolbar";
 
-      const topClass = hasFileNameOffset
-        ? "top-(--file-name-offset)"
-        : "-top-3";
+      const language = codeBlock.dataset.language || "plaintext";
+      const languageLabel = document.createElement("span");
+      languageLabel.className = "code-language";
+      languageLabel.textContent = languageLabels.get(language) || language;
 
       const copyButton = document.createElement("button");
-      copyButton.className = `copy-code absolute end-3 ${topClass} rounded bg-muted border border-muted px-2 py-1 text-xs leading-4 text-foreground font-medium`;
-      copyButton.innerHTML = copyButtonLabel;
+      copyButton.type = "button";
+      copyButton.className = "copy-code";
+      copyButton.textContent = copyButtonLabel;
+      copyButton.title = "Copy code";
+      copyButton.setAttribute("aria-label", "Copy code to clipboard");
+
       codeBlock.setAttribute("tabindex", "0");
-      codeBlock.appendChild(copyButton);
+      toolbar.append(languageLabel, copyButton);
 
       codeBlock?.parentNode?.insertBefore(wrapper, codeBlock);
-      wrapper.appendChild(codeBlock);
+      wrapper.append(toolbar, codeBlock);
 
       copyButton.addEventListener("click", async () => {
         await copyCode(codeBlock, copyButton);
@@ -260,13 +276,34 @@ const layoutProps = {
       const code = block.querySelector("code");
       const text = code?.innerText;
 
-      await navigator.clipboard.writeText(text ?? "");
+      try {
+        if (navigator.clipboard?.writeText) {
+          await navigator.clipboard.writeText(text ?? "");
+        } else {
+          const textarea = document.createElement("textarea");
+          textarea.value = text ?? "";
+          textarea.setAttribute("readonly", "");
+          textarea.style.position = "fixed";
+          textarea.style.opacity = "0";
+          document.body.appendChild(textarea);
+          textarea.select();
 
-      button.innerText = "Copied";
+          const copied = document.execCommand("copy");
+          textarea.remove();
+          if (!copied) throw new Error("Copy command failed");
+        }
+
+        button.textContent = "Copied";
+        button.setAttribute("aria-label", "Code copied to clipboard");
+      } catch {
+        button.textContent = "Copy failed";
+        button.setAttribute("aria-label", "Unable to copy code");
+      }
 
       setTimeout(() => {
-        button.innerText = copyButtonLabel;
-      }, 700);
+        button.textContent = copyButtonLabel;
+        button.setAttribute("aria-label", "Copy code to clipboard");
+      }, 1200);
     }
   }
   attachCopyButtons();

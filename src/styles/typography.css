@@ -107,6 +107,94 @@
     pre {
       @apply focus-visible:border-transparent focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-dashed;
     }
+
+    .code-block {
+      margin-block: 1.75rem;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      border-radius: 0.75rem;
+      background: var(--surface);
+      box-shadow: 0 14px 36px -32px rgb(15 23 42 / 65%);
+    }
+
+    .code-block:focus-within {
+      border-color: var(--accent);
+      box-shadow:
+        0 0 0 2px color-mix(in srgb, var(--accent) 28%, transparent),
+        0 14px 36px -32px rgb(15 23 42 / 65%);
+    }
+
+    .code-toolbar {
+      display: flex;
+      min-height: 2.5rem;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      padding: 0.45rem 0.6rem 0.45rem 1rem;
+      background: color-mix(in srgb, var(--muted) 58%, var(--surface));
+      user-select: none;
+    }
+
+    .code-language {
+      color: var(--subtle);
+      font-family:
+        var(--font-google-sans-code), "SFMono-Regular", Consolas, monospace;
+      font-size: 0.69rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      line-height: 1;
+      text-transform: uppercase;
+    }
+
+    .copy-code {
+      border: 1px solid transparent;
+      border-radius: 0.4rem;
+      padding: 0.38rem 0.58rem;
+      background: transparent;
+      color: var(--subtle);
+      font-family: ui-sans-serif, system-ui, sans-serif;
+      font-size: 0.75rem;
+      font-weight: 600;
+      line-height: 1;
+    }
+
+    .copy-code:hover {
+      border-color: var(--border);
+      background: var(--surface);
+      color: var(--accent);
+    }
+
+    .code-block pre {
+      margin: 0;
+      overflow-x: auto;
+      border: 0;
+      border-radius: 0;
+      padding: 0;
+      box-shadow: none;
+    }
+
+    .code-block pre:focus-visible {
+      outline: none;
+    }
+
+    .code-block pre code {
+      display: block;
+      width: max-content;
+      min-width: 100%;
+      padding: 1.05rem 1.15rem 1.15rem;
+      font-size: 0.825rem;
+      font-variant-ligatures: none;
+      line-height: 1.65;
+      tab-size: 2;
+    }
+
+    .code-block .astro-code {
+      border: 0;
+    }
+
+    .code-block .astro-code code {
+      flex: none;
+    }
   }
 
   /* ===== Code Blocks & Syntax Highlighting ===== */

@@ -1,7 +1,7 @@
 ---
 author: Ivaylo Bahtchevanov
 pubDatetime: 2026-07-12T10:00:00Z
-modDatetime: 2026-08-19T09:58:11-07:00
+modDatetime: 2026-08-19T10:13:44-07:00
 title: Running an AI SRE on the Claude platform
 featured: true
 draft: false
@@ -175,7 +175,8 @@ description: How we built Ada, the agent that investigates production incidents 
 
 <p>A single API call classifies the alert, proposes a severity, and normalizes the payload into the incident envelope. The envelope starts a session, the judge&#8217;s score files into the eval store, and the grader&#8217;s verdict decides whether a diagnosis posts; the first reader of each is software, so a response that almost parses is a failure. Structured outputs remove that failure class at the API. The envelope schema goes in <code>output_config.format</code> and the response is guaranteed to validate against it:</p>
 
-<pre><code>from anthropic import Anthropic
+```python
+from anthropic import Anthropic
 
 client = Anthropic()
 
@@ -190,18 +191,30 @@ envelope = client.messages.create(
                 "type": "object",
                 "properties": {
                     "service": {"type": "string"},
-                    "severity": {"type": "string", "enum": ["sev1", "sev2", "sev3"]},
+                    "severity": {
+                        "type": "string",
+                        "enum": ["sev1", "sev2", "sev3"],
+                    },
                     "error_signature": {"type": "string"},
-                    "affected_components": {"type": "array", "items": {"type": "string"}},
+                    "affected_components": {
+                        "type": "array",
+                        "items": {"type": "string"},
+                    },
                     "window_start": {"type": "string"},
                 },
-                "required": ["service", "severity", "error_signature",
-                             "affected_components", "window_start"],
+                "required": [
+                    "service",
+                    "severity",
+                    "error_signature",
+                    "affected_components",
+                    "window_start",
+                ],
                 "additionalProperties": False,
             },
         }
     },
-)</code></pre>
+)
+```
 
 <p>The same pattern covers every downstream artifact: the diagnosis record, the action proposal, the Slack feedback record, and eval results. In the Python SDK, <code>client.messages.parse()</code> along with the Pydantic model give the same guarantee with typed objects instead of raw JSON. Three operational details matter in practice. The first request with a new schema pays a grammar&#8209;compilation cost; the compiled grammar is then cached for 24 hours from last use. The schema guarantee has two documented exceptions, a safety refusal and hitting <code>max_tokens</code>, so we check <code>stop_reason</code> before trusting a parse. And prompts and responses are still processed with zero data retention when structured outputs are enabled, which the runtime boundary depends on.</p>
 
@@ -219,7 +232,8 @@ envelope = client.messages.create(
 
 <p>The Agent SDK provides the same loop, tools, and context management that power Claude Code, running in our process, with session state as JSONL files we hold. Skills load from the filesystem, MCP servers attach as configuration, and hooks let us enforce policy in code around every tool call. A simplified version of the investigator setup:</p>
 
-<pre><code>from claude_agent_sdk import query, ClaudeAgentOptions, HookMatcher
+```python
+from claude_agent_sdk import ClaudeAgentOptions, HookMatcher, query
 
 async def enforce_read_only(input_data, tool_use_id, context):
     # Writes are only legal through the action gateway, which is not
@@ -227,19 +241,24 @@ async def enforce_read_only(input_data, tool_use_id, context):
     # state, and log every attempt.
     tool = input_data.get("tool_name", "")
     if tool in {"Write", "Edit", "Bash"}:
-        return {"hookSpecificOutput": {
-            "hookEventName": "PreToolUse",
-            "permissionDecision": "deny",
-            "permissionDecisionReason": "writes go through the action gateway",
-        }}
+        return {
+            "hookSpecificOutput": {
+                "hookEventName": "PreToolUse",
+                "permissionDecision": "deny",
+                "permissionDecisionReason": "writes go through the action gateway",
+            }
+        }
     audit(tool_use_id, input_data)
     return {}
 
 options = ClaudeAgentOptions(
     system_prompt=INVESTIGATOR_PROMPT,
     setting_sources=["project"],  # loads .claude/skills: global, domain, service
-    mcp_servers={"obs": OBS_SERVER, "incidents": INDEX_SERVER,
-                 "sandbox": SANDBOX_SERVER},
+    mcp_servers={
+        "obs": OBS_SERVER,
+        "incidents": INDEX_SERVER,
+        "sandbox": SANDBOX_SERVER,
+    },
     allowed_tools=[
         "Read", "Grep", "Skill",  # the Skill tool activates the runbook catalog
         "mcp__obs__query_metrics",
@@ -252,7 +271,8 @@ options = ClaudeAgentOptions(
 )
 
 async for message in query(prompt=envelope_json, options=options):
-    handle(message)</code></pre>
+    handle(message)
+```
 
 <p>Steering needs no extra machinery, because sessions are resumable. The first message carries a <code>session_id</code>, and a follow&#8209;up from the incident thread resumes it with <code>ClaudeAgentOptions(resume=session_id)</code>. The engineer redirects the investigation instead of restarting it, and the session keeps everything it has already read and concluded. It is also why the investigation is one session rather than a fan&#8209;out of subagents: a single accountable hypothesis thread, steerable in one place, with parallelism pushed down into the analysis code. In the thread, that looks like this:</p>
 
@@ -273,7 +293,8 @@ async for message in query(prompt=envelope_json, options=options):
 
 <p>An investigation touches a lot of data the model should never hold. Six hours of error logs might be tens of thousands of lines; the useful signal is that 340 of them are OOM kills and the first one landed 90 seconds after a deploy. Context is for reasoning: fetching, filtering, and counting happen in code next to the data, and only conclusions come back. Claude writes a small program that calls the read tools, filters and joins the results, and returns one compact evidence object, and only that object enters the context window. On the Messages API, the managed version of the pattern is programmatic tool calling, enabled by adding <code>allowed_callers</code> to a tool definition alongside the code execution tool:</p>
 
-<pre><code>tools=[
+```python
+tools = [
     {"type": "code_execution_20260120", "name": "code_execution"},
     {
         "name": "search_logs",
@@ -291,22 +312,29 @@ async for message in query(prompt=envelope_json, options=options):
         "allowed_callers": ["code_execution_20260120"],
     },
     # get_recent_deploys and query_metrics are defined the same way
-]</code></pre>
+]
+```
 
 <p>We do not run our telemetry through the hosted pass, for two reasons. One, MCP‑connector tools cannot be called programmatically, which is why the snippet above defines the reads as plain custom tools; the limit is the connector’s, and the MCP servers the Agent SDK attaches are unaffected. Two, the managed container runs on Anthropic infrastructure and retains execution artifacts for up to 30 days, the same class of constraint that kept sessions in‑house. So the investigator runs the identical pattern behind one bank‑side tool. <code>run_analysis</code> takes the program Claude writes, executes it in a network‑restricted sandbox next to the read APIs, and returns only what it prints; the docs describe this self‑managed sandbox alongside the hosted one, and for this data it is the only one we can use. Claude’s side is unchanged either way:</p>
 
-<pre><code># code Claude writes; executes in the bank-side sandbox
+```python
+# Code Claude writes; executes in the bank-side sandbox.
 import json
 
 deploys = json.loads(await get_recent_deploys({"service": "checkout", "hours": 6}))
 logs = await search_logs({"service": "checkout", "level": "ERROR", "hours": 6})
 oom = [line for line in logs.splitlines() if "OOMKilled" in line]
 
-print(json.dumps({
-    "deploy_ids": [d["id"] for d in deploys],
-    "oom_count": len(oom),
-    "first_oom_ts": oom[0].split()[0] if oom else None,
-}))</code></pre>
+print(
+    json.dumps(
+        {
+            "deploy_ids": [d["id"] for d in deploys],
+            "oom_count": len(oom),
+            "first_oom_ts": oom[0].split()[0] if oom else None,
+        }
+    )
+)
+```
 
 <p>We reserve the pattern for the read‑heavy phase and keep the triage fast path on direct calls, since programmatic calling adds overhead when a turn makes only one or two calls. Anthropic’s published benchmark shows the same split: a token reduction on a large read‑heavy tool agent, a small penalty on low‑call workloads.</p>
 
@@ -324,7 +352,9 @@ print(json.dumps({
 
 <p>The knowledge that makes an investigation good is owned by service teams, not by us, so it ships as Skills in their repositories rather than as sections of a central prompt. A Skill is a folder with a <code>SKILL.md</code>. The frontmatter is what Claude matches a task against, and the body loads only when it matches:</p>
 
-<pre><code>---
+<!-- prettier-ignore -->
+```markdown
+---
 name: service-checkout
 description: Investigate checkout-svc incidents. Use when an alert names
   checkout-svc or symptoms include payment failures at checkout.
@@ -335,7 +365,8 @@ description: Investigate checkout-svc incidents. Use when an alert names
 # Key dashboards and queries
 # Dependencies and ownership
 # Safe mitigations
-# Escalate or prohibit</code></pre>
+# Escalate or prohibit
+```
 
 <p>Skills compose by specificity. A checkout OOM session loads the global incident discipline, the OOM domain playbook, and the checkout service Skill. The global Skill says to diagnose before proposing a change. The domain Skill explains how to tell a lowered memory limit from a leak. The service Skill knows checkout runs on cost&#8209;constrained nodes, so the obvious fix, raising the limit, is the wrong one there. Until a Skill matches, it costs only its metadata in context, the name and description above, which is what lets the catalog grow to hundreds of runbooks without inflating every session.</p>
 
@@ -365,14 +396,16 @@ description: Investigate checkout-svc incidents. Use when an alert names
 
 <p>A bounce is itself a typed record:</p>
 
-<pre><code>{
+```json
+{
   "record": "dx_4821",
   "verdict": "bounce",
   "failing_claim": "onset precedes the 14:02 deploy",
   "check": "cited excerpt starts at 14:02; the claim needs the 13:47 canary window",
   "bounce_count": 1,
   "disposition": "resume, failing claim named"
-}</code></pre>
+}
+```
 
 <p>Two properties keep the grader inside the trust model. It can block and bounce; it cannot approve, so it adds no authority anywhere. And its verdicts land in the eval store like any other artifact and reconcile against verified causes like any other label, because a checker with an unmeasured error rate is one more opinion. In a domain where being wrong has consequences, the verification logic between the model and execution is the part of the harness most worth owning; the grader is that logic promoted from a rule to a job, at about two cents a pass.</p>
 
@@ -392,22 +425,35 @@ description: Investigate checkout-svc incidents. Use when an alert names
 
 <p>The proposal that reaches the gateway is itself a structured output, and strict tool use holds the write tools' inputs to their schemas the same way, so the record is typed end to end. The gateway takes typed records and nothing else, which is what keeps approval, replay, and audit uniform across action classes:</p>
 
-<pre><code>{
+```json
+{
   "proposal_id": "prop_01j9k2",
   "incident": "INC-4821",
   "action": "rollback_deployment",
-  "target": {"service": "checkout-svc",
-             "from": "2026.07.14-3", "to": "2026.07.14-2"},
+  "target": {
+    "service": "checkout-svc",
+    "from": "2026.07.14-3",
+    "to": "2026.07.14-2"
+  },
   "risk_tier": "R2",
-  "preconditions": {"deploy_correlated": true,
-                    "change_freeze": false,
-                    "inverse_tested": true},
-  "dry_run": {"status": "passed",
-              "blast_radius": "1 service, 12 pods, no dependent config"},
+  "preconditions": {
+    "deploy_correlated": true,
+    "change_freeze": false,
+    "inverse_tested": true
+  },
+  "dry_run": {
+    "status": "passed",
+    "blast_radius": "1 service, 12 pods, no dependent config"
+  },
   "idempotency_key": "inc-4821-rollback-1",
-  "approval": {"route": "senior-oncall", "state": "pending"},
+  "approval": {
+    "route": "senior-oncall",
+    "state": "pending"
+  },
   "expires_at": "2026-07-19T14:40:00Z"
-}</code></pre>
+}
+```
+
 <p>That record was generated in shadow, because R2 still runs there: every R2 proposal is evaluated end to end, dry run included, while execution is withheld. R1 is past that stage; restart, scale, and merge execute in production behind approval, each with its dry run and tested inverse.</p>
 
 <h2 id="diagnosis-as-a-capability">Diagnosis as a capability</h2>
@@ -470,7 +516,8 @@ description: Investigate checkout-svc incidents. Use when an alert names
 
 <p>The measurement contract's habit applies to experiments too, so the protocol is fixed before the first replay:</p>
 
-<pre><code># fixed before the first replay runs
+```text
+# fixed before the first replay runs
 sample        300 reconciled incidents, stratified by severity and tier
 attempts      3 per incident; independent sessions; identical inputs
 judge         corroboration rubric, scored against the verified cause,
@@ -479,7 +526,7 @@ comparison    judge-selected best-of-3 vs. attempt 1 alone
 adopt when    sev1 accuracy improves by 2+ points and the two added
               attempts stay under 5% of fleet investigation spend
 either way    the result publishes with this protocol attached
-</code></pre>
+```
 
 <p>The 96 percent headline leaves little room, which is itself the point: if a third lever exists, the only place it can show up is the slice where single runs miss, and sev1 is the only slice where parallel sessions could ever be worth their cost. The cost bar is a spend ceiling rather than a per&#8209;diagnosis ratio deliberately: tripling attempts triples cost by construction, so a cost&#8209;per&#8209;correct bar could never pass and a bar that cannot pass is theater, while sev1's small share of volume is what makes the ceiling cheap to stay under. If the number clears the bar, sev1 investigations get N hypothesis threads and a selection pass, and disagreement between threads surfaces in the incident thread rather than being resolved silently, because two independent sessions reaching different causes from the same evidence is information the on&#8209;call should see, not noise for a judge to hide. If it does not clear, we have falsified the claim on our own task for the cost of a replay, and the single thread stays. Either way, the claim made earlier, that an investigation is one session rather than a fan&#8209;out of subagents, gets tested instead of defended. Best&#8209;of&#8209;N is not that fan&#8209;out; each attempt is still a single accountable thread, and the judge is a separate job, not a coordinator inside the session. The sentence stands today. If the experiment wins, it gains a qualifier, one accountable thread per hypothesis, and the qualifier will arrive with the experiment's number attached.</p>
 

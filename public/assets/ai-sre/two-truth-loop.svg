@@ -8,27 +8,27 @@
   <text x="195" y="136" text-anchor="middle" font-family="Georgia,serif" font-size="21" font-weight="600" fill="#1a1a17">RCA in Slack</text>
   <text x="195" y="164" text-anchor="middle" font-family="-apple-system,'Segoe UI',sans-serif" font-size="12.5" fill="#6b6b66">hypothesis + linked evidence</text>
 
-  <line x1="322" y1="144" x2="370" y2="144" stroke="#1a1a17" stroke-width="1.5" marker-end="url(#d3k)"/>
-  <text x="346" y="130" text-anchor="middle" font-family="ui-monospace,Menlo,monospace" font-size="12" fill="#6b6b66">one click</text>
+  <line x1="322" y1="144" x2="410" y2="144" stroke="#1a1a17" stroke-width="1.5" marker-end="url(#d3k)"/>
+  <text x="368" y="130" text-anchor="middle" font-family="ui-monospace,Menlo,monospace" font-size="12" fill="#6b6b66">one click</text>
 
-  <rect x="376" y="92" width="290" height="104" rx="18" fill="#ffffff" stroke="#1a1a17" stroke-width="1.5"/>
-  <text x="521" y="136" text-anchor="middle" font-family="Georgia,serif" font-size="21" font-weight="600" fill="#1a1a17">Provisional label</text>
-  <text x="521" y="164" text-anchor="middle" font-family="-apple-system,'Segoe UI',sans-serif" font-size="12.5" fill="#6b6b66">accurate · partial · incorrect · unknown</text>
+  <rect x="416" y="92" width="290" height="104" rx="18" fill="#ffffff" stroke="#1a1a17" stroke-width="1.5"/>
+  <text x="561" y="136" text-anchor="middle" font-family="Georgia,serif" font-size="21" font-weight="600" fill="#1a1a17">Provisional label</text>
+  <text x="561" y="164" text-anchor="middle" font-family="-apple-system,'Segoe UI',sans-serif" font-size="12.5" fill="#6b6b66">accurate · partial · incorrect · unknown</text>
 
-  <line x1="668" y1="144" x2="716" y2="144" stroke="#1a1a17" stroke-width="1.5" marker-end="url(#d3k)"/>
-  <text x="692" y="130" text-anchor="middle" font-family="ui-monospace,Menlo,monospace" font-size="12" fill="#6b6b66">closes</text>
+  <line x1="708" y1="144" x2="796" y2="144" stroke="#1a1a17" stroke-width="1.5" marker-end="url(#d3k)"/>
+  <text x="754" y="130" text-anchor="middle" font-family="ui-monospace,Menlo,monospace" font-size="12" fill="#6b6b66">closes</text>
 
-  <rect x="722" y="92" width="270" height="104" rx="18" fill="#141412"/>
-  <text x="857" y="136" text-anchor="middle" font-family="Georgia,serif" font-size="21" font-weight="600" fill="#ffffff">Verified truth</text>
-  <text x="857" y="164" text-anchor="middle" font-family="-apple-system,'Segoe UI',sans-serif" font-size="12.5" fill="#c9c4b8">postmortem cause + fix</text>
+  <rect x="802" y="92" width="270" height="104" rx="18" fill="#141412"/>
+  <text x="937" y="136" text-anchor="middle" font-family="Georgia,serif" font-size="21" font-weight="600" fill="#ffffff">Verified truth</text>
+  <text x="937" y="164" text-anchor="middle" font-family="-apple-system,'Segoe UI',sans-serif" font-size="12.5" fill="#c9c4b8">postmortem cause + fix</text>
 
-  <line x1="857" y1="196" x2="857" y2="262" stroke="#1a1a17" stroke-width="1.5" marker-end="url(#d3k)"/>
+  <line x1="937" y1="196" x2="937" y2="262" stroke="#1a1a17" stroke-width="1.5" marker-end="url(#d3k)"/>
 
-  <rect x="560" y="268" width="330" height="104" rx="18" fill="#D97757"/>
-  <text x="725" y="312" text-anchor="middle" font-family="Georgia,serif" font-size="21" font-weight="600" fill="#1a1a17">Reconcile</text>
-  <text x="725" y="340" text-anchor="middle" font-family="-apple-system,'Segoe UI',sans-serif" font-size="12.5" fill="#3d2417">new eval case + drafted Skill update</text>
+  <rect x="640" y="268" width="330" height="104" rx="18" fill="#D97757"/>
+  <text x="805" y="312" text-anchor="middle" font-family="Georgia,serif" font-size="21" font-weight="600" fill="#1a1a17">Reconcile</text>
+  <text x="805" y="340" text-anchor="middle" font-family="-apple-system,'Segoe UI',sans-serif" font-size="12.5" fill="#3d2417">new eval case + drafted Skill update</text>
 
-  <polyline points="556,320 195,320 195,204" fill="none" stroke="#D97757" stroke-width="1.5" marker-end="url(#d3c)"/>
-  <text x="372" y="306" text-anchor="middle" font-family="ui-monospace,Menlo,monospace" font-size="12" fill="#a14e2f">the next investigation starts smarter</text>
+  <polyline points="636,320 195,320 195,204" fill="none" stroke="#D97757" stroke-width="1.5" marker-end="url(#d3c)"/>
+  <text x="416" y="306" text-anchor="middle" font-family="ui-monospace,Menlo,monospace" font-size="12" fill="#a14e2f">the next investigation starts smarter</text>
   <text x="620" y="428" text-anchor="middle" font-family="-apple-system,'Segoe UI',sans-serif" font-size="15" fill="#55534d">No accuracy headline without a verified denominator.</text>
 </svg>
