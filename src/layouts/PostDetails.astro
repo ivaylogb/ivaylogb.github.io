@@ -73,7 +73,9 @@ const layoutProps = {
   >
     <div class="mx-auto w-full max-w-[70ch]">
       <h1
-        transition:name={slugifyStr(title.replaceAll(".", "-"))}
+        transition:name={slugifyStr(
+          title.replaceAll(".", "-").replaceAll(":", "-")
+        )}
         class="inline-block text-3xl leading-tight font-semibold tracking-tight text-foreground sm:text-4xl"
       >
         {title}
