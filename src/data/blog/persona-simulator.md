@@ -1,7 +1,7 @@
 ---
 author: Ivaylo Bahtchevanov
 pubDatetime: 2026-02-17T10:00:00Z
-modDatetime: 2026-08-19T10:57:52-07:00
+modDatetime: 2026-08-19T11:18:18-07:00
 title: "Persona Simulator: Predicting How Users Will React Before You Ship"
 slug: persona-simulator
 featured: true
@@ -30,7 +30,7 @@ description: A grounded simulation system for testing product experiences and ag
   #article .persona-image-link {
     display: block;
     width: 100%;
-    cursor: pointer;
+    cursor: zoom-in;
     text-decoration: none;
   }
 
@@ -48,6 +48,32 @@ description: A grounded simulation system for testing product experiences and ag
     padding: 0;
     border: 0;
     border-radius: 0;
+  }
+
+  #article .persona-figure--narrow {
+    width: min(760px, calc(100vw - 2rem));
+  }
+
+  #article .persona-figure--preview {
+    width: min(720px, calc(100vw - 2rem));
+  }
+
+  #article .persona-figure--preview .persona-shot {
+    aspect-ratio: 16 / 10;
+  }
+
+  #article .persona-figure--preview .persona-image-link {
+    height: 100%;
+  }
+
+  #article .persona-figure--audit .persona-shot {
+    aspect-ratio: 16 / 9;
+  }
+
+  #article .persona-figure--preview img {
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
   }
 
   #article .persona-figure figcaption {
@@ -227,16 +253,11 @@ The output includes:
 
 ## What the simulator returns
 
-Two views capture the core of the output: a decision summary and the causal explanation behind it.
+The summary view puts the likely outcome, main risks, recommended changes, and confidence in one place.
 
 <figure class="persona-figure">
 <div class="persona-shot"><a class="persona-image-link" href="/assets/persona-simulator/new_res.png" target="_blank" rel="noopener" aria-label="Open the full-size results dashboard in a new tab"><img src="/assets/persona-simulator/new_res.png" alt="Results dashboard with a medium-risk verdict, prioritized recommendations, and 81 percent confidence" width="1306" height="730" loading="lazy" decoding="async"></a></div>
 <figcaption><strong>Decision summary.</strong> A concise read on the likely outcome, highest risks, recommended changes, and confidence.</figcaption>
-</figure>
-
-<figure class="persona-figure">
-<div class="persona-shot"><a class="persona-image-link" href="/assets/persona-simulator/new_conversion.png" target="_blank" rel="noopener" aria-label="Open the full-size conversion analysis in a new tab"><img src="/assets/persona-simulator/new_conversion.png" alt="Conversion analysis separating the elements that help and hinder bill payment conversion" width="1280" height="664" loading="lazy" decoding="async"></a></div>
-<figcaption><strong>Conversion impact.</strong> Likely behavior translated into impact, contributing factors, and launch guardrails.</figcaption>
 </figure>
 
 ---
@@ -269,6 +290,11 @@ A prior cross-sell visibility experiment had to be rolled back because +72% visi
 
 **Emotional state modeling + conversion funnels.**
 The behavioral walkthrough tracks the user's emotional progression: comfortable → hesitant → confused → frustrated. At each step it estimates time spent against the user's scroll-patience parameter. When patience exhausts, the user either abandons or falls back to a secondary path. The primary path converts at ~72%; the secondary at ~23%. The simulator goes beyond "the user will be frustrated" and predicts "frustration at step 6 will redirect ~35% of users from a 72% path to a 23% path, resulting in a -20-35% net impact on bill payment initiation from home."
+
+<figure class="persona-figure persona-figure--preview">
+<div class="persona-shot"><a class="persona-image-link" href="/assets/persona-simulator/new_behavior_walk.png" target="_blank" rel="noopener" aria-label="Open the full-size behavioral walkthrough in a new tab"><img src="/assets/persona-simulator/new_behavior_walk.png" alt="Behavioral walkthrough tracing what the simulated user notices and does over time" width="1300" height="1114" loading="lazy" decoding="async"></a></div>
+<figcaption><strong>Simulated journey.</strong> A timed trace of what the persona notices, where friction appears, and what they do next.</figcaption>
+</figure>
 
 ### 3. Calibrated confidence: every prediction tells you how grounded it is
 
@@ -333,6 +359,11 @@ This is where the simulator stops being an analysis tool and becomes a design wo
 
 The simulator checks each component against the design system and flags custom, deprecated, or missing states. In this run, it found that an existing overdue-state variant was not being used, turning a broad risk into a specific design fix.
 
+<figure class="persona-figure persona-figure--preview persona-figure--audit">
+<div class="persona-shot"><a class="persona-image-link" href="/assets/persona-simulator/design_audit_full.png" target="_blank" rel="noopener" aria-label="Open the full-size design system audit in a new tab"><img src="/assets/persona-simulator/design_audit_full.png" alt="Design system audit classifying approved, custom, deprecated, and missing component variants" width="1088" height="1092" loading="lazy" decoding="async"></a></div>
+<figcaption><strong>Design system audit.</strong> Component-level findings turn a broad risk into a concrete fix.</figcaption>
+</figure>
+
 ### Generate the fix in Figma
 
 The simulator can clone the treatment in Figma and apply its recommendations as editable variants. Here, one variant restored the explicit overdue state; another replaced unrelated cross-sell content with debt-resolution guidance. The designer gets frames to refine, not text descriptions to interpret.
@@ -350,6 +381,11 @@ The prediction improved. Risk dropped from HIGH to MEDIUM. Conversion impact mov
 ## Conversion impact
 
 The simulator's most useful output for an experiment owner is the analysis the simulator provides about the experience itself.
+
+<figure class="persona-figure persona-figure--narrow">
+<div class="persona-shot"><a class="persona-image-link" href="/assets/persona-simulator/new_conversion.png" target="_blank" rel="noopener" aria-label="Open the full-size conversion analysis in a new tab"><img src="/assets/persona-simulator/new_conversion.png" alt="Conversion analysis separating the elements that help and hinder bill payment conversion" width="1280" height="664" loading="lazy" decoding="async"></a></div>
+<figcaption><strong>Conversion impact.</strong> Likely behavior translated into impact, contributing factors, and launch guardrails.</figcaption>
+</figure>
 
 **A predicted rate change with a causal chain.**
 It gives a net impact, such as "down 20%," and a direct chain of events: (1) explicit label removal → (2) late-debt user can't pattern-match the CC widget → (3) first-tap on CC content drops → (4) users with low scroll patience who fail first-tap don't recover → (5) session abandonment before payment initiation increases.
