@@ -16,7 +16,14 @@ export default defineConfig({
   site: "https://ivaylogb.github.io/",
   integrations: [
     sitemap({
-      filter: page => SITE.showArchives || !page.endsWith("/archives"),
+      filter: page => {
+        const { pathname } = new URL(page);
+        const archivesVisible =
+          SITE.showArchives || !pathname.startsWith("/archives/");
+        const tagsVisible = SITE.showTags || !pathname.startsWith("/tags/");
+
+        return archivesVisible && tagsVisible;
+      },
     }),
   ],
   markdown: {
