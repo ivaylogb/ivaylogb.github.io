@@ -94,8 +94,7 @@ description: How GEPA uses failed examples, traces, and written feedback to prop
     line-height: 1.5;
   }
 
-  #article .gepa-route-note,
-  #article .gepa-run-note {
+  #article .gepa-route-note {
     margin: 0;
     border-top: 1px solid var(--border);
     padding: 0.95rem 1.4rem;
@@ -222,37 +221,35 @@ description: How GEPA uses failed examples, traces, and written feedback to prop
 
 <div class="gepa-article">
 
-A red row in an eval table tells you a run missed the target. To decide what to change, you still have to find out whether the problem came from the prompt, the evaluator, a tool call, or context lost between services.
+In one support conversation from my evaluator dataset, a customer reported a missing card and provided a complete delivery address. The assistant could reissue the card. It transferred the case to a person, who completed the reissue.
 
-The usual investigation starts with the trace: read the failure, edit a prompt, and rerun a few examples. GEPA, short for Genetic-Pareto, makes that process repeatable. It uses failed examples, scores, and written feedback to propose revised instructions. Each revision returns to the evaluation workflow for replay.
+The evaluator should have flagged the transfer as unnecessary. It marked the transfer as justified because the address did not include a reference point. That field was optional, and the required address information was complete and consistent.
 
-Existing eval platforms already store traces, datasets, evaluator results, experiment runs, and prompt versions. Keep that history there. GEPA works alongside it during the improvement process.
+The trace showed that the address reached the evaluator intact and that the reissue capability was available. The problem was in the evaluator instructions: they treated an optional field as required.
+
+I used GEPA, short for Genetic-Pareto, to turn that finding into tested revisions. I gave it the failed conversation, the correct label, the score, and a written explanation. GEPA proposed new instructions and replayed each version on the same validation set.
+
+The eval platform kept the trace, dataset, annotations, prompt versions, and results. GEPA used those records during the prompt search. Each revision went back to the same evaluation workflow for comparison.
 
 <figure class="gepa-figure"><div class="gepa-visual"><div class="gepa-flow"><div class="gepa-card"><p class="gepa-card-kicker">Evidence</p><p class="gepa-card-title">Review the failed trace</p><p class="gepa-card-copy">Join the score to the prompt, model, tools, state, and final outcome.</p></div><div class="gepa-card"><p class="gepa-card-kicker">GEPA search</p><p class="gepa-card-title">Propose prompt candidates</p><p class="gepa-card-copy">Use the expected result and written feedback to produce focused changes.</p></div><div class="gepa-card"><p class="gepa-card-kicker">Evaluation</p><p class="gepa-card-title">Replay and compare</p><p class="gepa-card-copy">Run prior successes, important categories, required checks, and untouched examples.</p></div><div class="gepa-card"><p class="gepa-card-kicker">Release decision</p><p class="gepa-card-title">Review the evidence</p><p class="gepa-card-copy">Inspect the exact prompt changes, results, cost, remaining failures, and rollback plan.</p></div></div><p class="gepa-route-note"><strong>Move to an engineering fix</strong> when the failure comes from a tool, retrieval system, schema, policy, or runtime.</p></div><figcaption>GEPA uses the evidence already stored in the evaluation workflow and returns candidate prompts for the same workflow to test.</figcaption></figure>
 
-## Start with the trace
+## Turn the failed example into a rule
 
-Consider an evaluator that checks whether a support agent transferred a case too early. In one conversation, the customer supplied the required information and a person later completed the requested action. The evaluator still marked the transfer as justified because an optional detail was missing.
+For this case, the written feedback was short:
 
-The score identifies a misclassification. The trace shows what the customer provided, which capability was available, when the transfer happened, and how the case ended.
+<div class="gepa-feedback"><dl><dt>Expected result</dt><dd>Flag the transfer as unnecessary.</dd><dt>Observed result</dt><dd>The evaluator treated the transfer as justified.</dd><dt>Cause</dt><dd>An optional address reference point was treated as required.</dd><dt>Evidence</dt><dd>The delivery address was complete and consistent, and card reissue was available.</dd><dt>Rule to test</dt><dd>A missing reference point alone should not justify a transfer when the required address information is complete and card reissue is available.</dd></dl></div>
 
-That evidence also points to the right fix. If a field disappeared in an adapter, repair the adapter. If a required tool was unavailable, fix or add the capability. Here, the faulty decision rule lived in the evaluator prompt, which made it a reasonable GEPA target.
+GEPA uses the score to rank revisions and the written explanation to apply the rule to other cases. Broad advice such as “reason more carefully” gives the model no usable boundary. Copying the conversation into the prompt focuses the change on one row and makes the instructions longer. The rule applies to nearby cases with complete, consistent addresses.
 
-Make this check before every run. Prompt changes are easy to generate and can hide a deeper defect for a while. The trace keeps the change tied to the cause.
+Other failures in the dataset produced more specific rules:
 
-## Give the search useful feedback
-
-A score ranks prompt versions. Written feedback tells GEPA what went wrong and which evidence should change the decision.
-
-For the support example, the feedback can be short:
-
-<div class="gepa-feedback"><dl><dt>Expected result</dt><dd>Flag the transfer as unnecessary.</dd><dt>Observed result</dt><dd>The evaluator treated the transfer as justified.</dd><dt>Cause</dt><dd>An optional detail was treated as a required field.</dd><dt>Evidence</dt><dd>The required information was complete and consistent, and the requested action was available.</dd><dt>General rule</dt><dd>Missing optional information should not justify a transfer when the required evidence is complete.</dd></dl></div>
-
-The score tells GEPA which prompts performed better. The feedback supplies the missing decision rule. That record supports a focused revision. Broad instructions such as “reason more carefully” give the model no concrete rule to follow.
-
-The feedback should describe a reusable rule. Copying the example into the prompt usually fixes a single row and makes the prompt longer. A clear rule can cover a family of similar cases.
+- Distinguish a complete address from a partial one.
+- Treat a possible future transfer differently from a completed transfer.
+- Require evidence in the trace before treating a capability as available.
 
 ## Search across candidate prompts
+
+I split the dataset into 20 examples for prompt development, 10 for validation, and 20 for the final test. GEPA reflected on two examples at a time. Every accepted revision ran on the full validation set.
 
 One failed example can support several plausible edits. A revision that treats the missing detail as optional may become too permissive when other required evidence is incomplete. A stricter revision may work for the original case and fail on a valid local variation.
 
@@ -260,9 +257,9 @@ GEPA can keep several prompt versions when each succeeds on different examples. 
 
 In my evaluator experiment, the original prompt scored 8 of 10 on validation. The first major revision also scored 8 of 10, with each prompt missing different examples. A later revision reached 9 of 10. Further revisions fell to 7 of 10, so I kept the 9 of 10 version.
 
-I then tested the selected prompt on 20 examples that had stayed out of development. The original prompt handled 17 correctly and the selected version handled 18. The sample is small, so I keep its size beside the result and limit the claim to this experiment.
+On the final test set, the original prompt handled 17 examples correctly and the selected version handled 18. The sample is small, so I keep its size beside the result and limit the claim to this experiment.
 
-<figure class="gepa-figure"><div class="gepa-visual"><div class="gepa-candidates"><div class="gepa-card"><p class="gepa-card-kicker">Original prompt</p><p class="gepa-card-title">Validation: 8 of 10</p><div class="gepa-case-row"><span>Example A</span><span class="gepa-pass">Pass</span></div><div class="gepa-case-row"><span>Example B</span><span class="gepa-fail">Fail</span></div></div><div class="gepa-card"><p class="gepa-card-kicker">Revision 1</p><p class="gepa-card-title">Validation: 8 of 10</p><div class="gepa-case-row"><span>Example A</span><span class="gepa-fail">Fail</span></div><div class="gepa-case-row"><span>Example B</span><span class="gepa-pass">Pass</span></div></div><div class="gepa-card"><p class="gepa-card-kicker">Revision 2</p><p class="gepa-card-title">Validation: 9 of 10</p><p class="gepa-card-copy">Final test: 18 of 20. Original prompt: 17 of 20.</p><span class="gepa-status gepa-status-retain">Retain</span></div><div class="gepa-card"><p class="gepa-card-kicker">Later revision</p><p class="gepa-card-title">Validation: 7 of 10</p><p class="gepa-card-copy">Keep the best previous version when a revision loses ground.</p><span class="gepa-status gepa-status-reject">Reject</span></div></div><p class="gepa-run-note">The strongest candidate appeared at iteration 15. The run continued to iteration 161 without improving it.</p></div><figcaption>Equal averages can hide different failures. For release, use the result earned by one prompt on the complete validation set.</figcaption></figure>
+<figure class="gepa-figure"><div class="gepa-visual"><div class="gepa-candidates"><div class="gepa-card"><p class="gepa-card-kicker">Original prompt</p><p class="gepa-card-title">Validation: 8 of 10</p><div class="gepa-case-row"><span>Example A</span><span class="gepa-pass">Pass</span></div><div class="gepa-case-row"><span>Example B</span><span class="gepa-fail">Fail</span></div></div><div class="gepa-card"><p class="gepa-card-kicker">Revision 1</p><p class="gepa-card-title">Validation: 8 of 10</p><div class="gepa-case-row"><span>Example A</span><span class="gepa-fail">Fail</span></div><div class="gepa-case-row"><span>Example B</span><span class="gepa-pass">Pass</span></div></div><div class="gepa-card"><p class="gepa-card-kicker">Revision 2</p><p class="gepa-card-title">Validation: 9 of 10</p><p class="gepa-card-copy">Final test: 18 of 20. Original prompt: 17 of 20.</p><span class="gepa-status gepa-status-retain">Retain</span></div><div class="gepa-card"><p class="gepa-card-kicker">Later revision</p><p class="gepa-card-title">Validation: 7 of 10</p><p class="gepa-card-copy">Keep the best previous version when a revision loses ground.</p><span class="gepa-status gepa-status-reject">Reject</span></div></div></div><figcaption>Equal averages can hide different failures. For release, use the result earned by one prompt on the complete validation set.</figcaption></figure>
 
 Together, the two 8 of 10 prompts covered 9 validation examples. Each individual prompt still scored 8 of 10 at that point. GEPA used the complementary results to guide later revisions, including the single prompt that eventually scored 9 of 10.
 
@@ -288,7 +285,7 @@ The eval platform records what happened under each version. GEPA explores instru
 
 ## Know when to stop
 
-In my experiment, the strongest prompt appeared at iteration 15. The search continued to iteration 161 and often drew small batches with no failures to learn from. The fixed budget allowed it to continue. A plateau rule would have stopped earlier and saved evaluator calls.
+The run budgeted about 420 scoring calls. The strongest prompt appeared at iteration 15, and the fixed budget kept the search running through iteration 161. Many two-example batches contained no failures, so GEPA had no new evidence for a revision. A rule that stopped after several rounds without improvement would have ended the run sooner and saved scoring calls.
 
 Useful stopping signals include:
 
