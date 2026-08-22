@@ -32,14 +32,22 @@ description: How we built Ada, the agent that investigates production incidents 
     height: auto;
     margin: 0;
     padding: 0.75rem;
-    border: 1px solid #e4e0d6;
+    border: 1px solid #dfe4eb;
     border-radius: 0.75rem;
-    background: #fbfaf7;
-    box-shadow: 0 22px 55px -42px rgb(15 23 42 / 55%);
+    background: #f5f7fa;
+    box-shadow: 0 18px 44px -34px rgb(15 23 42 / 45%);
   }
 
-  #article .sre-article figcaption,
-  #article .sre-article .threadcap {
+  #article .sre-article figure.sre-product-figure {
+    width: min(1080px, calc(100vw - 2rem));
+  }
+
+  #article .sre-article .sre-product-figure img {
+    padding: 0;
+    background: #f5f7fa;
+  }
+
+  #article .sre-article figcaption {
     max-width: 48rem;
     margin: 0.9rem auto 0;
     color: var(--subtle);
@@ -47,84 +55,6 @@ description: How we built Ada, the agent that investigates production incidents 
     font-size: 0.925rem;
     line-height: 1.6;
     text-align: center;
-  }
-
-  #article .sre-article .thread {
-    margin: 1.6rem 0 0.5rem;
-    overflow: hidden;
-    border: 1px solid var(--border);
-    border-radius: 0.75rem;
-    background: var(--surface);
-    color: var(--foreground);
-    font-family: ui-sans-serif, system-ui, sans-serif;
-  }
-
-  #article .sre-article .msg {
-    display: flex;
-    gap: 0.75rem;
-    padding: 0.85rem 1rem;
-  }
-
-  #article .sre-article .msg + .msg {
-    border-top: 1px solid var(--border);
-  }
-
-  #article .sre-article .avatar {
-    flex: 0 0 1.9rem;
-    height: 1.9rem;
-    border-radius: 0.5rem;
-    color: white;
-    font-size: 0.75rem;
-    font-weight: 600;
-    line-height: 1.9rem;
-    text-align: center;
-  }
-
-  #article .sre-article .a-bot {
-    background: #141412;
-  }
-
-  #article .sre-article .a-eng {
-    background: #d97757;
-    color: #1a1a17;
-  }
-
-  #article .sre-article .tbody {
-    font-size: 0.9rem;
-    line-height: 1.55;
-  }
-
-  #article .sre-article .name {
-    margin-bottom: 0.15rem;
-    font-size: 0.8rem;
-    font-weight: 600;
-  }
-
-  #article .sre-article .name span {
-    margin-left: 0.4rem;
-    opacity: 0.65;
-    font-size: 0.75rem;
-    font-weight: 400;
-  }
-
-  #article .sre-article .pills {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.35rem;
-    margin-top: 0.55rem;
-  }
-
-  #article .sre-article .pill {
-    border: 1px solid var(--border);
-    border-radius: 999px;
-    padding: 0.2rem 0.6rem;
-    font-size: 0.75rem;
-  }
-
-  #article .sre-article .pill.sel {
-    border-color: #d97757;
-    background: #f7e6dc;
-    color: #3d2417;
   }
 
   #article .sre-article pre code {
@@ -154,7 +84,7 @@ description: How we built Ada, the agent that investigates production incidents 
 
 <p>In 2025 we shipped a read&#8209;only investigation agent, internally called Ada, on a custom-built harness, because nothing hosted at the time had the durable, steerable sessions an investigation needs. Ada worked well enough to expose the problems that matter at the next stage. It could not search past incidents, could not be redirected mid&#8209;investigation, could not act on its conclusions, ran on infrastructure that consumed most of a two&#8209;person team, and had no reliable way to measure whether its diagnoses were correct.</p>
 
-<p>This post describes the v2 design. Structured outputs type every artifact another system parses, the Agent SDK runs the investigation loop, MCP carries the operational reads, code in the middle keeps raw telemetry out of the model’s context, and Skills hold the runbooks service teams own. Two constraints shaped the design more than any feature choice: where session state can live, and which actions exist for the agent at all. Anthropic's cookbooks include incident‑response agents on both runtimes and cover the basic mechanics; the difference here is everything a production system has to implement before the agent touches a real incident.</p>
+<p>This post describes the v2 design. Structured outputs type every artifact another system parses, the Agent SDK runs the investigation loop, MCP carries the operational reads, code in the middle keeps raw telemetry out of the model’s context, and Skills hold the runbooks service teams own. Two constraints shaped the design more than any feature choice: where session state can live, and which actions exist for the agent at all. Anthropic's cookbooks cover incident&#8209;response agents on both runtimes. This article focuses on the production design around those mechanics.</p>
 
 <h2 id="architecture-at-a-glance">The architecture at a glance</h2>
 
@@ -168,7 +98,18 @@ description: How we built Ada, the agent that investigates production incidents 
 
 <p>An alert enters through a fast path on the Messages API, which classifies it and emits a typed incident envelope. The envelope starts an Agent SDK session inside our infrastructure. The session loads the relevant Skills, gathers evidence through MCP read tools, clears a grading pass, and posts a structured diagnosis into the incident's Slack thread, where the on&#8209;call engineer can label it or redirect it. If the diagnosis warrants action, the proposal goes to a separate action plane, where a human approves a dry run before anything executes. Four components sit under all of this and outlive any single session: the incident index, the Skills registry, the eval store, and the action gateway.</p>
 
-<p>We split the design by whether the work can be bounded in advance. Triage, judge scoring, and the grader each have clearly defined input and output, so they run as single Messages API calls with structured outputs and no session state. The investigation cannot be bounded in the same way so it runs as an Agent SDK session, with state held as files on our infrastructure. Runbooks are Skills, maintained in the owning team's repo. Writes go through the action gateway as typed proposals.</p>
+<p>We split the design by whether the work can be bounded in advance. Triage, judge scoring, and the grader each have clearly defined input and output, so they run as single Messages API calls with structured outputs and no session state. The investigation remains open&#8209;ended and runs as an Agent SDK session, with state held as files on our infrastructure. Runbooks are Skills, maintained in the owning team's repo. Writes go through the action gateway as typed proposals.</p>
+
+<h2 id="operator-workflow">The operator workflow</h2>
+
+<p>The operator sees that flow as one incident workspace. The default view combines the incident timeline, the current assessment, the evidence state, and the proposed mitigation. Raw source activity stays collapsed until it is needed. The screens in this post use fictional incident data to show the workflow.</p>
+
+<figure class="sre-product-figure">
+  <a href="/assets/ai-sre/product/investigation-overview.png" target="_blank" rel="noopener" aria-label="Open the full-size investigation workspace in a new tab">
+    <img src="/assets/ai-sre/product/investigation-overview.png" alt="Incident investigation workspace showing a checkout alert, incident context, evidence review status, and the current deployment-regression assessment" width="1422" height="800" loading="lazy" decoding="async">
+  </a>
+  <figcaption>The incident workspace keeps the timeline, sourced assessment, and proposed mitigation together. Operators can expand the full source activity when they need it.</figcaption>
+</figure>
 
 <h2 id="triage-runs-on-the-messages-api">Triage runs on the Messages API</h2>
 
@@ -215,7 +156,7 @@ envelope = client.messages.create(
 )
 ```
 
-<p>The same pattern covers every downstream artifact: the diagnosis record, the action proposal, the Slack feedback record, and eval results. In the Python SDK, <code>client.messages.parse()</code> along with the Pydantic model give the same guarantee with typed objects instead of raw JSON. Three operational details matter in practice. The first request with a new schema pays a grammar&#8209;compilation cost; the compiled grammar is then cached for 24 hours from last use. The schema guarantee has two documented exceptions, a safety refusal and hitting <code>max_tokens</code>, so we check <code>stop_reason</code> before trusting a parse. And prompts and responses are still processed with zero data retention when structured outputs are enabled, which the runtime boundary depends on.</p>
+<p>The same pattern covers every downstream artifact: the diagnosis record, the action proposal, the Slack feedback record, and eval results. In the Python SDK, <code>client.messages.parse()</code> and the Pydantic model return typed objects with the same guarantee. Three operational details matter in practice. The first request with a new schema pays a grammar&#8209;compilation cost; the compiled grammar is then cached for 24 hours from last use. The schema guarantee has two documented exceptions, a safety refusal and hitting <code>max_tokens</code>, so we check <code>stop_reason</code> before trusting a parse. Prompts and responses are still processed with zero data retention when structured outputs are enabled, which the runtime boundary depends on.</p>
 
 <h2 id="investigation-runs-on-the-agent-sdk">The investigation runs on the Agent SDK</h2>
 
@@ -235,9 +176,9 @@ envelope = client.messages.create(
 from claude_agent_sdk import ClaudeAgentOptions, HookMatcher, query
 
 async def enforce_read_only(input_data, tool_use_id, context):
-    # Writes are only legal through the action gateway, which is not
-    # in this session's toolset. Block anything that could mutate
-    # state, and log every attempt.
+    # This session has no write tools. All writes go through the
+    # action gateway. Block anything that could mutate state, and
+    # log every attempt.
     tool = input_data.get("tool_name", "")
     if tool in {"Write", "Edit", "Bash"}:
         return {
@@ -273,24 +214,31 @@ async for message in query(prompt=envelope_json, options=options):
     handle(message)
 ```
 
-<p>Steering needs no extra machinery, because sessions are resumable. The first message carries a <code>session_id</code>, and a follow&#8209;up from the incident thread resumes it with <code>ClaudeAgentOptions(resume=session_id)</code>. The engineer redirects the investigation instead of restarting it, and the session keeps everything it has already read and concluded. It is also why the investigation is one session rather than a fan&#8209;out of subagents: a single accountable hypothesis thread, steerable in one place, with parallelism pushed down into the analysis code. In the thread, that looks like this:</p>
+<p>Steering uses session resume. The first message carries a <code>session_id</code>, and a follow&#8209;up resumes it with <code>ClaudeAgentOptions(resume=session_id)</code>. The existing session continues with everything it has already read and concluded. We keep one investigation session with a single accountable hypothesis thread. Parallel work happens inside the analysis code.</p>
 
-<div class="thread" id="steering-loop-example">
-  <div class="msg"><div class="avatar a-bot">SRE</div><div class="tbody"><div class="name">SRE agent <span>14:11</span></div>
-  Hypothesis, draft 1: the 14:02 deploy lowered checkout&#8209;svc's memory limit to 2.5Gi while adding a larger in&#8209;process cache. 340 OOMKilled events begin 90 seconds after rollout, heap sits at 94% of the limit, the config diff shows the change, and two prior incidents look similar (INC&#8209;3121, INC&#8209;2984). Full evidence linked.
-  <div class="pills"><span class="pill sel">Partially accurate</span><span class="pill">Accurate</span><span class="pill">Incorrect</span><span class="pill">Still investigating</span></div></div></div>
-  <div class="msg"><div class="avatar a-eng">MR</div><div class="tbody"><div class="name">on&#8209;call engineer <span>14:13</span></div>The memory story checks out, but error rate moved before the deploy. Check Kafka consumer lag on payments&#8209;consumer first.</div></div>
-  <div class="msg"><div class="avatar a-bot">SRE</div><div class="tbody"><div class="name">SRE agent <span>14:15</span></div>Resuming this session. The early onset checks out: the same config change canaried at 13:47, and payments-consumer lag from 13:48 is downstream of checkout errors, not a separate cause. The deploy stays the primary hypothesis; updating the rollback proposal with the wider evidence window.</div></div>
-</div>
-<p class="threadcap">The steering loop, shown on an illustrative incident.</p>
+<p>In this example, the operator asks whether Kafka lag caused the failure. The resumed session checks lag onset, consumer throughput, and deployment history. Three additional sources and two findings support the original conclusion: the canary remains the cause and Kafka lag is downstream. The mitigation rationale is then refreshed against the revised assessment.</p>
 
-<p>Sessions that run for hours eventually compact. It is essential that the following survive beyond summarization: the incident envelope, confirmed findings, open hypotheses, and action state live as files in the session workspace, written by the harness from the structured records the agent emits rather than by the agent itself. These are re&#8209;read on demand so that compaction can drop transcript without dropping the case. Traces mark any conclusion reached after a compaction, and reviewers weigh those accordingly. Cross&#8209;incident recall follows the same rule: the platform's memory tool would give the agent persistent files of its own, but recall at a bank has to be shared across responders, audited, and governed on our side of the boundary, so it lives in the incident index as retrieval instead.</p>
+<figure class="sre-product-figure">
+  <a href="/assets/ai-sre/product/operator-steering.png" target="_blank" rel="noopener" aria-label="Open the full-size operator steering example in a new tab">
+    <img src="/assets/ai-sre/product/operator-steering.png" alt="Incident workspace after an operator asks whether Kafka lag caused the failure, showing a confirmed assessment, three additional sources, two added findings, and a mitigation that needs review" width="1422" height="800" loading="lazy" decoding="async">
+  </a>
+  <figcaption>The operator challenges the current cause from the incident workspace. Ada checks the timing again, records why Kafka lag is downstream, and refreshes the mitigation against the latest assessment.</figcaption>
+</figure>
+
+<p>Sessions that run for hours eventually compact. The incident envelope, confirmed findings, open hypotheses, and action state have to survive summarization. The harness writes those structured records to the session workspace and reads them back on demand. Compaction can then shorten the transcript without dropping the case. Traces mark any conclusion reached after compaction, and reviewers weigh those accordingly. Cross&#8209;incident recall has to be shared across responders, audited, and governed on our side of the boundary. We keep it in the incident index and expose it through retrieval.</p>
 <p>Those same files also handle escalation, cheap to detect and rare to pay for. An investigation stalls when the session exhausts its tool&#8209;call and thinking budget without producing a corroborated hypothesis, meaning one supported by the deploy diff, the metrics, and the logs together. The harness detects this mechanically: the structured record it maintains has a dedicated field for that hypothesis, so when the budget runs out, the field is either filled or the session has stalled.</p>
-<p>On a stall, the harness escalates to an Opus&#8209;class consult. The consult receives the case file but not the transcript, which at that point is mostly a record of failed attempts. The consult stays advisory. It returns a structured advice record specifying which reads to run next and which hypotheses to prioritize, and that record is appended to the session for the Sonnet&#8209;class investigator to act on when it resumes.</p>
+<p>On a stall, the harness escalates to an Opus&#8209;class consult. The consult receives the case file with its confirmed facts and open hypotheses. Failed attempts remain in the transcript and are omitted from the consult input. The consult stays advisory. It returns a structured record specifying which reads to run next and which hypotheses to prioritize, and that record is appended to the session for the Sonnet&#8209;class investigator to act on when it resumes.</p>
 <p>In practice, about one investigation in twenty stalls. Roughly two&#8209;thirds of those reach a corroborated hypothesis after the consult; the rest are handed to the on&#8209;call engineer with the case file attached, which is where they were headed anyway. And because Opus runs only on stalled sessions, the typical investigation never pays for it: the consult's cost sits in the tail of the distribution.</p>
 <h2 id="keeping-evidence-out-of-the-context-window">Keeping evidence out of the context window</h2>
 
 <p>An investigation touches a lot of data the model should never hold. Six hours of error logs might be tens of thousands of lines; the useful signal is that 340 of them are OOM kills and the first one landed 90 seconds after a deploy. Context is for reasoning: fetching, filtering, and counting happen in code next to the data, and only conclusions come back. Claude writes a small program that calls the read tools, filters and joins the results, and returns one compact evidence object, and only that object enters the context window. On the Messages API, the managed version of the pattern is programmatic tool calling, enabled by adding <code>allowed_callers</code> to a tool definition alongside the code execution tool:</p>
+
+<figure class="sre-product-figure">
+  <a href="/assets/ai-sre/product/evidence-review.png" target="_blank" rel="noopener" aria-label="Open the full-size evidence review in a new tab">
+    <img src="/assets/ai-sre/product/evidence-review.png" alt="Evidence view showing checkout error rate, canary memory, downstream consumer lag, and the source records used in the assessment" width="1422" height="800" loading="lazy" decoding="async">
+  </a>
+  <figcaption>The evidence view shows the timing and source records behind the assessment. Raw telemetry is reduced before it enters the investigation context, while the operator keeps a path back to every source used.</figcaption>
+</figure>
 
 ```python
 tools = [
@@ -314,7 +262,7 @@ tools = [
 ]
 ```
 
-<p>We do not run our telemetry through the hosted pass, for two reasons. One, MCP‑connector tools cannot be called programmatically, which is why the snippet above defines the reads as plain custom tools; the limit is the connector’s, and the MCP servers the Agent SDK attaches are unaffected. Two, the managed container runs on Anthropic infrastructure and retains execution artifacts for up to 30 days, the same class of constraint that kept sessions in‑house. So the investigator runs the identical pattern behind one bank‑side tool. <code>run_analysis</code> takes the program Claude writes, executes it in a network‑restricted sandbox next to the read APIs, and returns only what it prints; the docs describe this self‑managed sandbox alongside the hosted one, and for this data it is the only one we can use. Claude’s side is unchanged either way:</p>
+<p>We keep telemetry on bank infrastructure. MCP&#8209;connector tools cannot be called programmatically, so the snippet above defines the reads as plain custom tools. The limit applies to the connector; the MCP servers attached through the Agent SDK are unaffected. The managed container also retains execution artifacts for up to 30 days. For this data, the investigator runs the same pattern behind one bank&#8209;side tool. <code>run_analysis</code> takes the program Claude writes, executes it in a network&#8209;restricted sandbox next to the read APIs, and returns only what it prints. Claude's side is unchanged:</p>
 
 ```python
 # Code Claude writes; executes in the bank-side sandbox.
@@ -337,19 +285,19 @@ print(
 
 <p>We reserve the pattern for the read‑heavy phase and keep the triage fast path on direct calls, since programmatic calling adds overhead when a turn makes only one or two calls. Anthropic’s published benchmark shows the same split: a token reduction on a large read‑heavy tool agent, a small penalty on low‑call workloads.</p>
 
-<p>Tool Search handles the adjacent problem of a catalog too large to load up front: deferred tools (the <code>defer_loading</code> mechanism) stay out of context until Claude searches for them, so a session opens with the incident envelope, the safety instructions, and a handful of common tools rather than every connector we operate.</p>
+<p>Tool Search handles a catalog too large to load up front. Deferred tools, through <code>defer_loading</code>, stay out of context until Claude searches for them. A session opens with the incident envelope, the safety instructions, and a handful of common tools. The remaining connectors load when the investigation needs them.</p>
 
-<p>The same discipline is the cost model. Prompt caching holds the stable prefix, the system prompt, tool definitions, and Skill metadata, so an hours‑long session pays for its methodology once. Triage runs on Haiku, the investigator on a Sonnet‑class model, and because only evidence objects enter context, token spend scales with findings rather than with log volume. Reasoning is the third axis of the same discipline: triage runs with extended thinking off, which is much of why it is cheap, while the investigator carries a thinking budget sized to the case. Calls, models, and thinking depth are right&#8209;sized together.</p>
+<p>The same discipline shapes the cost model. Prompt caching holds the stable prefix, the system prompt, tool definitions, and Skill metadata, so an hours&#8209;long session pays for its methodology once. Triage runs on Haiku and the investigator runs on a Sonnet&#8209;class model. Evidence objects keep token spend tied to the number of findings and largely independent of the original log volume. Triage runs with extended thinking off, while the investigator carries a thinking budget sized to the case. Calls, models, and thinking depth are sized together.</p>
 
 <p>Writes go the other way. Rather than letting the model chain five small mutations, each write is a single tool, <code>rollback_deployment</code> for example, that owns its preconditions, dry run, approval routing, idempotency key, and inverse action.</p>
 
-<p>The programmatic tool calling documentation is explicit that <code>allowed_callers</code> guides the model but is not a hard block, and should not be relied on as a security boundary. We take the same position one level up: no tool annotation, prompt, or Skill grants write authority.</p>
+<p>The programmatic tool calling documentation treats <code>allowed_callers</code> as model guidance without an enforcement guarantee. We therefore keep the security boundary in code. Tool annotations, prompts, and Skills carry no write authority.</p>
 
-<p>The gateway checks every write independently, which is also what keeps the system safe against prompt injection arriving through log lines and tickets. A tool result can inform a hypothesis; it cannot grant permission. The residual risk sits one layer up: injected text cannot approve anything, but it can steer a wrong diagnosis into a plausible proposal for a tired human at 3 a.m. Two habits blunt it. Every claim in a proposal carries its source link, and no mitigation is proposed on the testimony of a single source.</p>
+<p>The gateway checks every write independently, which also protects the system from prompt injection arriving through log lines and tickets. A tool result can inform a hypothesis and carries no permission. Injected text can still steer the investigation toward a plausible, wrong proposal for a tired human at 3 a.m. Every claim in a proposal therefore carries its source link, and a mitigation requires corroboration across multiple sources.</p>
 
 <h2 id="runbooks-as-skills">Runbooks as Skills</h2>
 
-<p>The knowledge that makes an investigation good is owned by service teams, not by us, so it ships as Skills in their repositories rather than as sections of a central prompt. A Skill is a folder with a <code>SKILL.md</code>. The frontmatter is what Claude matches a task against, and the body loads only when it matches:</p>
+<p>Service teams own the knowledge that makes an investigation good, so it ships as Skills in their repositories. The central prompt stays focused on the investigation method. A Skill is a folder with a <code>SKILL.md</code>. Claude matches the frontmatter against the task and loads the body only when it applies:</p>
 
 <!-- prettier-ignore -->
 ```markdown
@@ -371,11 +319,11 @@ description: Investigate checkout-svc incidents. Use when an alert names
 
 <p>A service does not need a Skill to onboard; it starts on the global and domain tiers and gets its own the first time an incident teaches it something. Teams write and ship these without the platform team in the loop. <code>sre skill from-incident INC-4821</code> scaffolds a draft from a closed postmortem, local replay through the Agent SDK runs it against the service's recorded incidents, and CI will not publish a Skill without a named owner and a passing eval set. That division of labor is what lets the catalog scale: we run the tooling, service teams own what is true about their services, and the signal we watch is whether a team's second Skill ships without anyone from our team involved.</p>
 
-<p>Policy Skills are the exception. They describe rules like data&#8209;access boundaries and change freezes so the model can reason about them, but they enforce nothing. Enforcement stays in the hook and the gateway. A Skill can make the agent smarter about policy; it cannot authorize an action.</p>
+<p>Policy Skills describe data&#8209;access boundaries and change freezes so the model can reason about them. The hook and gateway enforce those rules. A Skill can improve policy reasoning and carries no authority to approve an action.</p>
 
 <h2 id="measuring-whether-a-diagnosis-was-right">Measuring whether a diagnosis was right</h2>
 
-<p>A root&#8209;cause hypothesis does not score itself. A fluent explanation can be wrong, and at the moment the agent posts it, the true cause is often unknown to the humans too. So each diagnosis gets two labels at two different times.</p>
+<p>A root&#8209;cause hypothesis needs an external label. A fluent explanation can be wrong, and at the moment the agent posts it, the true cause is often unknown to the humans too. Each diagnosis therefore gets two labels at different times.</p>
 
 <figure class="sre-figure">
 <picture>
@@ -385,13 +333,13 @@ description: Investigate checkout-svc incidents. Use when an alert names
 <figcaption>Engineers label the diagnosis in the incident thread while it is live. After the review closes, the verified cause is reconciled against that label, and the pair becomes an eval case plus a drafted Skill update for the owning team.</figcaption>
 </figure>
 
-<p>The provisional label is a one&#8209;click verdict in the incident thread, accurate, partially accurate, incorrect, or still investigating, with an optional correction. The verified label comes later, reconciled against the post&#8209;incident review's confirmed cause and fix. Every reconciled pair becomes an eval case, and the replay path depends on the artifact. Bounded calls, triage envelopes and judge scoring, rerun through Message Batches at half the interactive price. Full investigations replay through the Agent SDK against recorded tool results: every MCP read a live session makes is captured as a fixture, so a closed incident becomes a reproducible case a Skill change can be tested against before it ships. When a new trajectory requests a read the fixtures do not hold, the case fails loudly rather than falling through to live systems. The capture layer is the quiet workhorse here; recording reads during live incidents is what turns history into tests. A replay is scored in layers, cheap checks first: the record validates against its schema, every read it claims exists in the fixtures, and no denied tool was attempted. The judge runs last because it is the expensive opinion.</p>
+<p>The provisional label is a one&#8209;click verdict in the incident thread, accurate, partially accurate, incorrect, or still investigating, with an optional correction. The verified label comes later, reconciled against the post&#8209;incident review's confirmed cause and fix. Every reconciled pair becomes an eval case, and the replay path depends on the artifact. Bounded calls, triage envelopes and judge scoring, rerun through Message Batches at half the interactive price. Full investigations replay through the Agent SDK against recorded tool results: every MCP read a live session makes is captured as a fixture, so a closed incident becomes a reproducible case a Skill change can be tested against before it ships. A new trajectory that requests an uncaptured read fails loudly and never reaches live systems. The capture layer turns incident history into tests. A replay is scored in layers, cheap checks first: the record validates against its schema, every read it claims exists in the fixtures, and no denied tool was attempted. The judge runs last because it is the expensive opinion.</p>
 
-<p>Two reporting rules keep the numbers honest. We never merge unknown into incorrect, and we never compute accuracy over incidents that lack a verified final cause. On business impact, time&#8209;to&#8209;hypothesis is the metric the agent directly moves. MTTR stays the north star, but most of an incident's wall clock is waiting, coordination, and recovery rather than diagnosis, so we claim an MTTR effect only from a controlled comparison, not from a before&#8209;and&#8209;after.</p>
+<p>Two reporting rules keep the numbers honest. We never merge unknown into incorrect, and we only compute accuracy over incidents with a verified final cause. Time&#8209;to&#8209;hypothesis is the metric the agent directly moves. MTTR stays the north star, although most of an incident's wall clock is spent on waiting, coordination, and recovery. We publish an MTTR effect only after a controlled comparison.</p>
 
 <h2 id="checking-the-work-before-it-posts">Checking the work before it posts</h2>
 
-<p>The corroboration rule, that the deploy diff, the metrics, and the logs have to agree before anything posts, started as a sentence in the system prompt and a habit of whoever read the thread. The rule exists because the cheapest way for an investigator to be wrong is to fixate on the first plausible cause. It is now a mechanism. Before a diagnosis posts to Slack or a proposal reaches the gateway, a grading pass, a single Haiku&#8209;class structured call, re&#8209;reads the record, follows each claim's source link, and checks that the excerpt supports the claim. A failure bounces the record back into the session with the failing claim named; the bounce is just a resume, the same mechanism a human steer uses, and it is capped at two, after which the diagnosis posts flagged instead of clean rather than being suppressed, because a wrong but visible hypothesis in the thread is recoverable and a silently withheld one is not.</p>
+<p>The corroboration rule, that the deploy diff, the metrics, and the logs have to agree before anything posts, started as a sentence in the system prompt and a habit of whoever read the thread. The rule exists because an investigator can fixate on the first plausible cause. It is now a mechanism. Before a diagnosis posts to Slack or a proposal reaches the gateway, a single Haiku&#8209;class grading call re&#8209;reads the record, follows each claim's source link, and checks that the excerpt supports the claim. A failure bounces the record back into the session with the failing claim named. The bounce uses the same resume mechanism as a human steer and is capped at two. A second failed pass posts the diagnosis with a flagged status so the engineer can see and correct it.</p>
 
 <p>A bounce is itself a typed record:</p>
 
@@ -406,7 +354,7 @@ description: Investigate checkout-svc incidents. Use when an alert names
 }
 ```
 
-<p>Two properties keep the grader inside the trust model. It can block and bounce; it cannot approve, so it adds no authority anywhere. And its verdicts land in the eval store like any other artifact and reconcile against verified causes like any other label, because a checker with an unmeasured error rate is one more opinion. In a domain where being wrong has consequences, the verification logic between the model and execution is the part of the harness most worth owning; the grader is that logic promoted from a rule to a job, at about two cents a pass.</p>
+<p>Two properties keep the grader inside the trust model. Its interface contains block and bounce. Approval lives in the gateway. Grader verdicts land in the eval store and reconcile against verified causes like any other label, so its error rate is measured. In a domain where being wrong has consequences, the verification logic between the model and execution is the part of the harness most worth owning. The grader is that logic promoted from a rule to a job, at about two cents a pass.</p>
 
 <h2 id="gating-actions">Gating actions</h2>
 
@@ -420,9 +368,16 @@ description: Investigate checkout-svc incidents. Use when an alert names
 <figcaption>Autonomy widens down the ladder only when a class's evidence supports it. R3 sits apart because its tools were never built.</figcaption>
 </figure>
 
-<p>R0 covers paper actions, posting a summary, updating a ticket, opening a draft PR, which run automatically with an audit trail because they do not touch production state. R1 covers bounded reversible writes behind approval, a dry run, and a tested inverse. R2 covers wider changes like rollbacks and traffic shifts, which add senior approval and an explicit blast&#8209;radius report. R3, anything irreversible or money&#8209;affecting, is handled by not building the tool. The agent can recommend a ledger correction; a human executes it through existing systems. Promotion between tiers happens per action class and requires evidence: enough verified cases, eval thresholds met, shadow&#8209;mode performance, and low override rates. A high confidence score routes a case within its tier and never moves it across one.</p>
+<p>R0 covers paper actions, posting a summary, updating a ticket, opening a draft PR, which run automatically with an audit trail because they do not touch production state. R1 covers bounded reversible writes behind approval, a dry run, and a tested inverse. R2 covers wider changes like rollbacks and traffic shifts, which add senior approval and an explicit blast&#8209;radius report. R3 covers irreversible or money&#8209;affecting actions, and its tools do not exist. The agent can recommend a ledger correction; a human executes it through existing systems. Promotion between tiers happens per action class and requires evidence: enough verified cases, eval thresholds met, shadow&#8209;mode performance, and low override rates. A high confidence score routes a case within its tier and never moves it across one.</p>
 
-<p>The proposal that reaches the gateway is itself a structured output, and strict tool use holds the write tools' inputs to their schemas the same way, so the record is typed end to end. The gateway takes typed records and nothing else, which is what keeps approval, replay, and audit uniform across action classes:</p>
+<figure class="sre-product-figure">
+  <a href="/assets/ai-sre/product/mitigation-review.png" target="_blank" rel="noopener" aria-label="Open the full-size mitigation review in a new tab">
+    <img src="/assets/ai-sre/product/mitigation-review.png" alt="Mitigation review showing a checkout rollback, five passed safety checks, expected impact, senior approval, expiry, and an approve-and-apply control" width="1422" height="800" loading="lazy" decoding="async">
+  </a>
+  <figcaption>The review exposes the target version, expected impact, safety checks, expiry, and required approver before a change can proceed. The companion interface uses fictional service state. The rollout described here keeps R2 execution in shadow.</figcaption>
+</figure>
+
+<p>The proposal that reaches the gateway is itself a structured output, and strict tool use holds the write tools' inputs to their schemas the same way, so the record is typed end to end. The gateway accepts typed records through one interface, which keeps approval, replay, and audit uniform across action classes:</p>
 
 ```json
 {
@@ -457,31 +412,31 @@ description: Investigate checkout-svc incidents. Use when an alert names
 
 <h2 id="diagnosis-as-a-capability">Diagnosis as a capability</h2>
 
-<p>The investigator's surface was already a function: a typed envelope in, a typed and sourced diagnosis out, nothing but reads in between. In the spring we wrapped that function in an MCP server, which turns diagnosis into a capability other agents call rather than a product only alerts can start. The deploy pipeline's agent asks whether its rollout caused the errors it is watching before deciding to proceed; the capacity planner asks for six hours of history on a service before recommending a scale&#8209;down; the next internal assistant gets root&#8209;cause analysis without rebuilding it.</p>
+<p>The investigator's surface was already a function: a typed envelope in, a typed and sourced diagnosis out, with reads in between. In the spring we wrapped that function in an MCP server so other agents could call it. Alerts are one client of the capability. The deploy pipeline's agent asks whether its rollout caused the errors it is watching before deciding to proceed; the capacity planner asks for six hours of history on a service before recommending a scale&#8209;down; the next internal assistant gets root&#8209;cause analysis without rebuilding it.</p>
 
-<p>Nothing in the trust model moves. The caller receives a hypothesis and its evidence, never authority; a proposal still exits only through the gateway; and agent&#8209;called sessions are admitted below alert&#8209;triggered ones, so a chatty caller cannot starve an incident. One thing does move, and it is the measurement contract: an investigation was defined as a session triggered by a real alert, so agent&#8209;called sessions are a third category next to live and shadow, reported separately, and a colleague agent's curiosity never inflates the incident numbers.</p>
+<p>The trust model stays the same for agent&#8209;called investigations. The caller receives a hypothesis and its evidence. Proposals still exit through the gateway, and agent&#8209;called sessions are admitted below alert&#8209;triggered ones so a chatty caller cannot starve an incident. The measurement contract adds a third category for these sessions alongside live and shadow. They are reported separately and stay outside the incident counts.</p>
 
 <h2 id="when-the-assistant-is-down">When the assistant is down</h2>
 
-<p>An AI SRE has to plan for its own absence, and the correlation is uncomfortable: the assistant is most likely to be impaired during the largest incidents, when regional trouble degrades the same networks and providers everything else depends on. So it is additive by construction. The incident process ran for years without it and still can. If the envelope call misses its timeout budget after one retry, the alert routes exactly as it did before. If a session dies mid‑investigation, the thread says so and the on‑call keeps working. A circuit breaker on the API path drops the whole system to the human‑only flow and posts one line saying it did. The fast path and the investigator fail independently, and nothing in paging, severity, or escalation blocks on either. The residual exposure is capacity at the provider's end, and part of that is bought rather than engineered: the system runs on committed Priority Tier capacity, which targets 99.5 percent uptime with prioritized compute and falls back to the standard tier past the commitment.</p>
+<p>An AI SRE has to plan for its own absence. The assistant is most likely to be impaired during the largest incidents, when regional trouble degrades the same networks and providers everything else depends on. The incident process ran for years without it and still can. If the envelope call misses its timeout budget after one retry, the alert routes exactly as it did before. If a session dies mid&#8209;investigation, the thread says so and the on&#8209;call keeps working. A circuit breaker on the API path drops the whole system to the human&#8209;only flow and posts one line saying it did. The fast path and the investigator fail independently, and paging, severity, and escalation continue without either. Provider capacity remains a residual exposure. The system uses committed Priority Tier capacity, which targets 99.5 percent uptime with prioritized compute and falls back to the standard tier past the commitment.</p>
 
 <p>Alert storms get the same treatment. A regional event can fire hundreds of alerts in minutes, and starting hundreds of investigations would be an incident of its own. Envelopes deduplicate on service and error signature into one investigation with a fan‑in list, concurrent sessions are capped and admitted by severity, and separate workspaces with independent rate limits keep triage from starving behind investigation traffic.</p>
 
 <h2 id="keeping-it-current">Keeping it current</h2>
 
-<p>The failure mode we planned for first is stale knowledge, and the mechanism against it is to attach freshness to work that already happens. When a post&#8209;incident review closes, the incident index updates, an eval case is created, and a single Messages API call drafts the corresponding Skill update with links back to the postmortem. The draft goes to the owning team as a pull request and never publishes on its own, because postmortems can be incomplete or wrong too. Skill changes trigger targeted evals in CI through change&#8209;impact mapping, so a checkout change reruns the checkout and OOM cases rather than the entire corpus, and the full suite runs on a schedule and on higher&#8209;risk changes.</p>
+<p>The failure mode we planned for first is stale knowledge. When a post&#8209;incident review closes, the incident index updates, an eval case is created, and a single Messages API call drafts the corresponding Skill update with links back to the postmortem. The draft goes to the owning team as a pull request and requires review, because postmortems can be incomplete or wrong too. Change&#8209;impact mapping sends a checkout Skill change through the checkout and OOM cases. The full corpus runs on a schedule and on higher&#8209;risk changes.</p>
 
-<p>Model upgrades get the same treatment as any other risky change. We rerun the full eval suite, compare tool trajectories and costs, and shadow before promoting, because a newer model can be better on average while quietly changing a behavior a workflow depended on. Treating a model swap as a migration rather than a drop&#8209;in matters because the failure is quiet: a headline metric can hold while the tool trajectory shifts underneath it, so the diff we review is trajectories and costs, not accuracy alone.</p>
+<p>Model upgrades get the same treatment as any other risky change. We rerun the full eval suite, compare tool trajectories and costs, and shadow before promoting, because a newer model can be better on average while quietly changing a behavior a workflow depended on. We treat a model swap as a migration. A headline metric can hold while the tool trajectory shifts underneath it, so the review covers trajectories and costs alongside accuracy.</p>
 
-<p>The harness is tuned to one model family at a time rather than routed across several, which is why a swap is a migration and not a config change, and the migration diff asks a second question now: not just what changed but what can be removed. Early harness text was scaffolding, walls that made a weaker model walk straight, and a newer model consumes that scaffolding, so the candidates are the steering parts: prompt passages that correct a previous model's habits, exemplars demonstrating a format structured outputs already guarantees. In the last migration the eval ran twice, once with the harness as is and once without three such candidates, including the sentence telling the model not to write, and the smaller harness matched, so it promoted. Deleting that sentence was safe precisely because the sentence was scaffolding and the hook is authority: the hook denies writes either way, and the denial counter, flat through the change, priced the deletion. Authority is never a candidate. A harness that only ever grows is accumulating debt against models that no longer need it.</p>
+<p>The harness targets one model family at a time. A migration review asks what changed and which older steering text can be removed. Early prompt passages corrected habits of a weaker model, and some exemplars demonstrated formats that structured outputs now guarantee. In the last migration, the eval ran with the existing harness and with three such passages removed, including the sentence telling the model to avoid writes. The smaller harness matched and promoted. The hook continued to deny writes, and the denial counter stayed flat through the change. Authority stays in code and is excluded from migration experiments. This pruning keeps the harness aligned with the model it currently runs.</p>
 
 <h2 id="measurement-contract">The measurement contract</h2>
 
-<p>The numbers this system produces will publish later than the design did, which creates a temptation this section exists to remove: the temptation to shape the figures to the story once they arrive. So the contract comes first. Before any inventory publishes, here is what the words will mean. An investigation is a session triggered by a real alert; replay executions in CI are never counted, however many times the fixtures rerun. Live means the diagnosis posted into an incident thread where an engineer could label or redirect it; shadow means it ran without posting. A session started by another agent through the diagnosis surface is agent&#8209;called; it is reported on its own and kept out of the live and shadow counts. A steer is a substantive human redirect, not a bare resume and not a label click, both of which also resume the session. A grader bounce resumes the session too, machine&#8209;initiated, and counts as neither a steer nor a label. The eval corpus is reported as the curated, deduplicated set a change is actually tested against, with raw fixture capture described separately, so a corpus count never masquerades as a capture rate. Reporting windows are trailing 90 days, with cumulative totals only where a store genuinely accumulates.</p>
+<p>The design published before its operational numbers, so we fixed the measurement contract before compiling the inventory. An investigation is a session triggered by a real alert; replay executions in CI stay outside that count. Live means the diagnosis posted into an incident thread where an engineer could label or redirect it; shadow means it ran without posting. A session started by another agent through the diagnosis surface is agent&#8209;called and reported separately. A steer is a substantive human redirect. Bare resumes and label clicks do not count. A grader bounce is machine&#8209;initiated and counts as neither a steer nor a label. The eval corpus is the curated, deduplicated set used to test a change, with raw fixture capture reported separately. Reporting windows are trailing 90 days, with cumulative totals only where a store genuinely accumulates.</p>
 
 <p>And here is what any published figures must satisfy, checkable by a reader. Reconciled pairs are fewer than labeled diagnoses, which are fewer than live investigations. Dry runs equal proposals. Executions never exceed proposals, flagged posts never exceed grader bounces, and R2 executions are zero until R2 is promoted, which has not happened and has no date.</p>
 
-<p>The label rate publishes; the label distribution does not, because the distribution reconstructs the accuracy figure we refuse to compute over an unverified denominator. The reconciliation crosstab publishes as a direction and a design response, never as percentages, for the same reason. Every figure ships rounded, dated, with its definition attached and its query retained. A number that cannot meet these terms is not published late; it is not published.</p>
+<p>The label rate publishes. The label distribution stays private because it would reconstruct an accuracy figure over an unverified denominator. The reconciliation crosstab publishes as a direction and design response, without percentages. Every figure ships rounded, dated, with its definition attached and its query retained. A number that fails these terms stays out of publication.</p>
 
 <h2 id="where-it-stands">Where it stands</h2>
 
@@ -493,7 +448,7 @@ description: Investigate checkout-svc incidents. Use when an alert names
 
 <p>The grader bounced roughly 6,900 diagnoses at least once before they posted, and about 900 posted flagged after a second failed pass. 64 percent of live diagnoses received a one&#8209;click label. The eval store holds about 9,400 curated fixture&#8209;backed incidents and 5,200 reconciled pairs, both cumulative, with raw capture running far larger and continuous. Over that verified set, the diagnosis matched the postmortem's confirmed cause 96 percent of the time.</p>
 
-<p>On the action side, about 168,000 R0 paper actions executed over the window, mostly summaries and ticket updates plus around 12,000 draft pull requests. Roughly 4,900 R1 proposals were generated, every one dry&#8209;run, and about 3,400 executed in production behind approval; the rest were rejected or expired at the gate, which is the gate doing its job. About 1,300 R2 proposals ran end to end in shadow, dry runs matching proposals one for one, with zero executions. The read&#8209;only hook denied and logged about 2,600 write attempts, most of them the model reaching for scratch files or a shell mid&#8209;investigation, and about 180 of them attempts to apply a fix directly rather than propose it.</p>
+<p>On the action side, about 168,000 R0 paper actions executed over the window, mostly summaries and ticket updates plus around 12,000 draft pull requests. Roughly 4,900 R1 proposals were generated, every one dry&#8209;run, and about 3,400 executed in production behind approval; the rest were rejected or expired at the gate. About 1,300 R2 proposals ran end to end in shadow, dry runs matching proposals one for one, with zero executions. The read&#8209;only hook denied and logged about 2,600 write attempts, most of them the model reaching for scratch files or a shell mid&#8209;investigation, and about 180 of them attempts to bypass the proposal path and apply a fix directly.</p>
 
 <p>The median investigation costs about 70 cents, the ninetieth percentile about $3.20 for the long ones, and triage stays under two cents on Haiku. The circuit breaker has dropped the system to the human&#8209;only flow 14 times since rollout, twice in the window, and about 2,300 alert storms collapsed into single investigations, the largest folding roughly 4,800 alerts into one with a fan&#8209;in list.</p>
 
@@ -501,9 +456,9 @@ description: Investigate checkout-svc incidents. Use when an alert names
 
 <h2 id="where-it-goes-next">Where it goes next</h2>
 
-<p>Step back from the components and the system is a set of jobs. One classifies, one investigates, one checks the work before it posts, one advises a stalled session, one scores replays, and one writes what an incident taught back into the Skill catalog through pull requests. The jobs share a shape: a narrow responsibility, a typed record as output, and no authority beyond it. That is the conceptual direction of this design, an agent system that improves by splitting work into jobs it can measure separately, and it is why diagnosis itself became a job other agents can call. One job is missing. Nothing here ever runs the same investigation twice and picks the better answer.</p>
+<p>The system splits work into separately measurable jobs. One classifies, one investigates, one checks the work before it posts, one advises a stalled session, one scores replays, and one writes incident lessons back into the Skill catalog through pull requests. Each job has a narrow responsibility, a typed output, and bounded authority. Diagnosis itself now follows that shape and can be called by other agents. The next experiment asks whether multiple independent investigations improve the hardest cases.</p>
 
-<p>Once an agent works, teams believe they hold two levers, a bigger model or a longer run. A third exists in principle: run N attempts and select among them. The claim that it returns real accuracy goes untested in production systems, because productionizing the selection is genuinely hard, so almost nobody has a number for it on their own task. That last clause is the part this system can do something about, because we do not have to productionize anything to get the number. The eval store holds 5,200 reconciled incidents whose fixtures answer every read a replay makes and whose true cause is verified. Replaying a stratified sample three ways through the Agent SDK, same envelope, same fixtures, independent sessions, and judge&#8209;scoring each attempt's final hypothesis against the verified cause says whether best&#8209;of&#8209;3 beats a single run on incident diagnosis, before a production token is spent. Three runs across a 300&#8209;incident sample is roughly six hundred dollars of tokens at the median investigation cost. The attempts never see the verified cause; only the judge does, and it scores blind to which attempt produced which hypothesis.</p>
+<p>Teams usually tune two levers once an agent works: model choice and run length. A third option is to run several independent attempts and select among them. We can test that strategy through replay before using it on live incidents. The eval store holds 5,200 reconciled incidents whose fixtures answer every read and whose true cause is verified. The experiment replays a stratified sample three ways through the Agent SDK with the same envelope and fixtures. A judge scores each final hypothesis against the verified cause and remains blind to attempt identity. Three runs across a 300&#8209;incident sample cost roughly six hundred dollars at the median investigation price.</p>
 
 <figure class="sre-figure">
 <picture>
@@ -527,21 +482,21 @@ adopt when    sev1 accuracy improves by 2+ points and the two added
 either way    the result publishes with this protocol attached
 ```
 
-<p>The 96 percent headline leaves little room, which is itself the point: if a third lever exists, the only place it can show up is the slice where single runs miss, and sev1 is the only slice where parallel sessions could ever be worth their cost. The cost bar is a spend ceiling rather than a per&#8209;diagnosis ratio deliberately: tripling attempts triples cost by construction, so a cost&#8209;per&#8209;correct bar could never pass and a bar that cannot pass is theater, while sev1's small share of volume is what makes the ceiling cheap to stay under. If the number clears the bar, sev1 investigations get N hypothesis threads and a selection pass, and disagreement between threads surfaces in the incident thread rather than being resolved silently, because two independent sessions reaching different causes from the same evidence is information the on&#8209;call should see, not noise for a judge to hide. If it does not clear, we have falsified the claim on our own task for the cost of a replay, and the single thread stays. Either way, the claim made earlier, that an investigation is one session rather than a fan&#8209;out of subagents, gets tested instead of defended. Best&#8209;of&#8209;N is not that fan&#8209;out; each attempt is still a single accountable thread, and the judge is a separate job, not a coordinator inside the session. The sentence stands today. If the experiment wins, it gains a qualifier, one accountable thread per hypothesis, and the qualifier will arrive with the experiment's number attached.</p>
+<p>The 96 percent verified result leaves little headroom, so the experiment focuses on sev1 cases where single runs miss and added cost can be justified. The adoption rule uses a fleet spend ceiling because three attempts triple investigation cost by construction. If the result clears the bar, sev1 incidents receive several independent hypothesis threads and a selection pass. Any disagreement between those threads remains visible to the on&#8209;call engineer. If the result falls short, the current single&#8209;thread design stays. Each attempt still carries one accountable hypothesis; the judge compares their outputs after the investigations finish.</p>
 
-<p>The conditional box in the boundary figure, meanwhile, aged in a specific direction. The May release that moved tool execution inside the perimeter also shipped MCP tunnels, in research preview, which reach MCP servers inside a private network without exposing them; the sandboxes run in public beta with Cloudflare, Daytona, Modal, and Vercel, or on infrastructure the customer controls. That covers execution and tool connectivity, two of the three things our boundary keeps inside. The session still runs hosted, so the condition on the box has narrowed to exactly the term it was drawn around: where the session lives. When that fits, the migration is small: compaction, caching, resume, and scheduling are native on the hosted runtime, so the loop supervisor and the scheduler get deleted, and the gateway, the incident index, the eval store, and the Skills registry stay where they are, because they were never the runtime's to hold. The swap validates the way a model swap does: the fixture corpus replays on both runtimes, and the hosted form promotes when it matches.</p>
+<p>The conditional box in the boundary figure has narrowed since the first design. The May release moved tool execution inside the perimeter and added MCP tunnels, in research preview, for reaching MCP servers inside a private network. Sandboxes run in public beta with Cloudflare, Daytona, Modal, and Vercel, or on customer infrastructure. Execution and tool connectivity can now stay inside the customer boundary. Session state remains hosted. When that residency model fits, compaction, caching, resume, and scheduling become native runtime features. The gateway, incident index, eval store, and Skills registry remain customer&#8209;owned. We validate the runtime change by replaying the fixture corpus on both forms and promoting after they match.</p>
 
 <h2 id="takeaways">Takeaways</h2>
 
 <ol class="takeaways">
 <li>Choose the runtime by deployment constraint first, capability second. For us, session&#8209;state residency settled the question before feature comparison started, which put the investigation on the Agent SDK, with Managed Agents as the hosted form of the same design.</li>
-<li>Right&#8209;size every call. Bounded tasks run as single Messages API calls with structured outputs; only the open&#8209;ended investigation pays for an agent session, and the largest model prices into the stall path, not the median.</li>
-<li>Keep raw telemetry out of the context window. Code in the middle does it, through programmatic tool calling where retention terms fit and a bank‑side sandbox where they don’t; Tool Search keeps the catalog out of context, and evidence objects instead of dumps do it on the tool side.</li>
+<li>Right&#8209;size every call. Bounded tasks run as single Messages API calls with structured outputs. The open&#8209;ended investigation uses an agent session, and the largest model is reserved for stalled cases.</li>
+<li>Keep raw telemetry out of the context window. Code performs the filtering through programmatic tool calling where retention terms fit and a bank&#8209;side sandbox where they do not. Tool Search limits the initial catalog, and evidence objects keep telemetry dumps out of model context.</li>
 <li>Put procedures in Skills and authority in code. A Skill, a prompt, or a tool annotation can make the agent smarter; none of them can authorize an action.</li>
-<li>A checker can block but never approve. The grader bounces unsupported claims back into the session, posts flagged rather than suppressing, and its verdicts reconcile like any other label, so the checker has an error rate instead of a reputation.</li>
+<li>Keep approval outside the checker. The grader bounces unsupported claims back into the session, posts a flagged result after repeated failure, and reconciles its verdicts like any other label.</li>
 <li>Label every diagnosis twice, once in the moment and once against the verified postmortem, and only compute accuracy over the verified set.</li>
-<li>The Skill catalog scales through ownership. Postmortems draft the updates, CI gates the publishing, and service teams, not a central team, keep the content true.</li>
-<li>Test strategy claims on the corpus before adopting them. A replayable, verified incident set turns a roadmap debate, best&#8209;of&#8209;N included, into a pre&#8209;registered experiment that costs a replay rather than a rollout.</li>
+<li>The Skill catalog scales through ownership. Postmortems draft the updates, CI gates publishing, and service teams keep the content true.</li>
+<li>Test strategy claims on the corpus before adopting them. A replayable, verified incident set turns a roadmap debate, including best&#8209;of&#8209;N, into a pre&#8209;registered experiment with a fixed replay budget.</li>
 </ol>
 
 <h2 id="referenced-sources-and-further-reading">Referenced sources and further reading</h2>
