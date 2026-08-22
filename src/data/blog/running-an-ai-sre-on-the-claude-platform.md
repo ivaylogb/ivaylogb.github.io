@@ -22,11 +22,8 @@ description: How we built Ada, the agent that investigates production incidents 
   }
 
   #article .sre-article figure {
-    position: relative;
-    left: 50%;
-    width: min(920px, calc(100vw - 2rem));
+    width: 100%;
     margin: 3.25rem 0;
-    transform: translateX(-50%);
   }
 
   #article .sre-article figure picture,
@@ -43,10 +40,6 @@ description: How we built Ada, the agent that investigates production incidents 
     border-radius: 0.75rem;
     background: #f5f7fa;
     box-shadow: 0 18px 44px -34px rgb(15 23 42 / 45%);
-  }
-
-  #article .sre-article figure.sre-product-figure {
-    width: min(860px, calc(100vw - 2rem));
   }
 
   #article .sre-article .sre-product-figure img {
