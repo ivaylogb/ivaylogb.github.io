@@ -14,10 +14,17 @@ description: How we built Ada, the agent that investigates production incidents 
 ---
 
 <style>
+  #article .sre-article {
+    position: relative;
+    left: 50%;
+    width: min(76ch, calc(100vw - 2rem));
+    transform: translateX(-50%);
+  }
+
   #article .sre-article figure {
     position: relative;
     left: 50%;
-    width: min(1160px, calc(100vw - 2rem));
+    width: min(920px, calc(100vw - 2rem));
     margin: 3.25rem 0;
     transform: translateX(-50%);
   }
@@ -39,7 +46,7 @@ description: How we built Ada, the agent that investigates production incidents 
   }
 
   #article .sre-article figure.sre-product-figure {
-    width: min(1080px, calc(100vw - 2rem));
+    width: min(860px, calc(100vw - 2rem));
   }
 
   #article .sre-article .sre-product-figure img {
