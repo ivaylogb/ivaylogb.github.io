@@ -337,7 +337,7 @@ description: Investigate checkout-svc incidents. Use when an alert names
 
 <p>Two reporting rules keep the numbers honest. We never merge unknown into incorrect, and we only compute accuracy over incidents with a verified final cause. Time&#8209;to&#8209;hypothesis is the metric the agent directly moves. MTTR stays the north star, although most of an incident's wall clock is spent on waiting, coordination, and recovery. We publish an MTTR effect only after a controlled comparison.</p>
 
-<h2 id="checking-the-work-before-it-posts">Checking the work before it posts</h2>
+<h2 id="verifying-each-diagnosis">Verifying each diagnosis</h2>
 
 <p>The corroboration rule, that the deploy diff, the metrics, and the logs have to agree before anything posts, started as a sentence in the system prompt and a habit of whoever read the thread. The rule exists because an investigator can fixate on the first plausible cause. It is now a mechanism. Before a diagnosis posts to Slack or a proposal reaches the gateway, a single Haiku&#8209;class grading call re&#8209;reads the record, follows each claim's source link, and checks that the excerpt supports the claim. A failure bounces the record back into the session with the failing claim named. The bounce uses the same resume mechanism as a human steer and is capped at two. A second failed pass posts the diagnosis with a flagged status so the engineer can see and correct it.</p>
 
@@ -456,7 +456,7 @@ description: Investigate checkout-svc incidents. Use when an alert names
 
 <h2 id="where-it-goes-next">Where it goes next</h2>
 
-<p>The system splits work into separately measurable jobs. One classifies, one investigates, one checks the work before it posts, one advises a stalled session, one scores replays, and one writes incident lessons back into the Skill catalog through pull requests. Each job has a narrow responsibility, a typed output, and bounded authority. Diagnosis itself now follows that shape and can be called by other agents. The next experiment asks whether multiple independent investigations improve the hardest cases.</p>
+<p>The system splits work into separately measurable jobs. One classifies, one investigates, one verifies each diagnosis, one advises a stalled session, one scores replays, and one writes incident lessons back into the Skill catalog through pull requests. Each job has a narrow responsibility, a typed output, and bounded authority. Diagnosis itself now follows that shape and can be called by other agents. The next experiment asks whether multiple independent investigations improve the hardest cases.</p>
 
 <p>Teams usually tune two levers once an agent works: model choice and run length. A third option is to run several independent attempts and select among them. We can test that strategy through replay before using it on live incidents. The eval store holds 5,200 reconciled incidents whose fixtures answer every read and whose true cause is verified. The experiment replays a stratified sample three ways through the Agent SDK with the same envelope and fixtures. A judge scores each final hypothesis against the verified cause and remains blind to attempt identity. Three runs across a 300&#8209;incident sample cost roughly six hundred dollars at the median investigation price.</p>
 
