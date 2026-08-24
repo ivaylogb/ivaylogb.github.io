@@ -153,14 +153,14 @@ envelope = client.messages.create(
 
 <h2 id="investigation-runs-on-the-agent-sdk">The investigation runs on the Agent SDK</h2>
 
-<p>The runtime decision came down to where session state lives. Managed Agents, in beta as of this writing, fits a long investigation well: durable sessions, mid&#8209;run steering, and scheduled runs, and moving there from an SDK prototype is <a href="https://code.claude.com/docs/en/agent-sdk/overview"> a common transition path</a>. We did not start there because Managed Agents keeps the session, the conversation history and its outputs, on Anthropic's infrastructure. The self&#8209;hosted sandbox release in May moved tool execution inside the customer perimeter; the loop and its transcript stay hosted. That design is what makes those features possible, and it is also why the hosted form is not eligible for zero data retention. For a bank, that constraint decided the initial implementation design.</p>
+<p>The runtime decision came down to where session state lives. Managed Agents, in beta as of late April 2026, fits a long investigation well: durable sessions, mid&#8209;run steering, and scheduled runs, and moving there from an SDK prototype is <a href="https://code.claude.com/docs/en/agent-sdk/overview"> a common transition path</a>. We did not start there because Managed Agents keeps the session, the conversation history, its outputs, and tool execution on Anthropic's infrastructure. The hosted form is also ineligible for zero data retention. For a bank, those execution and retention boundaries decided the initial implementation design.</p>
 
 <figure class="sre-figure">
 <picture>
   <source media="(max-width: 900px)" srcset="/assets/ai-sre/runtime-boundary-mobile.svg">
-  <img src="/assets/ai-sre/runtime-boundary.svg" alt="Runtime boundary: harness, tools, sessions, secrets, and the action gateway inside the bank; only inference at Anthropic; Managed Agents with a self-hosted sandbox as the conditional path" width="1240" height="520" loading="lazy" decoding="async">
+  <img src="/assets/ai-sre/runtime-boundary.svg" alt="Runtime boundary: harness, tools, sessions, secrets, and the action gateway inside the bank; only inference at Anthropic; Managed Agents as the conditional path when residency terms fit" width="1240" height="520" loading="lazy" decoding="async">
 </picture>
-<figcaption>Prompts and completions are the only traffic that crosses the boundary. Session state, tools, secrets, and write authority stay on bank infrastructure. Managed Agents with a self&#8209;hosted sandbox is the next progression of the design.</figcaption>
+<figcaption>Prompts and completions are the only traffic that crosses the boundary. Session state, tools, secrets, and write authority stay on bank infrastructure. Managed Agents remains a conditional path when the residency terms fit.</figcaption>
 </figure>
 
 <p>The Agent SDK provides the same loop, tools, and context management that power Claude Code, running in our process, with session state as JSONL files we hold. Skills load from the filesystem, MCP servers attach as configuration, and hooks let us enforce policy in code around every tool call. A simplified version of the investigator setup:</p>
@@ -379,8 +379,8 @@ description: Investigate checkout-svc incidents. Use when an alert names
   "action": "rollback_deployment",
   "target": {
     "service": "checkout-svc",
-    "from": "2026.07.14-3",
-    "to": "2026.07.14-2"
+    "from": "2026.04.22-3",
+    "to": "2026.04.22-2"
   },
   "risk_tier": "R2",
   "preconditions": {
@@ -397,7 +397,7 @@ description: Investigate checkout-svc incidents. Use when an alert names
     "route": "senior-oncall",
     "state": "pending"
   },
-  "expires_at": "2026-07-19T14:40:00Z"
+  "expires_at": "2026-04-22T14:40:00Z"
 }
 ```
 
@@ -405,7 +405,7 @@ description: Investigate checkout-svc incidents. Use when an alert names
 
 <h2 id="diagnosis-as-a-capability">Diagnosis as a capability</h2>
 
-<p>The investigator's surface was already a function: a typed envelope in, a typed and sourced diagnosis out, with reads in between. In the spring we wrapped that function in an MCP server so other agents could call it. Alerts are one client of the capability. The deploy pipeline's agent asks whether its rollout caused the errors it is watching before deciding to proceed; the capacity planner asks for six hours of history on a service before recommending a scale&#8209;down; the next internal assistant gets root&#8209;cause analysis without rebuilding it.</p>
+<p>The investigator's surface was already a function: a typed envelope in, a typed and sourced diagnosis out, with reads in between. In April we wrapped that function in an MCP server so other agents could call it. Alerts are one client of the capability. The deploy pipeline's agent asks whether its rollout caused the errors it is watching before deciding to proceed; the capacity planner asks for six hours of history on a service before recommending a scale&#8209;down; the next internal assistant gets root&#8209;cause analysis without rebuilding it.</p>
 
 <p>The trust model stays the same for agent&#8209;called investigations. The caller receives a hypothesis and its evidence. Proposals still exit through the gateway, and agent&#8209;called sessions are admitted below alert&#8209;triggered ones so a chatty caller cannot starve an incident. The measurement contract adds a third category for these sessions alongside live and shadow. They are reported separately and stay outside the incident counts.</p>
 
@@ -433,9 +433,9 @@ description: Investigate checkout-svc incidents. Use when an alert names
 
 <h2 id="where-it-stands">Where it stands</h2>
 
-<p>As of July 2026, the rollout is deliberately sequenced: the v2 rolled out in phases behind the beta, earliest pieces first. The fast path and the investigator came up before any write capability. The action gateway is live for R0 paper actions and, having cleared its shadow period, for R1 reversible writes behind approval; R2 remains in shadow with no promotion date, deliberately. The eval library grows with every closed review.</p>
+<p>As of April 2026, the rollout is deliberately sequenced: the v2 rolled out in phases behind the beta, earliest pieces first. The fast path and the investigator came up before any write capability. The action gateway is live for R0 paper actions and, having cleared its shadow period, for R1 reversible writes behind approval; R2 remains in shadow with no promotion date, deliberately. The eval library grows with every closed review.</p>
 
-<p>The boring inventory, under the contract above. Over the trailing 90 days the agent ran roughly 96,000 investigations on real alerts, about 71,000 live in incident threads and 25,000 in shadow, across 240 of 264 tier&#8209;1 services, with about 55 tier&#8209;2 services in early rollout; the cumulative total since rollout began is around one million. About 12,000 live sessions, one in six, were steered mid&#8209;investigation. About 4,800 investigations stalled into an Opus consult, and about 3,200 of those reached a corroborated hypothesis on the resume. Since the diagnosis surface opened in the spring, other agents have started roughly 1,900 agent&#8209;called sessions, which the contract reports outside the investigation counts here.</p>
+<p>The boring inventory, under the contract above. Over the trailing 90 days the agent ran roughly 96,000 investigations on real alerts, about 71,000 live in incident threads and 25,000 in shadow, across 240 of 264 tier&#8209;1 services, with about 55 tier&#8209;2 services in early rollout; the cumulative total since rollout began is around one million. About 12,000 live sessions, one in six, were steered mid&#8209;investigation. About 4,800 investigations stalled into an Opus consult, and about 3,200 of those reached a corroborated hypothesis on the resume. Since the diagnosis surface opened in April, other agents have started roughly 1,900 agent&#8209;called sessions, which the contract reports outside the investigation counts here.</p>
 
 <p>The registry holds about 760 Skills, 6 global, 34 domain, and roughly 720 service, with 86 percent of the service Skills carrying no platform&#8209;team commits, and about 180 teams have shipped a second Skill with no platform&#8209;team commits or reviews, the signal we actually watch.</p>
 
@@ -477,7 +477,7 @@ either way    the result publishes with this protocol attached
 
 <p>The 96 percent verified result leaves little headroom, so the experiment focuses on sev1 cases where single runs miss and added cost can be justified. The adoption rule uses a fleet spend ceiling because three attempts triple investigation cost by construction. If the result clears the bar, sev1 incidents receive several independent hypothesis threads and a selection pass. Any disagreement between those threads remains visible to the on&#8209;call engineer. If the result falls short, the current single&#8209;thread design stays. Each attempt still carries one accountable hypothesis; the judge compares their outputs after the investigations finish.</p>
 
-<p>The conditional box in the boundary figure has narrowed since the first design. The May release moved tool execution inside the perimeter and added MCP tunnels, in research preview, for reaching MCP servers inside a private network. Sandboxes run in public beta with Cloudflare, Daytona, Modal, and Vercel, or on customer infrastructure. Execution and tool connectivity can now stay inside the customer boundary. Session state remains hosted. When that residency model fits, compaction, caching, resume, and scheduling become native runtime features. The gateway, incident index, eval store, and Skills registry remain customer&#8209;owned. We validate the runtime change by replaying the fixture corpus on both forms and promoting after they match.</p>
+<p>The conditional box in the boundary figure remains conditional as of late April. Managed Agents provides durable sessions, compaction, resume, and scheduling, while the session, transcript, and tool execution stay hosted. The Agent SDK keeps those elements on customer infrastructure. The gateway, incident index, eval store, and Skills registry remain customer&#8209;owned in either design. We would validate any runtime change by replaying the fixture corpus on both forms and promoting after they match.</p>
 
 <h2 id="takeaways">Takeaways</h2>
 
@@ -505,9 +505,8 @@ either way    the result publishes with this protocol attached
 <li><a href="https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview">Agent Skills overview</a></li>
 <li><a href="https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents">Demystifying evals for AI agents</a></li>
 <li><a href="https://sequoiacap.com/podcast/anthropics-katelyn-lesse-angela-jiang-building-an-ecosystem-not-a-walled-garden/">Building an Ecosystem, not a Walled Garden</a>, Katelyn Lesse and Angela Jiang on Sequoia's Training Data</li>
-<li><a href="https://claude.com/blog/claude-managed-agents-updates">Self&#8209;hosted sandboxes and MCP tunnels</a> in Managed Agents</li>
 </ul>
 
-<p class="sre-footnote">Ada, the read&#8209;only beta, predates this work and proved the reasoning use case. The architecture here is the v2 design and phased implementation I led, with incident&#8209;response, observability, security, and service teams owning their parts. Platform statuses and API syntax checked against Anthropic documentation, July 2026.</p>
+<p class="sre-footnote">Ada, the read&#8209;only beta, predates this work and proved the reasoning use case. The architecture here is the v2 design and phased implementation I led, with incident&#8209;response, observability, security, and service teams owning their parts. Platform statuses and API syntax checked against Anthropic documentation, April 2026.</p>
 
 </div>

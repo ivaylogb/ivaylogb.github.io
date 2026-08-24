@@ -16,5 +16,5 @@
   <rect x="32" y="452" width="556" height="120" rx="18" fill="none" stroke="#b9b4a9" stroke-width="1.6" stroke-dasharray="5 5"/>
   <text x="58" y="486" font-family="ui-monospace,Menlo,monospace" font-size="13" letter-spacing="1.5" fill="#6b6b66">CONDITIONAL</text>
   <text x="58" y="518" font-family="Georgia,serif" font-size="21" font-weight="600" fill="#1a1a17">Managed Agents (beta)</text>
-  <text x="58" y="548" font-family="-apple-system,'Segoe UI',sans-serif" font-size="16" fill="#6b6b66">self&#8209;hosted sandbox; when retention terms fit</text>
+  <text x="58" y="548" font-family="-apple-system,'Segoe UI',sans-serif" font-size="16" fill="#6b6b66">when residency terms fit</text>
 </svg>
