@@ -6,15 +6,56 @@ import Footer from "@/components/Footer.astro";
 const projects = [
   {
     name: "Persona Simulator",
-    href: "/posts/persona-simulator/",
     description:
       "A grounded simulation system for testing how realistic user personas respond to product experiences and AI agents before launch.",
+    links: [
+      {
+        label: "Read article",
+        href: "/posts/persona-simulator/",
+        external: false,
+      },
+    ],
   },
   {
     name: "AI SRE Agent",
-    href: "/posts/running-an-ai-sre-on-the-claude-platform/",
     description:
       "An incident-response agent that gathers production evidence, develops root-cause hypotheses, and routes proposed actions through human approval.",
+    links: [
+      {
+        label: "Read article",
+        href: "/posts/running-an-ai-sre-on-the-claude-platform/",
+        external: false,
+      },
+    ],
+  },
+  {
+    name: "CostSegNow",
+    description:
+      "A self-service cost segregation tool that turns rental-property details into accelerated-depreciation estimates and downloadable reports.",
+    links: [
+      {
+        label: "Live site",
+        href: "https://costsegnow.vercel.app/",
+        external: true,
+      },
+      {
+        label: "GitHub",
+        href: "https://github.com/ivaylogb/costseg-pro",
+        external: true,
+      },
+    ],
+  },
+  {
+    name: "Pluma",
+    description:
+      "A CLI that routes developer-product failures across funnel, agent-evaluation, and integration-trace diagnostics, then combines the evidence into one report.",
+    links: [
+      {
+        label: "GitHub",
+        href: "https://github.com/ivaylogb/pluma",
+        external: true,
+      },
+    ],
   },
 ];
 ---
@@ -43,22 +84,25 @@ const projects = [
       <ul class="mt-5 divide-y divide-border border-y border-border">
         {
           projects.map(project => (
-            <li>
-              <a
-                href={project.href}
-                class="group block py-7 sm:py-8"
-                aria-label={`Read about ${project.name}`}
-              >
-                <h3 class="text-2xl font-semibold tracking-tight group-hover:text-accent">
-                  {project.name}
-                </h3>
-                <p class="mt-3 max-w-[74ch] text-lg leading-8 text-subtle">
-                  {project.description}
-                </p>
-                <span class="mt-4 inline-block font-medium text-accent">
-                  View project <span aria-hidden="true">→</span>
-                </span>
-              </a>
+            <li class="py-7 sm:py-8">
+              <h3 class="text-2xl font-semibold tracking-tight">
+                {project.name}
+              </h3>
+              <p class="mt-3 max-w-[74ch] text-lg leading-8 text-subtle">
+                {project.description}
+              </p>
+              <div class="mt-4 flex flex-wrap gap-x-6 gap-y-2">
+                {project.links.map(link => (
+                  <a
+                    href={link.href}
+                    target={link.external ? "_blank" : undefined}
+                    rel={link.external ? "noopener noreferrer" : undefined}
+                    class="font-medium text-accent hover:underline"
+                  >
+                    {link.label} <span aria-hidden="true">→</span>
+                  </a>
+                ))}
+              </div>
             </li>
           ))
         }
