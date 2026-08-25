@@ -77,7 +77,7 @@ description: How we built Ada, the agent that investigates production incidents 
 
 <p>In 2025 we shipped a read&#8209;only investigation agent, internally called Ada, on a custom-built harness, because nothing hosted at the time had the durable, steerable sessions an investigation needs. Ada worked well enough to expose the problems that matter at the next stage. It could not search past incidents, could not be redirected mid&#8209;investigation, could not act on its conclusions, ran on infrastructure that consumed most of a two&#8209;person team, and had no reliable way to measure whether its diagnoses were correct.</p>
 
-<p>This post describes the v2 design. Structured outputs type every artifact another system parses, the Agent SDK runs the investigation loop, MCP carries the operational reads, code in the middle keeps raw telemetry out of the model’s context, and Skills hold the runbooks service teams own. Two constraints shaped the design more than any feature choice: where session state can live, and which actions exist for the agent at all. Anthropic's cookbooks cover incident&#8209;response agents on both runtimes. This article focuses on the production design around those mechanics.</p>
+<p>This post describes the v2 design. The core idea is simple: give the investigator enough freedom to follow the evidence, and keep every production action behind explicit controls.</p>
 
 <h2 id="architecture-at-a-glance">The architecture at a glance</h2>
 
